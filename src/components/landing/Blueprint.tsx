@@ -1,0 +1,108 @@
+import React from 'react'
+
+/**
+ * Drafting-style decorations from the Figma frame: hairline-bordered content
+ * column, corner cross marks, tick rules with section numbers, and the
+ * vertical "120px" measure. These are intentional page elements, not redlines.
+ */
+
+export function CornerCross({ className }: { className?: string }) {
+  return (
+    <div className={`pointer-events-none absolute size-[12px] rotate-180 ${className ?? ''}`} aria-hidden>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img alt="" src="/landing/corner-cross.svg" className="block size-full max-w-none" />
+    </div>
+  )
+}
+
+/**
+ * Full-width band with a top hairline, wrapping a centered column. The last
+ * band on the page adds `border-b` via className so adjacent bands share a
+ * single hairline.
+ */
+export function SectionBand({
+  children,
+  className,
+}: {
+  children: React.ReactNode
+  className?: string
+}) {
+  return (
+    <div
+      className={`flex w-full flex-col items-center border-t border-hairline px-4 sm:px-8 lg:px-12 ${className ?? ''}`}
+    >
+      {children}
+    </div>
+  )
+}
+
+/** The 1200px content column, optionally with hairline side borders and corner crosses. */
+export function BlueprintColumn({
+  children,
+  sideBorders = true,
+  showMeasureMark = false,
+  className,
+}: {
+  children: React.ReactNode
+  sideBorders?: boolean
+  showMeasureMark?: boolean
+  className?: string
+}) {
+  return (
+    <div
+      className={`relative flex w-full max-w-[1200px] flex-col items-center ${
+        sideBorders ? 'border-l border-r border-hairline' : ''
+      } ${className ?? ''}`}
+    >
+      <CornerCross className="-top-[6px] -left-[6.5px]" />
+      <CornerCross className="-top-[6px] -right-[6.5px]" />
+      {showMeasureMark && (
+        <div className="pointer-events-none absolute -top-[12px] left-[23.5px] h-[24px] w-[12px]" aria-hidden>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img alt="" src="/landing/measure-mark.svg" className="block size-full max-w-none" />
+        </div>
+      )}
+      {children}
+    </div>
+  )
+}
+
+/** Horizontal tick rule with a section number, e.g. "01". */
+export function SectionRule({ number }: { number: string }) {
+  return (
+    <div className="flex w-full items-center justify-center gap-[8px] p-[24px]" aria-hidden>
+      <div className="flex w-[16px] items-center">
+        <div className="h-[16px] w-px shrink-0 bg-hairline" />
+        <div className="h-px min-w-px flex-1 bg-hairline" />
+      </div>
+      <p className="shrink-0 text-center font-figtree text-[10px] leading-[13px] whitespace-nowrap text-ink-50">
+        {number}
+      </p>
+      <div className="flex min-w-px flex-1 items-center">
+        <div className="h-px min-w-px flex-1 bg-hairline" />
+        <div className="h-[16px] w-px shrink-0 bg-hairline" />
+      </div>
+    </div>
+  )
+}
+
+/** Vertical measure with tick ends and a rotated "120px" label. */
+export function MeasureRule({ label = '120px' }: { label?: string }) {
+  return (
+    <div className="flex h-[144px] w-full flex-col items-center justify-center gap-[8px] py-[12px]" aria-hidden>
+      <div className="flex min-h-px flex-1 flex-col items-center">
+        <div className="h-px w-[16px] shrink-0 bg-hairline" />
+        <div className="min-h-px w-px flex-1 bg-hairline" />
+      </div>
+      <div className="flex size-[22px] items-center justify-center">
+        <p className="rotate-90 text-center font-figtree text-[8px] leading-[22px] whitespace-nowrap text-ink-50">
+          {label}
+        </p>
+      </div>
+      <div className="flex min-h-px flex-1 flex-col items-center">
+        <div className="min-h-px w-px flex-1 bg-hairline" />
+        <div className="h-px w-[16px] shrink-0 bg-hairline" />
+      </div>
+    </div>
+  )
+}
