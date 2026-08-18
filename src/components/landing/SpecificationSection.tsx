@@ -70,7 +70,7 @@ export function SpecificationSection() {
       </div>
 
       <div className="flex w-full flex-col items-center justify-center gap-[24px]">
-        <div className="max-w-full overflow-x-auto">
+        <div className="max-w-full overflow-x-auto p-px">
           <div className="flex h-[40px] items-center justify-center gap-[8px] rounded-[44px] border border-hairline">
             {CATEGORIES.map((category) => {
               const isActive = category.id === activeId
@@ -80,15 +80,20 @@ export function SpecificationSection() {
                   type="button"
                   onClick={() => setActiveId(category.id)}
                   aria-pressed={isActive}
-                  className={`flex h-full shrink-0 items-center justify-center gap-[10px] rounded-[44px] px-[16px] py-[10px] transition-colors sm:px-[24px] ${
-                    isActive
-                      ? 'border border-hairline bg-cream'
-                      : 'hover:bg-black/5'
-                  }`}
+                  className="group relative flex h-[40px] shrink-0 items-center justify-center gap-[10px] px-[16px] sm:px-[24px]"
                 >
+                  {/* Pill visual lives on its own layer so the button's footprint never changes. */}
+                  <span
+                    aria-hidden
+                    className={`absolute rounded-[44px] border transition-[inset,background-color,border-color] duration-200 ease-out ${
+                      isActive
+                        ? 'inset-0 border-hairline bg-cream'
+                        : 'inset-[3px] border-transparent group-hover:border-black/[0.03] group-hover:bg-black/[0.03]'
+                    }`}
+                  />
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img alt="" src={category.icon} className="h-[16px] w-auto shrink-0" />
-                  <p className="text-[14px] leading-[18px] whitespace-nowrap text-black">
+                  <img alt="" src={category.icon} className="relative h-[16px] w-auto shrink-0" />
+                  <p className="relative text-[14px] leading-[18px] whitespace-nowrap text-black">
                     {category.label}
                   </p>
                 </button>

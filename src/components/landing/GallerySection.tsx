@@ -46,9 +46,7 @@ export function GallerySection() {
           <div className="flex flex-col gap-[8px]">
             <p className="text-[16px] leading-normal text-black">Showroom &amp; Product Library</p>
             <p className="max-w-[300px] text-[14px] leading-[18px] text-ink-50">
-              Eight thousand square feet in Santa Clara, arranged as three pavilions and open by
-              appointment. Full installations rather than sample boards: windows that open,
-              cabinetry that pulls, stone you can put a hand on.
+            Eight thousand square feet in Santa Clara, arranged as three pavilions and open by appointment. Full installations rather than sample boards: skyhigh doors that open, custom cabinetry that inspires, unique materials you can put a hand on.
             </p>
           </div>
           <div className="font-hanken text-[20px] leading-[26px] text-black">
