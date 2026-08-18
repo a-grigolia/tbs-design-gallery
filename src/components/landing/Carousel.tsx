@@ -17,27 +17,37 @@ export function CarouselDots({
 }) {
   return (
     <div className="flex items-center justify-center gap-[4px]">
-      {Array.from({ length: count }, (_, i) => (
-        <button
-          key={i}
-          type="button"
-          aria-label={`Go to slide ${i + 1}`}
-          aria-current={i === active}
-          onClick={() => onSelect(i)}
-          className="group flex h-[16px] items-center justify-center px-[2px]"
-        >
-          {i === active ? (
-            <span className="relative block h-[6px] w-[32px] overflow-hidden rounded-[30px] bg-ink/15">
+      {Array.from({ length: count }, (_, i) => {
+        const isActive = i === active
+        return (
+          <button
+            key={i}
+            type="button"
+            aria-label={`Go to slide ${i + 1}`}
+            aria-current={isActive}
+            onClick={() => onSelect(i)}
+            className="group flex h-[16px] items-center justify-center px-[2px]"
+          >
+            {/* One element per dot whose width animates, so the outgoing pill
+                shrinks while the incoming one grows (accordion) instead of
+                the two swapping instantly. */}
+            <span
+              className={`relative block h-[6px] overflow-hidden rounded-[30px] bg-ink/15 transition-[width] duration-400 ease-out ${
+                isActive ? 'w-[32px]' : 'w-[6px] group-hover:bg-ink/30'
+              }`}
+            >
               <span
-                className="absolute inset-y-0 left-0 rounded-[30px] bg-ink/60 transition-[width] duration-150 ease-linear"
-                style={{ width: `${Math.min(progress, 1) * 100}%` }}
+                className={`absolute inset-y-0 left-0 rounded-[30px] bg-ink/60 ${
+                  isActive
+                    ? 'opacity-100 transition-[width] duration-150 ease-linear'
+                    : 'opacity-0 transition-opacity duration-400'
+                }`}
+                style={{ width: isActive ? `${Math.min(progress, 1) * 100}%` : '100%' }}
               />
             </span>
-          ) : (
-            <span className="block size-[6px] rounded-[30px] bg-ink/15 transition-colors duration-300 group-hover:bg-ink/30" />
-          )}
-        </button>
-      ))}
+          </button>
+        )
+      })}
     </div>
   )
 }
