@@ -10,7 +10,7 @@ export function CornerCross({ className }: { className?: string }) {
   return (
     <div className={`pointer-events-none absolute size-[12px] rotate-180 ${className ?? ''}`} aria-hidden>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img alt="" src="/landing/corner-cross.svg" className="block size-full max-w-none" />
+      <img alt="" src="/landing/corner-cross.svg" className="block size-full max-w-none dark:invert" />
     </div>
   )
 }
@@ -59,7 +59,7 @@ export function BlueprintColumn({
       {showMeasureMark && (
         <div className="pointer-events-none absolute -top-[12px] left-[23.5px] h-[24px] w-[12px]" aria-hidden>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img alt="" src="/landing/measure-mark.svg" className="block size-full max-w-none" />
+          <img alt="" src="/landing/measure-mark.svg" className="block size-full max-w-none dark:invert" />
         </div>
       )}
       {children}
@@ -81,6 +81,25 @@ export function SectionRule({ number }: { number: string }) {
       <div className="flex min-w-px flex-1 items-center">
         <div className="h-px min-w-px flex-1 bg-hairline" />
         <div className="h-[16px] w-px shrink-0 bg-hairline" />
+      </div>
+    </div>
+  )
+}
+
+/** Vertical tick rule with a column number, e.g. "01" — the footer's upright SectionRule. */
+export function VerticalRule({ number }: { number: string }) {
+  return (
+    <div className="flex h-full min-h-[160px] w-[16px] flex-col items-center gap-[4px] self-stretch py-[12px]" aria-hidden>
+      <div className="flex h-[40px] w-full flex-col items-center">
+        <div className="h-px w-[16px] shrink-0 bg-hairline" />
+        <div className="min-h-px w-px flex-1 bg-hairline" />
+      </div>
+      <p className="shrink-0 text-center font-figtree text-[10px] leading-[13px] whitespace-nowrap text-ink-50">
+        {number}
+      </p>
+      <div className="flex min-h-px w-full flex-1 flex-col items-center">
+        <div className="min-h-px w-px flex-1 bg-hairline" />
+        <div className="h-px w-[16px] shrink-0 bg-hairline" />
       </div>
     </div>
   )

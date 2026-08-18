@@ -27,14 +27,14 @@ export function CarouselDots({
           className="group flex h-[16px] items-center justify-center px-[2px]"
         >
           {i === active ? (
-            <span className="relative block h-[6px] w-[32px] overflow-hidden rounded-[30px] bg-[#d1cecb]">
+            <span className="relative block h-[6px] w-[32px] overflow-hidden rounded-[30px] bg-ink/15">
               <span
-                className="absolute inset-y-0 left-0 rounded-[30px] bg-black/60 transition-[width] duration-150 ease-linear"
+                className="absolute inset-y-0 left-0 rounded-[30px] bg-ink/60 transition-[width] duration-150 ease-linear"
                 style={{ width: `${Math.min(progress, 1) * 100}%` }}
               />
             </span>
           ) : (
-            <span className="block size-[6px] rounded-[30px] bg-black/15 transition-colors duration-300 group-hover:bg-black/30" />
+            <span className="block size-[6px] rounded-[30px] bg-ink/15 transition-colors duration-300 group-hover:bg-ink/30" />
           )}
         </button>
       ))}

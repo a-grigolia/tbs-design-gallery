@@ -180,6 +180,54 @@ export const PROCESS_STEPS = [
   },
 ]
 
+export type FooterLink = { label: string; href: string }
+
+/**
+ * Footer columns from the Figma frame. Social hrefs are placeholders — swap
+ * them for the real profile URLs when available.
+ */
+export const FOOTER_COLUMNS: { number: string; label: string; links: FooterLink[] }[] = [
+  {
+    number: '01',
+    label: 'Product Specification',
+    links: [
+      { label: 'Custom Cabinetry', href: '/vendors' },
+      { label: 'Windows & doors', href: '/vendors' },
+      { label: 'Appliances', href: '/vendors' },
+      { label: 'Outdoor living', href: '/vendors' },
+      { label: 'Architectural elements', href: '/vendors' },
+    ],
+  },
+  {
+    number: '02',
+    label: 'About us',
+    links: [
+      { label: 'Blog', href: '/blog' },
+      { label: 'Team', href: '/contact' },
+      { label: 'Contact', href: '/contact' },
+    ],
+  },
+  {
+    number: '03',
+    label: 'Socials',
+    links: [
+      { label: 'Instagram', href: '#' },
+      { label: 'LinkedIn', href: '#' },
+      { label: 'Facebook', href: '#' },
+      { label: 'Yelp', href: '#' },
+      { label: 'Houzz', href: '#' },
+      { label: 'Vimeo', href: '#' },
+      { label: 'Youtube', href: '#' },
+    ],
+  },
+]
+
+export const FOOTER_ADDRESS = {
+  name: 'TBS Design Gallery',
+  address: '3283 De La Cruz Boulevard, Suite A, Santa Clara, CA 95054',
+  hours: 'Monday-Friday: 10am-3pm',
+}
+
 export const TESTIMONIALS = [
   {
     quote:

@@ -6,6 +6,7 @@ import { Hero } from '@/components/landing/Hero'
 import { InstallationSection } from '@/components/landing/InstallationSection'
 import { PartnersSection } from '@/components/landing/PartnersSection'
 import { ProcessSection } from '@/components/landing/ProcessSection'
+import { SiteFooter } from '@/components/landing/SiteFooter'
 import { SiteHeader } from '@/components/landing/SiteHeader'
 import { SpecificationSection } from '@/components/landing/SpecificationSection'
 import { TestimonialsSection } from '@/components/landing/TestimonialsSection'
@@ -31,7 +32,7 @@ export default async function HomePage() {
       <Hero />
 
       <SectionBand>
-        <BlueprintColumn showMeasureMark className="pb-[120px]">
+        <BlueprintColumn showMeasureMark className="pb-section">
           <GallerySection />
           <SectionRule number="02" />
           <SpecificationSection />
@@ -47,14 +48,20 @@ export default async function HomePage() {
       </SectionBand>
 
       <SectionBand>
-        <BlueprintColumn sideBorders={false}>
+        <BlueprintColumn>
           <TestimonialsSection />
         </BlueprintColumn>
       </SectionBand>
 
-      <SectionBand className="border-b">
-        <BlueprintColumn className="pb-[120px]">
+      <SectionBand>
+        <BlueprintColumn className="pb-section">
           <PartnersSection vendors={vendors} />
+        </BlueprintColumn>
+      </SectionBand>
+
+      <SectionBand className="border-b">
+        <BlueprintColumn>
+          <SiteFooter />
         </BlueprintColumn>
       </SectionBand>
     </div>

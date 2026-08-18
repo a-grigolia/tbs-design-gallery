@@ -19,10 +19,10 @@ export function InstallationSection() {
   const { index, setIndex, progress, containerRef } = useCarouselTimer(INSTALLATION_CARDS.length)
 
   return (
-    <div className="flex w-full flex-col gap-[4px] px-[24px] lg:px-[48px]">
+    <div className="flex w-full flex-col gap-[4px] px-gutter-sm lg:px-gutter">
       <div className="flex w-full flex-col gap-[32px] py-[32px] lg:flex-row lg:items-center lg:justify-between lg:gap-0 lg:py-0">
-        <div className="flex flex-col gap-[8px] lg:w-[330px] lg:py-[64px]">
-          <p className="text-[16px] leading-normal text-black">
+        <div className="flex flex-col gap-[8px] lg:w-[330px] lg:py-[48px]">
+          <p className="text-[16px] leading-normal text-ink">
             Product Design, Installation &amp; Maintenance
           </p>
           <p className="text-[14px] leading-[20px] text-ink-50">
@@ -31,8 +31,8 @@ export function InstallationSection() {
             when you already have a contractor. We stay on file long after move-in.
           </p>
         </div>
-        <div className="flex flex-col justify-center lg:w-[305px] lg:items-end lg:py-[64px]">
-          <div className="text-[20px] leading-normal text-black lg:text-right">
+        <div className="flex flex-col justify-center lg:w-[305px] lg:items-end lg:py-[48px]">
+          <div className="text-[20px] leading-normal text-ink lg:text-right">
             {SERVICES.map((service) => (
               <p key={service}>{service}</p>
             ))}

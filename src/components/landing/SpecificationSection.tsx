@@ -27,10 +27,10 @@ function BrandList({ brands }: { brands: string[] }) {
             <p
               className={`text-[20px] leading-[26px] text-right whitespace-nowrap transition-[translate,color] duration-250 ease-out ${
                 isHovered
-                  ? '-translate-x-[26px] font-medium text-black'
+                  ? '-translate-x-[26px] font-medium text-ink'
                   : isDimmed
                     ? 'text-ink-40'
-                    : 'text-black'
+                    : 'text-ink'
               }`}
             >
               {brand}
@@ -42,7 +42,7 @@ function BrandList({ brands }: { brands: string[] }) {
               aria-hidden
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img alt="" src="/landing/arrows-updown.svg" className="block size-full max-w-none" />
+              <img alt="" src="/landing/arrows-updown.svg" className="block size-full max-w-none dark:invert" />
             </span>
           </div>
         )
@@ -56,10 +56,10 @@ export function SpecificationSection() {
   const active = CATEGORIES.find((category) => category.id === activeId) ?? CATEGORIES[0]
 
   return (
-    <div className="flex w-full flex-col gap-[24px] px-[24px] lg:px-[48px]">
+    <div className="flex w-full flex-col gap-[24px] px-gutter-sm lg:px-gutter">
       <div className="flex w-full flex-col gap-[32px] py-[48px] lg:flex-row lg:items-center lg:justify-between lg:gap-0">
         <div className="flex flex-col gap-[8px] lg:w-[305px]">
-          <p className="text-[16px] leading-normal text-black">Product Specification</p>
+          <p className="text-[16px] leading-normal text-ink">Product Specification</p>
           <p className="text-[14px] leading-normal text-ink-50">
             30+ American and European manufacturers across five categories. We help you choose the
             right product for the project, not just the right look, and document it so it installs
@@ -88,12 +88,12 @@ export function SpecificationSection() {
                     className={`absolute rounded-[44px] border transition-[inset,background-color,border-color] duration-200 ease-out ${
                       isActive
                         ? 'inset-0 border-hairline bg-cream'
-                        : 'inset-[3px] border-transparent group-hover:border-black/[0.03] group-hover:bg-black/[0.03]'
+                        : 'inset-[3px] border-transparent group-hover:border-ink/[0.03] group-hover:bg-ink/[0.03]'
                     }`}
                   />
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img alt="" src={category.icon} className="relative h-[16px] w-auto shrink-0" />
-                  <p className="relative text-[14px] leading-[18px] whitespace-nowrap text-black">
+                  <img alt="" src={category.icon} className="relative h-[16px] w-auto shrink-0 dark:invert" />
+                  <p className="relative text-[14px] leading-[18px] whitespace-nowrap text-ink">
                     {category.label}
                   </p>
                 </button>

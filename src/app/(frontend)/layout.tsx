@@ -1,5 +1,6 @@
 import React from 'react'
 import { Figtree, Geist, Hanken_Grotesk, Source_Serif_4 } from 'next/font/google'
+import { ThemeProvider } from 'next-themes'
 import './styles.css'
 
 const sourceSerif = Source_Serif_4({
@@ -35,9 +36,12 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
     <html
       lang="en"
       className={`${sourceSerif.variable} ${geist.variable} ${figtree.variable} ${hankenGrotesk.variable}`}
+      suppressHydrationWarning
     >
       <body>
-        <main>{children}</main>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <main>{children}</main>
+        </ThemeProvider>
       </body>
     </html>
   )

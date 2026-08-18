@@ -17,18 +17,18 @@ export function GallerySection() {
     <>
       <div className="flex w-full flex-col items-start">
         <MeasureRule label="120px" />
-        <div className="flex w-full items-center justify-center px-[24px]">
+        <div className="flex w-full items-center justify-center px-gutter-sm">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             alt="TBS Design Gallery"
             src="/landing/tbs-union.svg"
-            className="h-[144px] w-[131.884px] shrink-0"
+            className="h-[144px] w-[131.884px] shrink-0 dark:invert"
           />
         </div>
       </div>
 
-      <div className="flex flex-col items-center gap-[24px] px-4 pt-[48px] pb-[32px] text-center">
-        <h2 className="max-w-[384px] font-display text-[36px] leading-[46px] font-bold text-black">
+      <div className="flex flex-col items-center gap-[16px] px-4 pt-[48px] pb-[32px] text-center">
+        <h2 className="max-w-[384px] font-display text-[36px] leading-[46px] font-bold text-ink">
           The gallery, and everything behind it
         </h2>
         <p className="max-w-[656px] text-[14px] leading-[18px] text-ink-50">
@@ -41,15 +41,15 @@ export function GallerySection() {
 
       <SectionRule number="01" />
 
-      <div className="flex w-full flex-col gap-[48px] px-[24px] pt-[48px] pb-[18px] lg:flex-row lg:items-stretch lg:px-[48px]">
-        <div className="flex flex-1 flex-col justify-between gap-[48px] pt-[24px] lg:pb-[54px]">
+      <div className="flex w-full flex-col gap-[48px] px-gutter-sm pt-[32px] pb-[18px] lg:flex-row lg:items-stretch lg:px-gutter">
+        <div className="flex flex-1 flex-col justify-between gap-[48px] pt-[16px] lg:pb-[54px]">
           <div className="flex flex-col gap-[8px]">
-            <p className="text-[16px] leading-normal text-black">Showroom &amp; Product Library</p>
+            <p className="text-[16px] leading-normal text-ink">Showroom &amp; Product Library</p>
             <p className="max-w-[300px] text-[14px] leading-[18px] text-ink-50">
             Eight thousand square feet in Santa Clara, arranged as three pavilions and open by appointment. Full installations rather than sample boards: skyhigh doors that open, custom cabinetry that inspires, unique materials you can put a hand on.
             </p>
           </div>
-          <div className="font-hanken text-[20px] leading-[26px] text-black">
+          <div className="font-hanken text-[20px] leading-[26px] text-ink">
             {SHOWROOM_SERVICES.map((service) => (
               <p key={service}>{service}</p>
             ))}
