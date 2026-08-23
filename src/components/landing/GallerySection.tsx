@@ -16,7 +16,7 @@ export function GallerySection() {
   return (
     <>
       <div className="flex w-full flex-col items-start">
-        <MeasureRule label="120px" />
+        <MeasureRule label="What we do" />
         <div className="flex w-full items-center justify-center px-gutter-sm">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -29,13 +29,11 @@ export function GallerySection() {
 
       <div className="flex flex-col items-center gap-[16px] px-4 pt-[48px] pb-[32px] text-center">
         <h2 className="max-w-[384px] font-display text-[36px] leading-[46px] font-bold text-ink">
-          The gallery, and everything behind it
+          More than a showroom
         </h2>
-        <p className="max-w-[656px] text-[14px] leading-[18px] text-ink-50">
-          For homeowners, architects, and builders alike — TBS Design Gallery pairs curated American
-          and European solutions in windows, doors, custom millwork, and outdoor living with the
-          technical and design expertise to support every project from early conversations through
-          specification, installation, and ongoing service.
+        <p className="max-w-[384px] text-[14px] leading-[18px] text-ink-50">
+          Curated products, technical expertise, installation, and service - all brought together in
+          one destination.
         </p>
       </div>
 
@@ -46,7 +44,8 @@ export function GallerySection() {
           <div className="flex flex-col gap-[8px]">
             <p className="text-[16px] leading-normal text-ink">Showroom &amp; Product Library</p>
             <p className="max-w-[300px] text-[14px] leading-[18px] text-ink-50">
-            Eight thousand square feet in Santa Clara, arranged as three pavilions and open by appointment. Full installations rather than sample boards: skyhigh doors that open, custom cabinetry that inspires, unique materials you can put a hand on.
+              Experience full-scale installations, working products, materials, and finishes across
+              three distinct pavilions in our 8,000-square-foot gallery in Santa Clara.
             </p>
           </div>
           <div className="font-hanken text-[20px] leading-[26px] text-ink">

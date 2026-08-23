@@ -3,7 +3,7 @@ import React from 'react'
 /**
  * Drafting-style decorations from the Figma frame: hairline-bordered content
  * column, corner cross marks, tick rules with section numbers, and the
- * vertical "120px" measure. These are intentional page elements, not redlines.
+ * labelled vertical measure. These are intentional page elements, not redlines.
  */
 
 export function CornerCross({ className }: { className?: string }) {
@@ -105,20 +105,18 @@ export function VerticalRule({ number }: { number: string }) {
   )
 }
 
-/** Vertical measure with tick ends and a rotated "120px" label. */
-export function MeasureRule({ label = '120px' }: { label?: string }) {
+/** Vertical measure with tick ends and a centered label, e.g. "What we do". */
+export function MeasureRule({ label = 'What we do' }: { label?: string }) {
   return (
-    <div className="flex h-[144px] w-full flex-col items-center justify-center gap-[8px] py-[12px]" aria-hidden>
-      <div className="flex min-h-px flex-1 flex-col items-center">
+    <div className="flex h-[144px] w-full flex-col items-center justify-center gap-[4px] py-[12px]">
+      <div className="flex min-h-px flex-1 flex-col items-center" aria-hidden>
         <div className="h-px w-[16px] shrink-0 bg-hairline" />
         <div className="min-h-px w-px flex-1 bg-hairline" />
       </div>
-      <div className="flex size-[22px] items-center justify-center">
-        <p className="rotate-90 text-center font-figtree text-[8px] leading-[22px] whitespace-nowrap text-ink-50">
-          {label}
-        </p>
-      </div>
-      <div className="flex min-h-px flex-1 flex-col items-center">
+      <p className="shrink-0 text-center font-figtree text-[8px] leading-[10px] whitespace-nowrap text-ink-50">
+        {label}
+      </p>
+      <div className="flex min-h-px flex-1 flex-col items-center" aria-hidden>
         <div className="min-h-px w-px flex-1 bg-hairline" />
         <div className="h-px w-[16px] shrink-0 bg-hairline" />
       </div>

@@ -22,8 +22,8 @@ export function Hero() {
             <source src="/landing/hero-video.mp4" type="video/mp4" />
           </video>
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-[28px] px-[16px] sm:gap-[36px] lg:gap-[48px]">
-            <h1 className="flex flex-col items-center text-center font-display text-[32px] leading-[1] font-bold tracking-[0.64px] text-white sm:text-[48px]">
-              <span>Tailored solutions</span>
+            <h1 className="flex flex-col items-center text-center font-display text-[32px] leading-[1.333] font-bold tracking-[0.48px] text-white sm:text-[48px]">
+              <span>Custom solutions</span>
               <span>for every space</span>
             </h1>
             <Link

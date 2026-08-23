@@ -12,8 +12,8 @@ export function ProcessSection() {
           Our proven process
         </h2>
         <p className="max-w-[360px] text-[14px] leading-[18px] text-ink-50">
-          We take the trust our customers place in us very seriously and we are committed to deliver
-          the results which guarantee a project&apos;s success.
+          A clear, collaborative process designed to keep every decision, detail, and stage of your
+          project moving forward.
         </p>
       </div>
 

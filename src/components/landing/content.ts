@@ -155,28 +155,28 @@ export const PROCESS_STEPS = [
   {
     number: '01',
     title: 'Pre-proposal',
-    body: 'Before anything else, we get clear on what your project actually needs. We review the plans, identify the products and services involved, and put a realistic budget in front of you.',
+    body: 'We review your plans, define the initial scope, and establish a realistic project budget.',
     image: '/landing/process-1.png',
   },
   {
     number: '02',
     title: 'Discovery',
-    body: 'We bring your architect, contractor, and designer into the same conversation. Together we set the strategy, the scope, and a timeline everyone can commit to.',
+    body: 'We align the client, architect, designer, and contractor around priorities, scope, and schedule.',
   },
   {
     number: '03',
     title: 'Design',
-    body: "We turn the plan into documentation: drawings, specifications, and firm costs. Nothing moves forward until the scope is finalized and you've signed off.",
+    body: 'We translate decisions into drawings, specifications, material schedules, and confirmed costs.',
   },
   {
     number: '04',
     title: 'Implementation',
-    body: "We handle logistics, quality, and schedule so the right things arrive at the right time. Our job isn't done until the space is genuinely ready to move into.",
+    body: 'We coordinate ordering, logistics, quality, delivery, and installation through completion.',
   },
   {
     number: '05',
     title: 'Post-completion',
-    body: 'We stay accountable after the last delivery. Warranties are honored, loose ends get closed, and we remain a resource for as long as you own the home.',
+    body: 'We remain accountable through warranty, maintenance, and ongoing service.',
   },
 ]
 

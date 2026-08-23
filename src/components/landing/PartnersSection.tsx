@@ -15,7 +15,7 @@ export function PartnersSection({ vendors }: { vendors: Vendor[] }) {
       <div className="flex w-full flex-col items-start gap-[32px] px-gutter-sm pt-section pb-heading-gap lg:px-gutter">
         <div className="flex flex-col gap-[16px]">
           <h2 className="max-w-[384px] font-display text-[36px] leading-[44px] font-bold text-ink">
-            Partners
+            Exceptional products Trusted partners
           </h2>
           <p className="max-w-[624px] text-[14px] leading-[18px] text-ink-50">
             We are proud to represent and offer you the highest quality products in the industry

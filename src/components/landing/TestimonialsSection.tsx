@@ -28,7 +28,7 @@ export function TestimonialsSection() {
     <>
       <div className="flex w-full items-end justify-between gap-[24px] px-gutter-sm pt-section pb-heading-gap lg:px-gutter">
         <h2 className="max-w-[517px] font-display text-[36px] leading-[44px] font-bold text-ink">
-          What our clients are saying about us on Google and Yelp
+          What our clients are saying about us
         </h2>
         <div className="flex shrink-0 items-center gap-[12px]">
           <button

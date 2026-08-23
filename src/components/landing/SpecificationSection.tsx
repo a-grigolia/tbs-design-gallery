@@ -61,9 +61,8 @@ export function SpecificationSection() {
         <div className="flex flex-col gap-[8px] lg:w-[305px]">
           <p className="text-[16px] leading-normal text-ink">Product Specification</p>
           <p className="text-[14px] leading-normal text-ink-50">
-            30+ American and European manufacturers across five categories. We help you choose the
-            right product for the project, not just the right look, and document it so it installs
-            correctly the first time.
+            Explore curated American and European windows, doors, cabinetry, appliances, and outdoor
+            living and architectural solutions, selected and specified for your project.
           </p>
         </div>
         <BrandList key={active.id} brands={active.brands} />

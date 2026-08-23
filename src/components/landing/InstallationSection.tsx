@@ -7,11 +7,10 @@ import { INSTALLATION_CARDS } from './content'
 import { useCarouselTimer } from './useCarouselTimer'
 
 const SERVICES = [
-  'Concept development',
   'Shop drawings',
   'Material schedules',
   'Budget estimates',
-  'Standalone installation',
+  'Installation',
   'Warranty & service',
 ]
 
@@ -26,9 +25,8 @@ export function InstallationSection() {
             Product Design, Installation &amp; Maintenance
           </p>
           <p className="text-[14px] leading-[20px] text-ink-50">
-            In-house consultants take your architectural plans through to documented specification —
-            then our own crews install it. Available alongside what you buy from us, or on its own
-            when you already have a contractor. We stay on file long after move-in.
+            From technical product design and documentation through installation, warranty, and
+            ongoing service, our team manages the details and stands behind the result.
           </p>
         </div>
         <div className="flex flex-col justify-center lg:w-[305px] lg:items-end lg:py-[48px]">
