@@ -204,7 +204,11 @@ export interface Vendor {
    * Auto-generated from name when left empty. Changing it after launch breaks the live URL.
    */
   slug: string;
-  categories: ('kitchen-bath' | 'windows-doors' | 'outdoor-living' | 'tile-stone' | 'cabinetry')[];
+  categories: (
+    'custom-cabinetry' | 'windows-doors' | 'outdoor-living' | 'appliances' | 'architectural-elements-furniture'
+  )[];
+  primaryCategory:
+    'custom-cabinetry' | 'windows-doors' | 'outdoor-living' | 'appliances' | 'architectural-elements-furniture';
   /**
    * Inactive vendors stay resolvable at their URL but are excluded from index listings.
    */
@@ -463,6 +467,7 @@ export interface VendorsSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
   categories?: T;
+  primaryCategory?: T;
   active?: T;
   logo?: T;
   heroImage?: T;

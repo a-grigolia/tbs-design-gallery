@@ -3,12 +3,13 @@ import type { CollectionConfig } from 'payload'
 import { isAdmin, isAdminOrEditor, isLoggedInOrPublished } from '../access'
 import { slugField } from '../fields/slug'
 import { revalidateAfterChange, revalidateAfterDelete } from '../hooks/revalidate'
+import { VENDOR_CATEGORIES } from '../lib/categories'
 
 export const Vendors: CollectionConfig = {
   slug: 'vendors',
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'categories', 'active', '_status'],
+    defaultColumns: ['name', 'primaryCategory', 'categories', 'active', '_status'],
   },
   access: {
     read: isLoggedInOrPublished,
@@ -31,6 +32,8 @@ export const Vendors: CollectionConfig = {
     },
     slugField('name'),
     {
+      // Controls which category index pages list this vendor. The canonical
+      // URL is driven by `primaryCategory` below, not by this field.
       name: 'categories',
       type: 'select',
       hasMany: true,
@@ -39,15 +42,19 @@ export const Vendors: CollectionConfig = {
       admin: {
         position: 'sidebar',
       },
-      // The `value` strings are permanent database identifiers. After launch,
-      // change only the `label` — never the `value`.
-      options: [
-        { label: 'Kitchen & Bath', value: 'kitchen-bath' },
-        { label: 'Windows & Doors', value: 'windows-doors' },
-        { label: 'Outdoor Living', value: 'outdoor-living' },
-        { label: 'Tile & Stone', value: 'tile-stone' },
-        { label: 'Cabinetry', value: 'cabinetry' },
-      ],
+      options: [...VENDOR_CATEGORIES],
+    },
+    {
+      // Where the vendor's one canonical page lives: /{primaryCategory}/{slug}.
+      // Changing it after launch breaks the live URL — pick once.
+      name: 'primaryCategory',
+      type: 'select',
+      required: true,
+      index: true,
+      admin: {
+        position: 'sidebar',
+      },
+      options: [...VENDOR_CATEGORIES],
     },
     {
       name: 'active',
