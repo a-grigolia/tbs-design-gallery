@@ -223,6 +223,10 @@ export interface Vendor {
    * Used on vendor cards. Max 200 characters.
    */
   shortDescription?: string | null;
+  /**
+   * Headline shown at the top of the vendor page.
+   */
+  heading?: string | null;
   content?: {
     root: {
       type: string;
@@ -238,10 +242,21 @@ export interface Vendor {
     };
     [k: string]: unknown;
   } | null;
-  /**
-   * Raw HTML imported from Webflow. Do not edit by hand — new content belongs in the rich text field above.
-   */
-  contentHtml?: string | null;
+  productSpecifications?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   gallery?:
     | {
         image: number | Media;
@@ -473,8 +488,9 @@ export interface VendorsSelect<T extends boolean = true> {
   heroImage?: T;
   heroVideoUrl?: T;
   shortDescription?: T;
+  heading?: T;
   content?: T;
-  contentHtml?: T;
+  productSpecifications?: T;
   gallery?:
     | T
     | {

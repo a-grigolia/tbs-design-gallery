@@ -93,16 +93,19 @@ export const Vendors: CollectionConfig = {
       },
     },
     {
+      name: 'heading',
+      type: 'text',
+      admin: {
+        description: 'Headline shown at the top of the vendor page.',
+      },
+    },
+    {
       name: 'content',
       type: 'richText',
     },
     {
-      name: 'contentHtml',
-      type: 'textarea',
-      admin: {
-        description:
-          'Raw HTML imported from Webflow. Do not edit by hand — new content belongs in the rich text field above.',
-      },
+      name: 'productSpecifications',
+      type: 'richText',
     },
     {
       name: 'gallery',
