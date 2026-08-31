@@ -80,7 +80,8 @@ export const Vendors: CollectionConfig = {
       name: 'heroVideoUrl',
       type: 'text',
       admin: {
-        description: 'Optional Cloudflare R2 video URL, used instead of the hero image.',
+        description:
+          'Optional Supabase Storage video URL (public videos bucket), used instead of the hero image.',
       },
     },
     {
