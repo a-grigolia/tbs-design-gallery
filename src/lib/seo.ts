@@ -15,7 +15,7 @@ const CATEGORY_META_PHRASES: Record<VendorCategory, string> = {
   appliances: 'for your home appliances',
   'outdoor-living': 'for your next outdoor project',
   'custom-cabinetry': 'for your next custom cabinetry project',
-  'architectural-elements-furniture': 'for your next architectural elements & furniture project',
+  'architectural-elements-furniture': 'for your next architectural elements or furniture project',
 }
 
 export const vendorMetaDescription = (name: string, category: VendorCategory): string =>
