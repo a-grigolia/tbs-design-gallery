@@ -3,6 +3,8 @@ import React from 'react'
 
 import type { Media, Vendor } from '@/payload-types'
 
+import { vendorHref } from '@/lib/categories'
+
 function logoUrl(logo: Vendor['logo']): string | null {
   if (!logo || typeof logo === 'number') return null
   const media = logo as Media
@@ -39,7 +41,7 @@ export function PartnersSection({ vendors }: { vendors: Vendor[] }) {
             return (
               <Link
                 key={vendor.id}
-                href={`/vendors/${vendor.slug}`}
+                href={vendorHref(vendor)}
                 className="-mt-px -ml-px flex h-[129px] w-1/2 items-center justify-center border border-hairline px-[24px] transition-colors hover:bg-ink/[0.02] sm:w-[200px] sm:px-[48px]"
               >
                 {url ? (
@@ -47,7 +49,7 @@ export function PartnersSection({ vendors }: { vendors: Vendor[] }) {
                   <img
                     alt={vendor.name}
                     src={url}
-                    className="aspect-[499/75] w-full object-contain dark:invert"
+                    className="max-h-[48px] w-full object-contain"
                   />
                 ) : (
                   <p className="text-center text-[14px] leading-[18px] text-ink-40">{vendor.name}</p>

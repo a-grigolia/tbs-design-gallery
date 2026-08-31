@@ -13,7 +13,7 @@ export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (
-    <header className="pointer-events-none sticky top-0 z-50 flex w-full flex-col items-center px-4 pt-[12px]">
+    <header className="pointer-events-none sticky top-0 z-50 flex w-full flex-col items-center px-4 py-[12px]">
       <div className="pointer-events-auto flex items-center gap-[24px] rounded-[64px] border border-hairline bg-canvas/50 py-[6px] pr-[6px] pl-[24px] backdrop-blur-[24px] lg:gap-[96px] lg:pl-[32px]">
         <Link href="/" aria-label="TBS Design Gallery home" className="block h-[37px] w-[39px] shrink-0">
           {/* eslint-disable-next-line @next/next/no-img-element */}

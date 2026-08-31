@@ -11,3 +11,13 @@ export const VENDOR_CATEGORIES = [
 ] as const
 
 export type VendorCategory = (typeof VENDOR_CATEGORIES)[number]['value']
+
+export const isVendorCategory = (value: string): value is VendorCategory =>
+  VENDOR_CATEGORIES.some((category) => category.value === value)
+
+export const categoryLabel = (value: VendorCategory): string =>
+  VENDOR_CATEGORIES.find((category) => category.value === value)?.label ?? value
+
+/** Canonical vendor URL. `categories` controls listings; `primaryCategory` controls the URL. */
+export const vendorHref = (vendor: { primaryCategory: VendorCategory; slug: string }): string =>
+  `/${vendor.primaryCategory}/${vendor.slug}`

@@ -3,7 +3,7 @@ import React from 'react'
 
 export function Hero() {
   return (
-    <section className="flex w-full flex-col items-center pt-[24px] pb-[48px]">
+    <section className="flex w-full flex-col items-center pt-[12px] pb-[48px]">
       <div className="w-full px-4 sm:px-8 lg:px-12">
         <div className="relative min-h-[480px] w-full overflow-hidden rounded-[32px] lg:aspect-[1632/858] lg:min-h-0">
           {/*
