@@ -120,6 +120,13 @@ export const Vendors: CollectionConfig = {
       ],
     },
     {
+      name: 'location',
+      type: 'text',
+      admin: {
+        description: 'Where the vendor is based, e.g. "Milan, Italy".',
+      },
+    },
+    {
       name: 'externalUrl',
       type: 'text',
       admin: {

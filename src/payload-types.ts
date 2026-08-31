@@ -264,6 +264,10 @@ export interface Vendor {
       }[]
     | null;
   /**
+   * Where the vendor is based, e.g. "Milan, Italy".
+   */
+  location?: string | null;
+  /**
    * The vendor's own website.
    */
   externalUrl?: string | null;
@@ -497,6 +501,7 @@ export interface VendorsSelect<T extends boolean = true> {
         image?: T;
         id?: T;
       };
+  location?: T;
   externalUrl?: T;
   seoTitle?: T;
   seoDescription?: T;
