@@ -257,12 +257,7 @@ export interface Vendor {
     };
     [k: string]: unknown;
   } | null;
-  gallery?:
-    | {
-        image: number | Media;
-        id?: string | null;
-      }[]
-    | null;
+  gallery?: (number | Media)[] | null;
   /**
    * Where the vendor is based, e.g. "Milan, Italy".
    */
@@ -495,12 +490,7 @@ export interface VendorsSelect<T extends boolean = true> {
   heading?: T;
   content?: T;
   productSpecifications?: T;
-  gallery?:
-    | T
-    | {
-        image?: T;
-        id?: T;
-      };
+  gallery?: T;
   location?: T;
   externalUrl?: T;
   seoTitle?: T;

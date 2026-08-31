@@ -109,15 +109,9 @@ export const Vendors: CollectionConfig = {
     },
     {
       name: 'gallery',
-      type: 'array',
-      fields: [
-        {
-          name: 'image',
-          type: 'upload',
-          relationTo: 'media',
-          required: true,
-        },
-      ],
+      type: 'upload',
+      relationTo: 'media',
+      hasMany: true,
     },
     {
       name: 'location',
