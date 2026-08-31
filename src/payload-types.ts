@@ -216,7 +216,7 @@ export interface Vendor {
   logo?: (number | null) | Media;
   heroImage?: (number | null) | Media;
   /**
-   * Optional Cloudflare R2 video URL, used instead of the hero image.
+   * Optional Supabase Storage video URL (public videos bucket), used instead of the hero image.
    */
   heroVideoUrl?: string | null;
   /**
