@@ -1,7 +1,5 @@
 import React from 'react'
 
-import type { Vendor } from '@/payload-types'
-
 import { BlueprintColumn, SectionBand, SectionRule } from '@/components/landing/Blueprint'
 import { GallerySection } from '@/components/landing/GallerySection'
 import { Hero } from '@/components/landing/Hero'
@@ -13,28 +11,22 @@ import { SpecificationSection } from '@/components/landing/SpecificationSection'
 import { TestimonialsSection } from '@/components/landing/TestimonialsSection'
 import { getPayload } from '@/lib/payload'
 
-export const revalidate = 300
+// Request-time only. Prerendering this page during `next build` opens Payload
+// on the session pooler while production lambdas still hold slots — that's
+// how deploys baked an empty partner grid.
+export const dynamic = 'force-dynamic'
 
 export default async function HomePage() {
-  // Fail-soft like generateStaticParams: the pooler is shared and tiny, and
-  // this page prerenders at build time. A missed connection should cost the
-  // partner grid for one ISR window (5 min), not the whole deploy.
-  let vendors: Vendor[] = []
-  try {
-    const payload = await getPayload()
-    const result = await payload.find({
-      collection: 'vendors',
-      where: {
-        and: [{ active: { equals: true } }, { _status: { equals: 'published' } }],
-      },
-      depth: 1,
-      limit: 100,
-      sort: 'name',
-    })
-    vendors = result.docs
-  } catch (error) {
-    console.error('HomePage: rendering without vendors', error)
-  }
+  const payload = await getPayload()
+  const { docs: vendors } = await payload.find({
+    collection: 'vendors',
+    where: {
+      and: [{ active: { equals: true } }, { _status: { equals: 'published' } }],
+    },
+    depth: 1,
+    limit: 100,
+    sort: 'name',
+  })
 
   return (
     <div className="flex min-h-screen w-full flex-col items-center bg-canvas">

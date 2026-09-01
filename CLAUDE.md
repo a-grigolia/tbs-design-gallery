@@ -97,7 +97,7 @@ Path aliases: `@/*` → `./src/*`, and `@payload-config` → `./src/payload.conf
 composes the page from a fixed sequence of sections wrapped in "blueprint" primitives:
 
 ```
-SiteHeader · Hero
+Hero (embeds SiteHeader — see below)
 SectionBand > BlueprintColumn > GallerySection · SectionRule 02 · SpecificationSection · SectionRule 03 · InstallationSection
 SectionBand > BlueprintColumn > ProcessSection
 SectionBand > BlueprintColumn > TestimonialsSection
@@ -105,8 +105,29 @@ SectionBand > BlueprintColumn > PartnersSection (vendors)
 SectionBand > BlueprintColumn > SiteFooter
 ```
 
-`export const revalidate = 300` — the page is ISR with a 5-minute window, on top of the
-on-demand `revalidatePath` from the CMS hooks.
+`export const dynamic = 'force-dynamic'` — vendors are fetched **on request**, not during
+`next build`. Prerendering this page on Vercel opened the session pooler while live
+lambdas still held slots, which baked an empty partner grid into the deploy (see gotcha #8).
+CMS `revalidatePath` still invalidates the route after vendor edits.
+
+### Header + hero (Figma 624:5561)
+
+- On the landing page `SiteHeader` renders **inside the Hero's side-bordered column**
+  (`<SiteHeader embedded />`), stacked flush above the video with no gap, so the hairlines run
+  to the top of the page. Vendor pages and the 404 render `<SiteHeader />` standalone.
+- `embedded` mode positions the header `fixed` with an in-flow spacer holding its 60px slot —
+  plain `sticky` would be trapped by the hero column and scroll away with it. Standalone mode
+  stays `sticky`. Keep the spacer, header height, and bar height in lockstep (all 60px at rest).
+- The bar has two states that CSS-transition: at rest 1216px / `32,8,8,8` padding / transparent;
+  scrolled (>8px) 1184px / `32,6,6,6`, dropped 8px, hairline border, frosted.
+- **The bar's frost lives on an absolutely-positioned sibling layer, not the bar itself.** A
+  `backdrop-filter` on the bar would become the categories dropdown's backdrop root and kill the
+  dropdown's own blur. Don't move the blur back onto the wrapper.
+- The hero heading uses fluid type — `text-[clamp(2rem,1.25rem+2.5vw,3.25rem)]` (32→52px), no
+  breakpoint jumps. The media box is 16:9 on `lg` (`lg:aspect-[1632/918]`), `min-h-[480px]` below.
+- The hero video streams from public R2 via `NEXT_PUBLIC_MEDIA_URL`
+  (`{NEXT_PUBLIC_MEDIA_URL}/renson-showcase-hd-1.mp4`, `preload="none"`, local poster). The env
+  var must be set per environment — see gotcha #10.
 
 ### Vendor detail pages — `/{primaryCategory}/{slug}`
 
@@ -117,8 +138,9 @@ from the Figma template (node `583:3078`). Key behaviors:
   `vendor.primaryCategory` must equal the URL category, else `notFound()` — one page, one
   canonical URL. `active` is deliberately **not** checked here: inactive vendors stay resolvable
   at their URL, they're only excluded from listings (the logo grid, homepage).
-- `generateStaticParams` prebuilds all published vendors; `dynamicParams` stays true so new
-  vendors resolve without a redeploy. `revalidate = 300` like the homepage.
+- `generateStaticParams` returns `[]` on purpose (no DB at build). `dynamicParams` is true
+  so every published vendor resolves on first request. `dynamic = 'force-dynamic'` — same
+  reason as the homepage.
 - Metadata: `seoTitle ?? vendorMetaTitle(name)` / `seoDescription ?? vendorMetaDescription(...)`
   from `src/lib/seo.ts` — those patterns carry the Webflow site's ranking history, don't reword.
 
@@ -298,7 +320,8 @@ const payload = await getPayload()
 
 The landing page traces a Figma file:
 `https://www.figma.com/design/qKXOF8QC1eHei7MnD2Kutd/` — the desktop landing frame is node
-`302:5622` (1728px wide); the vendor detail template is node `583:3078`. When syncing changes,
+`302:5622` (1728px wide); the nav+hero composition is node `624:5561`; the vendor detail
+template is node `583:3078`. When syncing changes,
 pull `get_design_context` per section node rather than the whole frame, and remember the Figma
 frames are desktop-only: responsive behaviour below `lg` was invented in code and has no design
 reference. Watch for placeholder-derived values: the grid's `aspect-[499/75]` logo box was just
@@ -336,11 +359,14 @@ rather than copying placeholder dimensions.
    When `S3_BUCKET` is unset, storage still silently falls back to local disk — fine for offline
    hacking, never in deployed environments.
 8. **The Supabase session pooler allows 15 database clients TOTAL — shared by local dev, scripts,
-   and every Vercel function instance.** Exceeding it throws `EMAXCONNSESSION` at Payload init
-   and pages 500. Mitigations already in place: `pool.max: 4` in `payload.config.ts` (Next dev
-   runs `generateStaticParams` in a separate worker process with its own pool), media served
-   off-DB (see #7). Zombie `tsx`/dev-server processes hold connections — kill strays if you see
-   `EMAXCONNSESSION`, and note killed Vercel lambdas release theirs lazily (give it a minute).
+   the Vercel **build**, and every warm lambda from the **already-live** deploy.** Exceeding it
+   throws `EMAXCONNSESSION` or `timeout exceeded when trying to connect`. Killing local `pnpm
+   dev` does not free production slots. Mitigations: `pool.max` is `1` on Vercel / `4` locally
+   with `connectionTimeoutMillis: 10s`; media is off-DB (see #7); **the homepage and vendor
+   pages do not open Postgres during `next build`** (`force-dynamic` + empty
+   `generateStaticParams`) so a deploy no longer competes with the live site. Zombie `tsx`/dev
+   processes still waste slots locally (`kill $(lsof -ti :3000)`). The structural upgrade is
+   transaction pooler (6543) + `prepare: false`, or a larger pooler plan.
 9. **Drizzle dev push is disabled** (`push: false` in `payload.config.ts`) — it re-introspected
    the schema on every process init, hogged pooler clients, and hangs forever on its interactive
    create-vs-rename prompt in non-TTY contexts. Schema changes are now deliberate: edit the
@@ -352,11 +378,16 @@ rather than copying placeholder dimensions.
     Production currently has `DATABASE_URI`, `PAYLOAD_SECRET`, and all five `S3_*` vars;
     **Preview has no `S3_*` vars** — preview deploys will silently fall back to local disk (#7).
     An empty `S3_BUCKET` disables S3 without erroring, so a missing var looks like broken images,
-    not a config failure.
-11. **Deploys are pushed from the local directory with `vercel --prod`** (project is linked in
-    `.vercel/`), not from git — production can contain uncommitted local state. Env var changes
-    only take effect on the next deployment (`vercel redeploy <url>` re-ships the same build with
-    new envs).
+    not a config failure. `NEXT_PUBLIC_MEDIA_URL` (public R2 origin for the hero video, no
+    trailing slash) is set in local `.env` but **not yet on Vercel** — until it is, deployed
+    heroes render only the poster. It's inlined at build time, so setting it requires a fresh
+    build, not just `vercel redeploy`.
+11. **Production now builds from git** — the Vercel project is connected to
+    `github.com/a-grigolia/tbs-design-gallery` and builds `main` on push, so **uncommitted local
+    changes never ship**; commit and push first. The project is also linked in `.vercel/`, so
+    `vercel --prod` from the local directory still works and CAN ship uncommitted state — prefer
+    the git path. Env var changes only take effect on the next deployment (`vercel redeploy <url>`
+    re-ships the same build with new envs — which won't pick up `NEXT_PUBLIC_*` changes, see #10).
 12. **`legacy-peer-deps=true`** in `.npmrc`, and `sharp`/`esbuild`/`unrs-resolver`/`workerd` need
     explicit build approval (`pnpm-workspace.yaml` `allowBuilds`, plus `onlyBuiltDependencies` in
     `package.json`).
