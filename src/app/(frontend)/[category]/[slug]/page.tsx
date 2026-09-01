@@ -37,14 +37,21 @@ const fetchVendor = cache(async (slug: string) => {
 })
 
 export async function generateStaticParams() {
-  const payload = await getPayload()
-  const { docs } = await payload.find({
-    collection: 'vendors',
-    where: { _status: { equals: 'published' } },
-    depth: 0,
-    limit: 200,
-  })
-  return docs.map((vendor) => ({ category: vendor.primaryCategory, slug: vendor.slug }))
+  try {
+    const payload = await getPayload()
+    const { docs } = await payload.find({
+      collection: 'vendors',
+      where: { _status: { equals: 'published' } },
+      depth: 0,
+      limit: 200,
+    })
+    return docs.map((vendor) => ({ category: vendor.primaryCategory, slug: vendor.slug }))
+  } catch (error) {
+    // Pooler is shared and tiny (15 clients). A full build shouldn't fail
+    // because generateStaticParams couldn't connect — dynamicParams is true.
+    console.error('generateStaticParams: skipping prebuild', error)
+    return []
+  }
 }
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
