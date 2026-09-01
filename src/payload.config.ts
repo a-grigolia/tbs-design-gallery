@@ -30,7 +30,16 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URI || '',
+      // Supabase's session pooler allows 15 clients total. Next dev runs
+      // generateStaticParams in a separate worker process with its own pool
+      // (pg defaults to 10 per process), so uncapped pools exhaust the limit.
+      max: 4,
     },
+    // Dev-mode drizzle push re-introspects the schema on every process init
+    // (dev server, static-params worker, scripts), holding pooler clients and
+    // hanging on interactive prompts in non-TTY contexts. Schema changes are
+    // applied deliberately instead — see src/migrations.
+    push: false,
   }),
   sharp,
   plugins: [
@@ -39,7 +48,21 @@ export default buildConfig({
       // without Supabase). Always set the S3_* vars in deployed environments.
       enabled: Boolean(process.env.S3_BUCKET),
       collections: {
-        media: true,
+        media: {
+          // Media is public-read, so skip Payload's /api/media/file proxy and
+          // point URLs straight at the public bucket (Supabase CDN). The proxy
+          // needs a DB connection per image, which exhausts Supabase's
+          // 15-client session pooler under parallel image loads on Vercel.
+          disablePayloadAccessControl: true,
+          generateFileURL: ({ filename, prefix }) => {
+            // S3_ENDPOINT is the S3 API (…/storage/v1/s3); public objects live
+            // at …/storage/v1/object/public/{bucket}/{key}.
+            const base = (process.env.S3_ENDPOINT ?? '').replace(/\/s3$/, '')
+            return [`${base}/object/public/${process.env.S3_BUCKET}`, prefix, filename]
+              .filter(Boolean)
+              .join('/')
+          },
+        },
       },
       bucket: process.env.S3_BUCKET || '',
       config: {

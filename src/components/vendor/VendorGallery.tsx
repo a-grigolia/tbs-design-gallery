@@ -50,7 +50,7 @@ export function VendorGallery({ vendor }: { vendor: Vendor }) {
   return (
     <>
       {hasGallery && (
-        <div className="flex w-full flex-col gap-[8px] px-gutter-sm md:flex-row md:items-start lg:px-gutter">
+        <div className="flex w-full flex-col gap-[8px] px-gutter-sm md:flex-row md:items-start">
           <div className="flex min-w-px flex-1 flex-col gap-[8px]">
             {left.map((image) => (
               <GalleryImage key={image.id} image={image} />

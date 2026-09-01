@@ -64,7 +64,9 @@ src/
   app/
     (frontend)/             # the public marketing site
       layout.tsx            # fonts, ThemeProvider, global metadata
-      page.tsx              # the ONLY public page — the landing page
+      page.tsx              # the landing page
+      [category]/[slug]/    # vendor detail pages, e.g. /windows-doors/oikos
+      not-found.tsx         # branded 404 (canvas bg, header, link home)
       styles.css            # Tailwind entry + all design tokens
     (payload)/              # Payload admin + REST/GraphQL, mostly generated
       admin/[[...segments]]/
@@ -72,10 +74,14 @@ src/
     my-route/               # leftover template scaffolding, safe to delete
   access/index.ts           # reusable Payload access-control predicates
   collections/              # Users, Media, Vendors, Posts
-  components/landing/       # every marketing component
+  components/landing/       # every landing-page component
+  components/vendor/        # vendor detail page components
   fields/slug.ts            # shared auto-slug field
   hooks/revalidate.ts       # afterChange/afterDelete ISR invalidation
   lib/payload.ts            # cached getPayload() for server components
+  lib/categories.ts         # VENDOR_CATEGORIES + vendorHref/categoryLabel/isVendorCategory
+  lib/seo.ts                # Webflow-inherited vendor meta title/description patterns
+  migrations/               # baseline Payload migration (see gotcha #9)
   payload.config.ts
   payload-types.ts          # GENERATED — never hand-edit
   redirects.ts              # empty; reserved for the Webflow URL map
@@ -101,6 +107,41 @@ SectionBand > BlueprintColumn > SiteFooter
 
 `export const revalidate = 300` — the page is ISR with a 5-minute window, on top of the
 on-demand `revalidatePath` from the CMS hooks.
+
+### Vendor detail pages — `/{primaryCategory}/{slug}`
+
+`src/app/(frontend)/[category]/[slug]/page.tsx` renders every vendor (e.g. `/windows-doors/oikos`)
+from the Figma template (node `583:3078`). Key behaviors:
+
+- `category` is validated against `VENDOR_CATEGORIES`; the vendor must be published **and**
+  `vendor.primaryCategory` must equal the URL category, else `notFound()` — one page, one
+  canonical URL. `active` is deliberately **not** checked here: inactive vendors stay resolvable
+  at their URL, they're only excluded from listings (the logo grid, homepage).
+- `generateStaticParams` prebuilds all published vendors; `dynamicParams` stays true so new
+  vendors resolve without a redeploy. `revalidate = 300` like the homepage.
+- Metadata: `seoTitle ?? vendorMetaTitle(name)` / `seoDescription ?? vendorMetaDescription(...)`
+  from `src/lib/seo.ts` — those patterns carry the Webflow site's ranking history, don't reword.
+
+Components in `src/components/vendor/` (all server components, same conventions as landing):
+
+- `VendorHero` — rounded hero from `heroImage` (hero size), or an autoplaying `<video>` when
+  `heroVideoUrl` is set; logo card + category eyebrow + name + `location` clustered bottom-left
+  over a gradient. Falls back to a cream block (ink text) when there's no media.
+- `TickRule` — `SectionRule`'s markup with a text label ("About Oikos") instead of a number.
+- `VendorAbout` — `heading` + Lexical `content` (rendered with `RichText` from
+  `@payloadcms/richtext-lexical/react`) left; `productSpecifications` flattened to right-aligned
+  lines on the right. The extractor emits one line per **list item, paragraph, or shift+enter
+  break** — a bullet list is the recommended CMS format for specs.
+- `VendorGallery` — greedy two-column masonry balanced by cumulative aspect ratio (uses each
+  Media's stored `width`/`height`); single column below `md`. "Visit {name}" pill under it from
+  `externalUrl`. Every section hides itself when its field is empty.
+- `VendorCta` — per-category Source Serif heading (map lives in the component) + "Contact us".
+- `CategoryVendorGrid` — logo grid of all `active`+published vendors whose `categories` contains
+  the URL category; the current vendor's cell is `bg-cream`, `aria-current`, and unlinked.
+- `media.ts` — `asMedia()` / `mediaUrl(value, size)` helpers for narrowing `number | Media`.
+
+`vendorHref(vendor)` in `src/lib/categories.ts` builds the canonical URL — use it for every
+vendor link (the homepage `PartnersSection` already does).
 
 ### Blueprint primitives (`components/landing/Blueprint.tsx`)
 
@@ -169,6 +210,8 @@ in the footer, and it renders with no active state until mounted to keep SSR mar
 @next/next/no-img-element */}` above each one. This is the established pattern across every
   landing component — follow it rather than converting to `next/image`.
 - **Monochrome SVGs get `dark:invert`** (logo, icons, tick marks) instead of a second asset.
+  **Vendor logos do NOT** — they're full-color uploads (inverting a red logo makes it cyan);
+  they render `max-h-[48px] w-full object-contain` in grids, no invert.
 - **Exact pixel values in arbitrary Tailwind brackets** (`gap-[24px]`, `text-[14px]`,
   `leading-[22px]`, `rounded-[44px]`) because everything is traced from Figma. Don't "round" these
   to Tailwind's default scale.
@@ -194,11 +237,17 @@ Three different mechanisms — pick the matching one:
 - **Users** — Payload auth. `role` is `admin | editor`, saved to the JWT. Field-level access stops
   editors promoting themselves.
 - **Media** — `alt` required. Generates `thumbnail` (400w), `card` (800w), `hero` (1920w) WebP.
-  Public read.
-- **Vendors** — drafts enabled. Fixed `categories` select, `active` flag, logo/hero, gallery array,
-  rich text `content` + legacy `contentHtml`, SEO fields.
-- **Posts** — drafts enabled. `publishedAt` required and indexed, freeform `author` string, same
-  `content`/`contentHtml` pairing.
+  Public read. URLs point **directly at the public Supabase bucket** (CDN), not at
+  `/api/media/file/...` — see gotcha #7. Name uploads `{vendor-slug}-{description}.{ext}`
+  (e.g. `oikos-alicante-01.jpg`) so the flat bucket stays navigable.
+- **Vendors** — drafts enabled. `categories` (multi, drives listings) + `primaryCategory`
+  (single, drives the canonical URL — pick once, changing it breaks the live URL), `active` flag,
+  logo/hero/`heroVideoUrl`, `heading`, rich text `content`, `productSpecifications` (rich text,
+  rendered as one line per list item/paragraph), `gallery` (single `hasMany` upload field),
+  `location`, `externalUrl`, SEO overrides. **`logo` is the logo, `heroImage` is the banner
+  photo** — they've been swapped by hand before; double-check on entry.
+- **Posts** — drafts enabled. `publishedAt` required and indexed, freeform `author` string,
+  `content` + legacy `contentHtml`.
 
 ### Access control (`src/access/index.ts`)
 
@@ -249,9 +298,12 @@ const payload = await getPayload()
 
 The landing page traces a Figma file:
 `https://www.figma.com/design/qKXOF8QC1eHei7MnD2Kutd/` — the desktop landing frame is node
-`302:5622` (1728px wide). When syncing changes, pull `get_design_context` per section node rather
-than the whole frame, and remember the Figma frame is desktop-only: responsive behaviour below
-`lg` was invented in code and has no design reference.
+`302:5622` (1728px wide); the vendor detail template is node `583:3078`. When syncing changes,
+pull `get_design_context` per section node rather than the whole frame, and remember the Figma
+frames are desktop-only: responsive behaviour below `lg` was invented in code and has no design
+reference. Watch for placeholder-derived values: the grid's `aspect-[499/75]` logo box was just
+the placeholder logo's own ratio and squashed real logos — generalize (`max-h` + `object-contain`)
+rather than copying placeholder dimensions.
 
 ## Gotchas
 
@@ -262,37 +314,64 @@ than the whole frame, and remember the Figma frame is desktop-only: responsive b
    scaffolding — it asserts the page title matches `/Payload Blank Template/` and that `h1` reads
    "Welcome to your new project." The real landing page has neither. The admin e2e specs and the
    Vitest integration spec are fine. Fix or delete that spec before trusting a green run.
-3. **Most links on the page 404.** `/vendors`, `/vendors/[slug]`, `/blog`, and `/contact` are
-   linked from `SiteHeader` (via `NAV_LINKS`), `SiteFooter` (via `FOOTER_COLUMNS`), `Hero`,
-   `PartnersSection`, and `SpecificationSection` — including every "Request a tour" CTA — but
-   `(frontend)` only implements `/`. Those routes are unbuilt, not broken.
-4. **There are two unrelated category taxonomies.** The CMS `Vendors.categories` select is
-   `kitchen-bath | windows-doors | outdoor-living | tile-stone | cabinetry`, while the landing
-   page's `CATEGORIES` in `content.ts` is `custom-cabinetry | windows-doors | appliances |
-outdoor-living`. They are not wired together and do not map 1:1. Don't assume editing one
-   affects the other.
-5. **Vendor category `value` strings are permanent database identifiers.** After launch, change
-   only the `label`.
+3. **Some links still 404.** `/vendors`, `/blog`, and `/contact` are linked from `SiteHeader`,
+   `SiteFooter`, `Hero`, and `SpecificationSection` — including every "Request a tour" CTA — but
+   remain unbuilt. Vendor detail pages exist at `/{primaryCategory}/{slug}` (build links with
+   `vendorHref`); old `/vendors/[slug]`-style links are wrong, not just unbuilt.
+4. **There are two category taxonomies.** The CMS taxonomy lives in `src/lib/categories.ts`
+   (`custom-cabinetry | windows-doors | outdoor-living | appliances |
+   architectural-elements-furniture`) — its values are simultaneously the Postgres enum values
+   and the public URL segments. The landing page's `CATEGORIES` in `content.ts` is a separate,
+   unwired list. Don't assume editing one affects the other.
+5. **Vendor category `value` strings are permanent identifiers** (enum values + live URLs,
+   inherited from Webflow). After launch, change only the `label` — never the `value`.
 6. **`src/payload-types.ts` is generated.** Run `pnpm generate:types` after any collection edit;
    never hand-edit it.
-7. **Media storage silently falls back to local disk** when `S3_BUCKET` is empty. Fine locally,
-   never in a deployed environment — Vercel's filesystem is ephemeral and uploads vanish.
-8. **No migrations directory.** Payload pushes schema changes straight to the database in dev. Be
-   deliberate about collection changes against a shared database.
-9. **`legacy-peer-deps=true`** in `.npmrc`, and `sharp`/`esbuild`/`unrs-resolver`/`workerd` need
-   explicit build approval (`pnpm-workspace.yaml` `allowBuilds`, plus `onlyBuiltDependencies` in
-   `package.json`).
-10. **`next.config.ts` configures both webpack and Turbopack.** Next 16 dev uses Turbopack, so the
+7. **Media serves directly from the public Supabase bucket, not through Payload.** The `media`
+   bucket is public; `payload.config.ts` sets `disablePayloadAccessControl` + `generateFileURL`
+   so every Media URL is `{SUPABASE}/storage/v1/object/public/media/{file}`. This is deliberate:
+   the old `/api/media/file/...` proxy needed a DB connection per image and randomly 500'd under
+   parallel image loads (see #8). Consequences: files must actually exist in the bucket (uploads
+   go there automatically now), and anything uploaded to Media is publicly reachable by URL.
+   When `S3_BUCKET` is unset, storage still silently falls back to local disk — fine for offline
+   hacking, never in deployed environments.
+8. **The Supabase session pooler allows 15 database clients TOTAL — shared by local dev, scripts,
+   and every Vercel function instance.** Exceeding it throws `EMAXCONNSESSION` at Payload init
+   and pages 500. Mitigations already in place: `pool.max: 4` in `payload.config.ts` (Next dev
+   runs `generateStaticParams` in a separate worker process with its own pool), media served
+   off-DB (see #7). Zombie `tsx`/dev-server processes hold connections — kill strays if you see
+   `EMAXCONNSESSION`, and note killed Vercel lambdas release theirs lazily (give it a minute).
+9. **Drizzle dev push is disabled** (`push: false` in `payload.config.ts`) — it re-introspected
+   the schema on every process init, hogged pooler clients, and hangs forever on its interactive
+   create-vs-rename prompt in non-TTY contexts. Schema changes are now deliberate: edit the
+   collection, apply DDL explicitly (or temporarily flip `push` back on in a real TTY), run
+   `pnpm generate:types`. `src/migrations/` holds a baseline migration for fresh databases;
+   `payload migrate` is NOT in the build script (it would prompt/hang on Vercel).
+10. **Environment variables live in two places and don't sync.** Local `.env` is gitignored and
+    never reaches Vercel; the Vercel project envs are set independently (`vercel env add`).
+    Production currently has `DATABASE_URI`, `PAYLOAD_SECRET`, and all five `S3_*` vars;
+    **Preview has no `S3_*` vars** — preview deploys will silently fall back to local disk (#7).
+    An empty `S3_BUCKET` disables S3 without erroring, so a missing var looks like broken images,
+    not a config failure.
+11. **Deploys are pushed from the local directory with `vercel --prod`** (project is linked in
+    `.vercel/`), not from git — production can contain uncommitted local state. Env var changes
+    only take effect on the next deployment (`vercel redeploy <url>` re-ships the same build with
+    new envs).
+12. **`legacy-peer-deps=true`** in `.npmrc`, and `sharp`/`esbuild`/`unrs-resolver`/`workerd` need
+    explicit build approval (`pnpm-workspace.yaml` `allowBuilds`, plus `onlyBuiltDependencies` in
+    `package.json`).
+13. **`next.config.ts` configures both webpack and Turbopack.** Next 16 dev uses Turbopack, so the
     `webpack` block only affects `pnpm build`.
-11. **Next dev refuses a second server** for the same project directory and reports the running
+14. **Next dev refuses a second server** for the same project directory and reports the running
     port. Check for an existing dev server before starting one.
-12. **`pnpm build` needs the raised heap** (`--max-old-space-size=8000`) already set in the script.
-13. **`src/redirects.ts` is intentionally empty** — reserved for the Webflow URL migration map,
+15. **`pnpm build` needs the raised heap** (`--max-old-space-size=8000`) already set in the script.
+16. **`src/redirects.ts` is intentionally empty** — reserved for the Webflow URL migration map,
     consumed by `next.config.ts`.
-14. **`contentHtml` on Vendors and Posts holds raw imported Webflow HTML.** Don't hand-edit it; new
-    content goes in the Lexical `content` field. Nothing renders it yet (see #3).
-15. **`PROCESS_STEPS[0]` is the only step with an `image`.** `ProcessSection` destructures
+17. **`contentHtml` only exists on Posts now** (raw imported Webflow HTML; nothing renders it).
+    It was removed from Vendors — vendor content is authored in the Lexical `content` /
+    `productSpecifications` fields.
+18. **`PROCESS_STEPS[0]` is the only step with an `image`.** `ProcessSection` destructures
     `[first, ...rest]` and gives the first step a wide two-column card. Adding images to other
     steps won't render without a layout change.
-16. **`src/app/my-route/route.ts`** is leftover template scaffolding with an unused param. Harmless,
+19. **`src/app/my-route/route.ts`** is leftover template scaffolding with an unused param. Harmless,
     but it is not a real endpoint.

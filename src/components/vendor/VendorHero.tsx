@@ -16,7 +16,7 @@ export function VendorHero({ vendor }: { vendor: Vendor }) {
   const hasMedia = Boolean(vendor.heroVideoUrl || heroUrl)
 
   return (
-    <div className="w-full p-gutter-sm lg:p-gutter">
+    <div className="w-full p-gutter-sm">
       <div
         className={`relative flex min-h-[420px] w-full flex-col items-start justify-end overflow-hidden rounded-[24px] lg:h-[651px] ${
           hasMedia ? '' : 'border border-hairline bg-cream'
@@ -54,7 +54,8 @@ export function VendorHero({ vendor }: { vendor: Vendor }) {
 
         <div className="relative flex items-start gap-[16px] px-[24px] pt-[48px] pb-[24px] lg:px-[32px] lg:pb-[32px]">
           {logo && (
-            <div className="flex h-[96px] w-[120px] shrink-0 items-center justify-center rounded-[12px] border border-hairline bg-canvas p-[16px]">
+            // Light-mode canvas: vendor logos sit on this fill in both themes.
+            <div className="flex h-[96px] w-[120px] shrink-0 items-center justify-center rounded-[12px] border border-hairline bg-[#f6f2ef] p-[16px]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img alt={`${vendor.name} logo`} src={logo} className="size-full object-contain" />
             </div>
