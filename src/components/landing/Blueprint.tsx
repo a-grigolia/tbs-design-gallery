@@ -16,6 +16,20 @@ export function CornerCross({ className }: { className?: string }) {
 }
 
 /**
+ * T-shaped joinery mark centered on a hairline intersection: the bar lies on
+ * the horizontal rule, the stem runs up along the vertical rule. Callers add
+ * `rotate-180` when the stem should point down instead.
+ */
+export function JoineryTee({ className }: { className?: string }) {
+  return (
+    <div className={`pointer-events-none absolute h-[6.5px] w-[12px] ${className ?? ''}`} aria-hidden>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img alt="" src="/landing/joinery-tee.svg" className="block size-full max-w-none dark:invert" />
+    </div>
+  )
+}
+
+/**
  * Full-width band with a top hairline, wrapping a centered column. The last
  * band on the page adds `border-b` via className so adjacent bands share a
  * single hairline.
@@ -36,16 +50,18 @@ export function SectionBand({
   )
 }
 
-/** The 1200px content column, optionally with hairline side borders and corner crosses. */
+/** The 1200px content column, optionally with hairline side borders and corner marks. */
 export function BlueprintColumn({
   children,
   sideBorders = true,
   showMeasureMark = false,
+  corner = 'cross',
   className,
 }: {
   children: React.ReactNode
   sideBorders?: boolean
   showMeasureMark?: boolean
+  corner?: 'cross' | 'tee'
   className?: string
 }) {
   return (
@@ -54,8 +70,17 @@ export function BlueprintColumn({
         sideBorders ? 'border-l border-r border-hairline' : ''
       } ${className ?? ''}`}
     >
-      <CornerCross className="-top-[6px] -left-[6.5px]" />
-      <CornerCross className="-top-[6px] -right-[6.5px]" />
+      {corner === 'tee' ? (
+        <>
+          <JoineryTee className="-top-[0.5px] -left-[5.5px] rotate-180" />
+          <JoineryTee className="-top-[0.5px] -right-[5.5px] rotate-180" />
+        </>
+      ) : (
+        <>
+          <CornerCross className="-top-[6px] -left-[6.5px]" />
+          <CornerCross className="-top-[6px] -right-[6.5px]" />
+        </>
+      )}
       {showMeasureMark && (
         <div className="pointer-events-none absolute -top-[12px] left-[23.5px] h-[24px] w-[12px]" aria-hidden>
           {/* eslint-disable-next-line @next/next/no-img-element */}

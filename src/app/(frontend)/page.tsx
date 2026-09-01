@@ -7,7 +7,6 @@ import { InstallationSection } from '@/components/landing/InstallationSection'
 import { PartnersSection } from '@/components/landing/PartnersSection'
 import { ProcessSection } from '@/components/landing/ProcessSection'
 import { SiteFooter } from '@/components/landing/SiteFooter'
-import { SiteHeader } from '@/components/landing/SiteHeader'
 import { SpecificationSection } from '@/components/landing/SpecificationSection'
 import { TestimonialsSection } from '@/components/landing/TestimonialsSection'
 import { getPayload } from '@/lib/payload'
@@ -28,11 +27,10 @@ export default async function HomePage() {
 
   return (
     <div className="flex min-h-screen w-full flex-col items-center bg-canvas">
-      <SiteHeader />
       <Hero />
 
       <SectionBand>
-        <BlueprintColumn showMeasureMark className="pb-section">
+        <BlueprintColumn showMeasureMark corner="tee" className="pb-section">
           <GallerySection />
           <SectionRule number="02" />
           <SpecificationSection />

@@ -60,7 +60,7 @@
   --spacing-gutter-sm: 24px;
 
   /* Type from the Figma file */
-  --font-display: var(--font-source-serif), 'Source Serif 4', serif;
+  --font-display: var(--font-superior-serif), 'LT Superior Serif', serif;
   --font-sans: var(--font-geist), 'Geist', sans-serif;
   --font-figtree: var(--font-figtree-var), 'Figtree', sans-serif;
   --font-hanken: var(--font-hanken-var), 'Hanken Grotesk', sans-serif;

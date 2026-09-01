@@ -1,11 +1,18 @@
 import React from 'react'
-import { Figtree, Geist, Hanken_Grotesk, Source_Serif_4 } from 'next/font/google'
+import { Figtree, Geist, Hanken_Grotesk } from 'next/font/google'
+import localFont from 'next/font/local'
 import { ThemeProvider } from 'next-themes'
 import './styles.css'
 
-const sourceSerif = Source_Serif_4({
-  subsets: ['latin'],
-  variable: '--font-source-serif',
+// LT Superior Serif (LyonsType, OFL) — self-hosted; not available on Google Fonts.
+const superiorSerif = localFont({
+  src: [
+    { path: '../../fonts/LTSuperiorSerif-Regular.otf', weight: '400', style: 'normal' },
+    { path: '../../fonts/LTSuperiorSerif-Medium.otf', weight: '500', style: 'normal' },
+    { path: '../../fonts/LTSuperiorSerif-Semibold.otf', weight: '600', style: 'normal' },
+    { path: '../../fonts/LTSuperiorSerif-Bold.otf', weight: '700', style: 'normal' },
+  ],
+  variable: '--font-superior-serif',
 })
 
 const geist = Geist({
@@ -35,7 +42,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html
       lang="en"
-      className={`${sourceSerif.variable} ${geist.variable} ${figtree.variable} ${hankenGrotesk.variable}`}
+      className={`${superiorSerif.variable} ${geist.variable} ${figtree.variable} ${hankenGrotesk.variable}`}
       suppressHydrationWarning
     >
       <body>
