@@ -17,8 +17,7 @@ import { categoryLabel, isVendorCategory } from '@/lib/categories'
 import { getPayload } from '@/lib/payload'
 import { vendorMetaDescription, vendorMetaTitle } from '@/lib/seo'
 
-export const dynamic = 'force-dynamic'
-export const dynamicParams = true
+export const revalidate = 300
 
 type Params = Promise<{ category: string; slug: string }>
 
@@ -37,11 +36,15 @@ const fetchVendor = cache(async (slug: string) => {
   return docs[0] ?? null
 })
 
-export function generateStaticParams() {
-  // Do not open Postgres during `next build`. The session pooler is shared
-  // with live lambdas; a prerender here is what starved deploys. Pages
-  // resolve on first request via dynamicParams.
-  return []
+export async function generateStaticParams() {
+  const payload = await getPayload()
+  const { docs } = await payload.find({
+    collection: 'vendors',
+    where: { _status: { equals: 'published' } },
+    depth: 0,
+    limit: 200,
+  })
+  return docs.map((vendor) => ({ category: vendor.primaryCategory, slug: vendor.slug }))
 }
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {

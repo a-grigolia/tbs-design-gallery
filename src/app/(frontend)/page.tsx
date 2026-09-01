@@ -11,10 +11,7 @@ import { SpecificationSection } from '@/components/landing/SpecificationSection'
 import { TestimonialsSection } from '@/components/landing/TestimonialsSection'
 import { getPayload } from '@/lib/payload'
 
-// Request-time only. Prerendering this page during `next build` opens Payload
-// on the session pooler while production lambdas still hold slots — that's
-// how deploys baked an empty partner grid.
-export const dynamic = 'force-dynamic'
+export const revalidate = 300
 
 export default async function HomePage() {
   const payload = await getPayload()

@@ -105,10 +105,8 @@ SectionBand > BlueprintColumn > PartnersSection (vendors)
 SectionBand > BlueprintColumn > SiteFooter
 ```
 
-`export const dynamic = 'force-dynamic'` — vendors are fetched **on request**, not during
-`next build`. Prerendering this page on Vercel opened the session pooler while live
-lambdas still held slots, which baked an empty partner grid into the deploy (see gotcha #8).
-CMS `revalidatePath` still invalidates the route after vendor edits.
+`export const revalidate = 300` — the page is ISR with a 5-minute window, on top of the
+on-demand `revalidatePath` from the CMS hooks.
 
 ### Header + hero (Figma 624:5561)
 
@@ -138,9 +136,8 @@ from the Figma template (node `583:3078`). Key behaviors:
   `vendor.primaryCategory` must equal the URL category, else `notFound()` — one page, one
   canonical URL. `active` is deliberately **not** checked here: inactive vendors stay resolvable
   at their URL, they're only excluded from listings (the logo grid, homepage).
-- `generateStaticParams` returns `[]` on purpose (no DB at build). `dynamicParams` is true
-  so every published vendor resolves on first request. `dynamic = 'force-dynamic'` — same
-  reason as the homepage.
+- `generateStaticParams` prebuilds all published vendors; `dynamicParams` stays true so new
+  vendors resolve without a redeploy. `revalidate = 300` like the homepage.
 - Metadata: `seoTitle ?? vendorMetaTitle(name)` / `seoDescription ?? vendorMetaDescription(...)`
   from `src/lib/seo.ts` — those patterns carry the Webflow site's ranking history, don't reword.
 
@@ -359,14 +356,11 @@ rather than copying placeholder dimensions.
    When `S3_BUCKET` is unset, storage still silently falls back to local disk — fine for offline
    hacking, never in deployed environments.
 8. **The Supabase session pooler allows 15 database clients TOTAL — shared by local dev, scripts,
-   the Vercel **build**, and every warm lambda from the **already-live** deploy.** Exceeding it
-   throws `EMAXCONNSESSION` or `timeout exceeded when trying to connect`. Killing local `pnpm
-   dev` does not free production slots. Mitigations: `pool.max` is `1` on Vercel / `4` locally
-   with `connectionTimeoutMillis: 10s`; media is off-DB (see #7); **the homepage and vendor
-   pages do not open Postgres during `next build`** (`force-dynamic` + empty
-   `generateStaticParams`) so a deploy no longer competes with the live site. Zombie `tsx`/dev
-   processes still waste slots locally (`kill $(lsof -ti :3000)`). The structural upgrade is
-   transaction pooler (6543) + `prepare: false`, or a larger pooler plan.
+   and every Vercel function instance.** Exceeding it throws `EMAXCONNSESSION` at Payload init
+   and pages 500. Mitigations already in place: `pool.max: 4` in `payload.config.ts` (Next dev
+   runs `generateStaticParams` in a separate worker process with its own pool), media served
+   off-DB (see #7). Zombie `tsx`/dev-server processes hold connections — kill strays if you see
+   `EMAXCONNSESSION`, and note killed Vercel lambdas release theirs lazily (give it a minute).
 9. **Drizzle dev push is disabled** (`push: false` in `payload.config.ts`) — it re-introspected
    the schema on every process init, hogged pooler clients, and hangs forever on its interactive
    create-vs-rename prompt in non-TTY contexts. Schema changes are now deliberate: edit the

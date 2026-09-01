@@ -30,16 +30,10 @@ export default buildConfig({
   db: postgresAdapter({
     pool: {
       connectionString: process.env.DATABASE_URI || '',
-      // Supabase's session pooler allows 15 clients total, shared by local
-      // dev, Vercel builds, and every lambda. Next dev also runs
-      // generateStaticParams in a separate worker (pg defaults to 10).
-      // Keep Vercel at 1 so a build plus a few warm functions can't trip
-      // EMAXCONNSESSION; local can afford a slightly larger pool.
-      max: process.env.VERCEL ? 1 : 4,
-      // pg defaults to waiting forever for a connection; a saturated pooler
-      // should surface as an error (caught by the fail-soft paths), not a
-      // hung build or request.
-      connectionTimeoutMillis: 10_000,
+      // Supabase's session pooler allows 15 clients total. Next dev runs
+      // generateStaticParams in a separate worker process with its own pool
+      // (pg defaults to 10 per process), so uncapped pools exhaust the limit.
+      max: 4,
     },
     // Dev-mode drizzle push re-introspects the schema on every process init
     // (dev server, static-params worker, scripts), holding pooler clients and
