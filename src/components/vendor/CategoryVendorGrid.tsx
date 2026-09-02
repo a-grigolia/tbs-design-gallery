@@ -28,25 +28,27 @@ export function CategoryVendorGrid({
   if (vendors.length === 0) return null
 
   const cellClasses =
-    '-mt-px -ml-px flex h-[129px] w-1/2 items-center justify-center border border-hairline px-[24px] sm:w-[200px] sm:px-[48px]'
+    'flex h-[129px] min-w-0 items-center justify-center px-[24px] shadow-[1px_0_0_0_var(--palette-hairline),0_1px_0_0_var(--palette-hairline)] sm:px-[48px]'
 
   return (
-    <div className="flex w-full flex-wrap items-center justify-center border border-hairline">
-      {vendors.map((vendor) =>
-        vendor.id === currentId ? (
-          <div key={vendor.id} aria-current="page" className={`${cellClasses} bg-cream`}>
-            <CellContent vendor={vendor} />
-          </div>
-        ) : (
-          <Link
-            key={vendor.id}
-            href={vendorHref(vendor)}
-            className={`${cellClasses} transition-colors hover:bg-ink/[0.02]`}
-          >
-            <CellContent vendor={vendor} />
-          </Link>
-        ),
-      )}
+    <div className="@container w-full">
+      <div className="grid w-full grid-cols-3 overflow-hidden border-y border-hairline @min-[800px]:grid-cols-4 @min-[1000px]:grid-cols-5 @min-[1100px]:grid-cols-6">
+        {vendors.map((vendor) =>
+          vendor.id === currentId ? (
+            <div key={vendor.id} aria-current="page" className={`${cellClasses} bg-cream`}>
+              <CellContent vendor={vendor} />
+            </div>
+          ) : (
+            <Link
+              key={vendor.id}
+              href={vendorHref(vendor)}
+              className={`${cellClasses} transition-colors hover:bg-ink/[0.02]`}
+            >
+              <CellContent vendor={vendor} />
+            </Link>
+          ),
+        )}
+      </div>
     </div>
   )
 }

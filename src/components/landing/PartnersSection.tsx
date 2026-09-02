@@ -35,28 +35,32 @@ export function PartnersSection({ vendors }: { vendors: Vendor[] }) {
         </Link>
       </div>
       {vendors.length > 0 && (
-        <div className="flex w-full flex-wrap items-center justify-center border border-hairline">
-          {vendors.map((vendor) => {
-            const url = logoUrl(vendor.logo)
-            return (
-              <Link
-                key={vendor.id}
-                href={vendorHref(vendor)}
-                className="-mt-px -ml-px flex h-[129px] w-1/2 items-center justify-center border border-hairline px-[24px] transition-colors hover:bg-ink/[0.02] sm:w-[200px] sm:px-[48px]"
-              >
-                {url ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    alt={vendor.name}
-                    src={url}
-                    className="max-h-[48px] w-full object-contain"
-                  />
-                ) : (
-                  <p className="text-center text-[14px] leading-[18px] text-ink-40">{vendor.name}</p>
-                )}
-              </Link>
-            )
-          })}
+        <div className="@container w-full">
+          {/* 6-col at 1100px, not 1200: the column's own hairlines leave the container ~1198px.
+              Hairlines live on the cells (box-shadow) so a short last row stays canvas, not grey. */}
+          <div className="grid w-full grid-cols-3 overflow-hidden border-y border-hairline @min-[800px]:grid-cols-4 @min-[1000px]:grid-cols-5 @min-[1100px]:grid-cols-6">
+            {vendors.map((vendor) => {
+              const url = logoUrl(vendor.logo)
+              return (
+                <Link
+                  key={vendor.id}
+                  href={vendorHref(vendor)}
+                  className="flex h-[129px] min-w-0 items-center justify-center px-[24px] shadow-[1px_0_0_0_var(--palette-hairline),0_1px_0_0_var(--palette-hairline)] transition-colors hover:bg-ink/[0.02] sm:px-[48px]"
+                >
+                  {url ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      alt={vendor.name}
+                      src={url}
+                      className="max-h-[48px] w-full object-contain"
+                    />
+                  ) : (
+                    <p className="text-center text-[14px] leading-[18px] text-ink-40">{vendor.name}</p>
+                  )}
+                </Link>
+              )
+            })}
+          </div>
         </div>
       )}
     </>
