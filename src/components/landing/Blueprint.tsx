@@ -72,8 +72,8 @@ export function BlueprintColumn({
     >
       {corner === 'tee' ? (
         <>
-          <JoineryTee className="-top-[0.5px] -left-[5.5px] rotate-180" />
-          <JoineryTee className="-top-[0.5px] -right-[5.5px] rotate-180" />
+          <JoineryTee className="-top-[1px] -left-[6.5px] rotate-180" />
+          <JoineryTee className="-top-[1px] -right-[6.5px] rotate-180" />
         </>
       ) : (
         <>

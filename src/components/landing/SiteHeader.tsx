@@ -12,15 +12,13 @@ const NAV_LINKS = [
 ]
 
 /**
- * Two-state nav from the Figma frame: at rest (624:5561) a 1216px bar with
- * 32/8/8/8 padding; once the user scrolls it shrinks, drops, and gains a
- * hairline border and heavier blur. `embedded` sits the bar in the landing
- * hero column: a spacer holds the in-flow slot and the header is `fixed` so
- * it isn't trapped by the hero's sticky containing block. Size, offset, and
- * border live on the wrapper so they CSS-transition; the frost is a sibling
- * so it doesn't nest with the categories dropdown's own backdrop-filter.
+ * Two-state nav: at rest a 1216px bar with 32/8/8/8 padding; once the user
+ * scrolls it shrinks, drops, and gains a hairline border and heavier blur.
+ * Size, offset, and border live on the wrapper so they CSS-transition; the
+ * frost is a sibling so it doesn't nest with the categories dropdown's own
+ * backdrop-filter.
  */
-export function SiteHeader({ embedded = false }: { embedded?: boolean }) {
+export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [categoriesOpen, setCategoriesOpen] = useState(false)
@@ -33,23 +31,14 @@ export function SiteHeader({ embedded = false }: { embedded?: boolean }) {
   }, [])
 
   return (
-    <>
-      {embedded && <div className="h-[60px] w-full shrink-0" aria-hidden />}
-      <header
-        className={`pointer-events-none top-0 z-50 flex h-[60px] w-full flex-col items-center ${
-          embedded ? 'fixed inset-x-0 px-4 sm:px-8 lg:px-[24px]' : 'sticky px-4'
+    <header className="pointer-events-none sticky top-0 z-50 flex h-[60px] w-full flex-col items-center px-4">
+      <div
+        className={`pointer-events-auto relative flex w-full items-center justify-between rounded-[64px] border pl-[24px] transition-all duration-300 ease-out lg:pl-[32px] ${
+          scrolled
+            ? 'max-w-[1184px] translate-y-[8px] border-hairline py-[6px] pr-[6px]'
+            : 'max-w-[1216px] translate-y-0 border-transparent py-[8px] pr-[8px]'
         }`}
       >
-        <div
-          className={`flex h-full w-full flex-col items-center ${embedded ? 'px-[16px] sm:px-[24px]' : ''}`}
-        >
-          <div
-            className={`pointer-events-auto relative flex w-full items-center justify-between rounded-[64px] border pl-[24px] transition-all duration-300 ease-out lg:pl-[32px] ${
-              scrolled
-                ? 'max-w-[1184px] translate-y-[8px] border-hairline py-[6px] pr-[6px]'
-                : 'max-w-[1216px] translate-y-0 border-transparent py-[8px] pr-[8px]'
-            }`}
-          >
         {/*
          * Frost lives on a sibling, not this wrapper. A parent backdrop-filter
          * becomes the dropdown's backdrop root, so the menu's own blur stops
@@ -139,24 +128,22 @@ export function SiteHeader({ embedded = false }: { embedded?: boolean }) {
           >
             Request a Tour
           </Link>
-          </div>
-          </div>
-          {menuOpen && (
-            <nav className="pointer-events-auto mt-[8px] flex w-full max-w-[360px] flex-col gap-[4px] rounded-[24px] border border-hairline bg-canvas p-[8px] md:hidden">
-              {NAV_LINKS.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setMenuOpen(false)}
-                  className="rounded-[16px] px-[24px] py-[10px] font-figtree text-[14px] leading-[22px] text-ink hover:bg-ink/5"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </nav>
-          )}
         </div>
-      </header>
-    </>
+      </div>
+      {menuOpen && (
+        <nav className="pointer-events-auto mt-[8px] flex w-full max-w-[360px] flex-col gap-[4px] rounded-[24px] border border-hairline bg-canvas p-[8px] md:hidden">
+          {NAV_LINKS.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={() => setMenuOpen(false)}
+              className="rounded-[16px] px-[24px] py-[10px] font-figtree text-[14px] leading-[22px] text-ink hover:bg-ink/5"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+      )}
+    </header>
   )
 }

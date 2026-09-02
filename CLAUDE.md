@@ -97,7 +97,7 @@ Path aliases: `@/*` → `./src/*`, and `@payload-config` → `./src/payload.conf
 composes the page from a fixed sequence of sections wrapped in "blueprint" primitives:
 
 ```
-Hero (embeds SiteHeader — see below)
+SiteHeader · Hero
 SectionBand > BlueprintColumn > GallerySection · SectionRule 02 · SpecificationSection · SectionRule 03 · InstallationSection
 SectionBand > BlueprintColumn > ProcessSection
 SectionBand > BlueprintColumn > TestimonialsSection
@@ -108,24 +108,23 @@ SectionBand > BlueprintColumn > SiteFooter
 `export const revalidate = 300` — the page is ISR with a 5-minute window, on top of the
 on-demand `revalidatePath` from the CMS hooks.
 
-### Header + hero (Figma 624:5561)
+### Header + hero (Figma 677:6932)
 
-- On the landing page `SiteHeader` renders **inside the Hero's side-bordered column**
-  (`<SiteHeader embedded />`), stacked flush above the video with no gap, so the hairlines run
-  to the top of the page. Vendor pages and the 404 render `<SiteHeader />` standalone.
-- `embedded` mode positions the header `fixed` with an in-flow spacer holding its 60px slot —
-  plain `sticky` would be trapped by the hero column and scroll away with it. Standalone mode
-  stays `sticky`. Keep the spacer, header height, and bar height in lockstep (all 60px at rest).
+- `SiteHeader` is a page-level sibling above `Hero` on the landing page (same standalone
+  `sticky` header as vendor pages and the 404). It is **not** inside the hero column.
+- The hero column has 16px / 24px padding on all sides; side hairlines and joinery tees start
+  at the top of that column (below the nav), not the page top.
 - The bar has two states that CSS-transition: at rest 1216px / `32,8,8,8` padding / transparent;
   scrolled (>8px) 1184px / `32,6,6,6`, dropped 8px, hairline border, frosted.
 - **The bar's frost lives on an absolutely-positioned sibling layer, not the bar itself.** A
   `backdrop-filter` on the bar would become the categories dropdown's backdrop root and kill the
   dropdown's own blur. Don't move the blur back onto the wrapper.
 - The hero heading uses fluid type — `text-[clamp(2rem,1.25rem+2.5vw,3.25rem)]` (32→52px), no
-  breakpoint jumps. The media box is 16:9 on `lg` (`lg:aspect-[1632/918]`), `min-h-[480px]` below.
+  breakpoint jumps. The media box is **2:1** on `lg` (`lg:aspect-[2/1]`), `min-h-[480px]` below.
 - The hero video streams from public R2 via `NEXT_PUBLIC_MEDIA_URL`
-  (`{NEXT_PUBLIC_MEDIA_URL}/renson-showcase-hd-1.mp4`, `preload="none"`, local poster). The env
-  var must be set per environment — see gotcha #10.
+  (`{NEXT_PUBLIC_MEDIA_URL}/renson-showcase-hd-1.mp4`, `preload="none"`, local poster). A 20%
+  black overlay sits over the video, under the heading. The env var must be set per environment
+  — see gotcha #10.
 
 ### Vendor detail pages — `/{primaryCategory}/{slug}`
 
@@ -317,7 +316,7 @@ const payload = await getPayload()
 
 The landing page traces a Figma file:
 `https://www.figma.com/design/qKXOF8QC1eHei7MnD2Kutd/` — the desktop landing frame is node
-`302:5622` (1728px wide); the nav+hero composition is node `624:5561`; the vendor detail
+`302:5622` (1728px wide); the nav+hero composition is node `677:6932`; the vendor detail
 template is node `583:3078`. When syncing changes,
 pull `get_design_context` per section node rather than the whole frame, and remember the Figma
 frames are desktop-only: responsive behaviour below `lg` was invented in code and has no design

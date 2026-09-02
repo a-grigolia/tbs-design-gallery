@@ -41,7 +41,7 @@ export function VendorAbout({ vendor }: { vendor: Vendor }) {
     <div className="w-full px-gutter-sm lg:px-gutter">
       <div className="flex w-full flex-col gap-[32px] py-[48px] lg:flex-row lg:items-start lg:justify-between">
         {hasLeft && (
-          <div className="flex flex-col gap-[8px] lg:w-[305px]">
+          <div className="flex flex-col gap-[8px] lg:w-1/2">
             {vendor.heading && (
               <p className="text-[16px] leading-normal text-ink">{vendor.heading}</p>
             )}
