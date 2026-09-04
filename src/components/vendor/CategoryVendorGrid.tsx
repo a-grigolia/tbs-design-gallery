@@ -17,13 +17,17 @@ function CellContent({ vendor }: { vendor: Vendor }) {
   )
 }
 
-/** Logo grid of every vendor listed in the current category; the current vendor is highlighted and unlinked. */
+/**
+ * Logo grid of every vendor listed in the current category. On vendor detail
+ * pages `currentId` highlights and unlinks the current vendor; category pages
+ * omit it so every cell links out.
+ */
 export function CategoryVendorGrid({
   vendors,
   currentId,
 }: {
   vendors: Vendor[]
-  currentId: number
+  currentId?: number
 }) {
   if (vendors.length === 0) return null
 

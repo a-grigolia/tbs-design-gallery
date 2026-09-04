@@ -12,6 +12,7 @@
   --palette-hairline: #d5d5d5;
   --palette-cream: #fffcf9;
   --palette-ink: #000000;
+  --palette-ink-75: rgba(0, 0, 0, 0.75);
   --palette-ink-70: rgba(0, 0, 0, 0.7);
   --palette-ink-50: rgba(0, 0, 0, 0.5);
   --palette-ink-40: rgba(0, 0, 0, 0.4);
@@ -24,6 +25,7 @@
   --palette-hairline: rgba(255, 255, 255, 0.16);
   --palette-cream: #211d1a;
   --palette-ink: #f6f2ef;
+  --palette-ink-75: rgba(246, 242, 239, 0.75);
   --palette-ink-70: rgba(246, 242, 239, 0.7);
   --palette-ink-50: rgba(246, 242, 239, 0.55);
   --palette-ink-40: rgba(246, 242, 239, 0.45);
@@ -36,6 +38,7 @@
   --color-hairline: var(--palette-hairline);
   --color-cream: var(--palette-cream);
   --color-ink: var(--palette-ink);
+  --color-ink-75: var(--palette-ink-75);
   --color-ink-70: var(--palette-ink-70);
   --color-ink-50: var(--palette-ink-50);
   --color-ink-40: var(--palette-ink-40);

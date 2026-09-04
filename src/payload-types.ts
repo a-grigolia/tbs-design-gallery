@@ -283,9 +283,17 @@ export interface Post {
    * Auto-generated from title when left empty. Changing it after launch breaks the live URL.
    */
   slug: string;
-  excerpt?: string | null;
-  coverImage?: (number | null) | Media;
-  content?: {
+  type: 'project' | 'guide' | 'news';
+  /**
+   * Optional — order matters: the journal index shows the first category in the list.
+   */
+  categories?:
+    | ('custom-cabinetry' | 'windows-doors' | 'outdoor-living' | 'appliances' | 'architectural-elements-furniture')[]
+    | null;
+  vendors?: (number | Vendor)[] | null;
+  excerpt: string;
+  coverImage: number | Media;
+  content: {
     root: {
       type: string;
       children: {
@@ -299,18 +307,15 @@ export interface Post {
       version: number;
     };
     [k: string]: unknown;
-  } | null;
-  /**
-   * Raw HTML imported from Webflow. Do not edit by hand — new posts belong in the rich text field above.
-   */
-  contentHtml?: string | null;
+  };
+  seo?: {
+    title?: string | null;
+    description?: string | null;
+    ogTitle?: string | null;
+    ogDescription?: string | null;
+    ogImage?: (number | null) | Media;
+  };
   publishedAt: string;
-  /**
-   * Freeform author name (imported Webflow authors are plain strings).
-   */
-  author?: string | null;
-  seoTitle?: string | null;
-  seoDescription?: string | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -506,14 +511,22 @@ export interface VendorsSelect<T extends boolean = true> {
 export interface PostsSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
+  type?: T;
+  categories?: T;
+  vendors?: T;
   excerpt?: T;
   coverImage?: T;
   content?: T;
-  contentHtml?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        ogTitle?: T;
+        ogDescription?: T;
+        ogImage?: T;
+      };
   publishedAt?: T;
-  author?: T;
-  seoTitle?: T;
-  seoDescription?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;

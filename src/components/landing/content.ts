@@ -191,11 +191,11 @@ export const FOOTER_COLUMNS: { number: string; label: string; links: FooterLink[
     number: '01',
     label: 'Product Specification',
     links: [
-      { label: 'Custom Cabinetry', href: '/vendors' },
-      { label: 'Windows & doors', href: '/vendors' },
-      { label: 'Appliances', href: '/vendors' },
-      { label: 'Outdoor living', href: '/vendors' },
-      { label: 'Architectural elements', href: '/vendors' },
+      { label: 'Custom Cabinetry', href: '/custom-cabinetry' },
+      { label: 'Windows & doors', href: '/windows-doors' },
+      { label: 'Appliances', href: '/appliances' },
+      { label: 'Outdoor living', href: '/outdoor-living' },
+      { label: 'Architectural elements', href: '/architectural-elements-furniture' },
     ],
   },
   {
