@@ -60,12 +60,7 @@ export default async function BlogPostPage({ params }: { params: Params }) {
     <div className="flex min-h-screen w-full flex-col items-center bg-canvas">
       <SiteHeader />
 
-      {/*
-       * No SectionBand of its own: the header already sits above this column,
-       * and the footer band's border-t closes the bottom. Tees join the
-       * column sides the same way category intro sections do.
-       */}
-      <div className="flex w-full flex-col items-center px-4 sm:px-8 lg:px-12">
+      <SectionBand>
         <BlueprintColumn corner="tee">
           <div className="flex w-full flex-col gap-[24px] px-gutter-sm pt-[96px] pb-[48px] lg:px-gutter">
             <div className="mx-auto flex w-full max-w-[692px] flex-col gap-[24px]">
@@ -96,7 +91,7 @@ export default async function BlogPostPage({ params }: { params: Params }) {
             </div>
           </div>
         </BlueprintColumn>
-      </div>
+      </SectionBand>
 
       <SectionBand className="border-b">
         <BlueprintColumn>

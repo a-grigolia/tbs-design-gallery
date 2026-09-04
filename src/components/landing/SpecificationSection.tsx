@@ -86,7 +86,7 @@ export function SpecificationSection() {
                     aria-hidden
                     className={`absolute rounded-[44px] border transition-[inset,background-color,border-color] duration-200 ease-out ${
                       isActive
-                        ? 'inset-0 border-hairline bg-cream'
+                        ? '-inset-x-px inset-y-0 border-hairline bg-cream'
                         : 'inset-[3px] border-transparent group-hover:border-ink/[0.03] group-hover:bg-ink/[0.03]'
                     }`}
                   />

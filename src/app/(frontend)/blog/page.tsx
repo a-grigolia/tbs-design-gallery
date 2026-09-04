@@ -43,11 +43,7 @@ export default async function BlogIndexPage() {
     <div className="flex min-h-screen w-full flex-col items-center bg-canvas">
       <SiteHeader />
 
-      {/*
-       * Same framing as the post detail page: header sits above this column,
-       * footer band's border-t closes the bottom. Tees join the column sides.
-       */}
-      <div className="flex w-full flex-col items-center px-4 sm:px-8 lg:px-12">
+      <SectionBand>
         <BlueprintColumn corner="tee">
           <div className="flex w-full items-center px-gutter-sm pt-[96px] pb-[24px] lg:px-gutter">
             <div className="flex w-full max-w-[384px] flex-col gap-[16px]">
@@ -62,7 +58,7 @@ export default async function BlogIndexPage() {
 
           <JournalFeed posts={list} />
         </BlueprintColumn>
-      </div>
+      </SectionBand>
 
       <SectionBand className="border-b">
         <BlueprintColumn>
