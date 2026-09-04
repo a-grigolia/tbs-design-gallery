@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import React, { cache } from 'react'
 
 import { PostBody } from '@/components/blog/PostBody'
+import { TYPE_LABELS, publishedMonthYear } from '@/components/blog/labels'
 import { BlueprintColumn, SectionBand } from '@/components/landing/Blueprint'
 import { SiteFooter } from '@/components/landing/SiteFooter'
 import { SiteHeader } from '@/components/landing/SiteHeader'
@@ -15,12 +16,6 @@ import { postMetadata } from '@/lib/seo'
 export const revalidate = 300
 
 type Params = Promise<{ slug: string }>
-
-const TYPE_LABELS = {
-  project: 'Project',
-  guide: 'Guide',
-  news: 'News',
-} as const
 
 const fetchPost = cache(async (slug: string) => {
   const payload = await getPayload()
@@ -51,10 +46,6 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const post = await fetchPost(slug)
   if (!post) return {}
   return postMetadata(post)
-}
-
-function publishedMonthYear(iso: string): string {
-  return new Intl.DateTimeFormat('en-US', { month: 'long', year: 'numeric' }).format(new Date(iso))
 }
 
 export default async function BlogPostPage({ params }: { params: Params }) {
