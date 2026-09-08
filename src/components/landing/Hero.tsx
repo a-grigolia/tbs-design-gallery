@@ -7,6 +7,7 @@ import { JoineryTee } from '@/components/landing/Blueprint'
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null)
   const viewportRef = useRef<HTMLDivElement>(null)
+  const heightProbeRef = useRef<HTMLDivElement>(null)
   const frameRef = useRef<HTMLDivElement>(null)
   const topRuleRef = useRef<HTMLDivElement>(null)
   const bottomRuleRef = useRef<HTMLDivElement>(null)
@@ -16,13 +17,24 @@ export function Hero() {
   useEffect(() => {
     const section = sectionRef.current
     const viewport = viewportRef.current
+    const heightProbe = heightProbeRef.current
     const frame = frameRef.current
     const topRule = topRuleRef.current
     const bottomRule = bottomRuleRef.current
     const media = mediaRef.current
     const heading = headingRef.current
 
-    if (!section || !viewport || !frame || !topRule || !bottomRule || !media || !heading) return
+    if (
+      !section ||
+      !viewport ||
+      !heightProbe ||
+      !frame ||
+      !topRule ||
+      !bottomRule ||
+      !media ||
+      !heading
+    )
+      return
 
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
     let animationFrame = 0
@@ -30,8 +42,10 @@ export function Hero() {
     const render = () => {
       animationFrame = 0
 
-      const viewportWidth = window.innerWidth
-      const viewportHeight = window.innerHeight
+      // `innerHeight` and `dvh` change as mobile browser chrome opens and
+      // closes. Measuring `svh` keeps scroll geometry stable through that UI.
+      const viewportWidth = document.documentElement.clientWidth
+      const viewportHeight = heightProbe.offsetHeight
       const outerGutter = viewportWidth >= 1024 ? 24 : viewportWidth >= 640 ? 32 : 16
       const innerPadding = viewportWidth >= 640 ? 24 : 16
       const targetX = outerGutter + innerPadding + 1
@@ -104,8 +118,9 @@ export function Hero() {
      * is the scroll runway; once it ends, the completed frame moves with the
      * rest of the page.
      */
-    <section ref={sectionRef} className="relative -mt-[60px] h-dvh w-full">
-      <div ref={viewportRef} className="sticky top-0 h-dvh w-full">
+    <section ref={sectionRef} className="relative -mt-[60px] h-svh w-full">
+      <div ref={heightProbeRef} aria-hidden className="pointer-events-none absolute h-svh w-px" />
+      <div ref={viewportRef} className="sticky top-0 h-svh w-full">
         <div
           ref={topRuleRef}
           aria-hidden
@@ -128,7 +143,7 @@ export function Hero() {
         </div>
         <div
           ref={mediaRef}
-          className="absolute top-0 left-0 z-10 h-dvh w-screen overflow-hidden will-change-transform"
+          className="absolute top-0 left-0 z-10 h-svh w-screen overflow-hidden will-change-transform"
         >
           <video
             autoPlay
