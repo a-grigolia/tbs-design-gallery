@@ -2732,14 +2732,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "city": {
-          "name": "city",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "zipcode": {
-          "name": "zipcode",
+        "address": {
+          "name": "address",
           "type": "varchar",
           "primaryKey": false,
           "notNull": true

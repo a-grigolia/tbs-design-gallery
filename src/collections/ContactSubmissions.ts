@@ -68,12 +68,7 @@ export const ContactSubmissions: CollectionConfig = {
       required: true,
     },
     {
-      name: 'city',
-      type: 'text',
-      required: true,
-    },
-    {
-      name: 'zipcode',
+      name: 'address',
       type: 'text',
       required: true,
     },

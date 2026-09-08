@@ -32,7 +32,7 @@ export default async function HomePage() {
       <Hero />
 
       <SectionBand>
-        <BlueprintColumn showMeasureMark corner="tee" className="pb-section">
+        <BlueprintColumn corner="tee" className="pb-section">
           <GallerySection />
           <SectionRule number="02" />
           <SpecificationSection />

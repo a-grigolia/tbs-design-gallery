@@ -1,13 +1,14 @@
 'use client'
 
-import React, { useRef, useState } from 'react'
+import Script from 'next/script'
+import React, { useEffect, useRef, useState } from 'react'
 
 import { submitContact } from '@/app/(frontend)/contact/actions'
 import { I_AM_A_OPTIONS, PROJECT_TYPE_OPTIONS } from '@/components/contact/options'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-type TextFieldName = 'firstName' | 'lastName' | 'email' | 'phone' | 'city' | 'zipcode' | 'message'
+type TextFieldName = 'firstName' | 'lastName' | 'email' | 'phone' | 'address' | 'message'
 
 const TEXT_FIELDS: {
   name: TextFieldName
@@ -19,8 +20,6 @@ const TEXT_FIELDS: {
   { name: 'lastName', label: 'Last name *', type: 'text', autoComplete: 'family-name' },
   { name: 'email', label: 'Email *', type: 'email', autoComplete: 'email' },
   { name: 'phone', label: 'Phone number *', type: 'tel', autoComplete: 'tel' },
-  { name: 'city', label: 'City *', type: 'text', autoComplete: 'address-level2' },
-  { name: 'zipcode', label: 'Zipcode *', type: 'text', autoComplete: 'postal-code' },
 ]
 
 const EMPTY_VALUES: Record<TextFieldName, string> = {
@@ -28,8 +27,7 @@ const EMPTY_VALUES: Record<TextFieldName, string> = {
   lastName: '',
   email: '',
   phone: '',
-  city: '',
-  zipcode: '',
+  address: '',
   message: '',
 }
 
@@ -93,6 +91,12 @@ function FloatingField({
   error,
   onChange,
   onBlur,
+  onFocus,
+  onKeyDown,
+  inputRef,
+  ariaControls,
+  ariaExpanded,
+  ariaActiveDescendant,
 }: {
   name: string
   label: string
@@ -103,6 +107,12 @@ function FloatingField({
   error: string | null
   onChange: (value: string) => void
   onBlur: () => void
+  onFocus?: () => void
+  onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>
+  inputRef?: React.Ref<HTMLInputElement>
+  ariaControls?: string
+  ariaExpanded?: boolean
+  ariaActiveDescendant?: string
 }) {
   const [focused, setFocused] = useState(false)
   const raised = focused || value !== ''
@@ -144,12 +154,22 @@ function FloatingField({
           />
         ) : (
           <input
+            ref={inputRef}
             name={name}
             type={type ?? 'text'}
             autoComplete={autoComplete}
+            role={ariaControls ? 'combobox' : undefined}
+            aria-autocomplete={ariaControls ? 'list' : undefined}
+            aria-controls={ariaControls}
+            aria-expanded={ariaExpanded}
+            aria-activedescendant={ariaActiveDescendant}
             value={value}
             onChange={(event) => onChange(event.target.value)}
-            onFocus={() => setFocused(true)}
+            onFocus={() => {
+              setFocused(true)
+              onFocus?.()
+            }}
+            onKeyDown={onKeyDown}
             onBlur={() => {
               setFocused(false)
               onBlur()
@@ -167,6 +187,163 @@ function FloatingField({
   )
 }
 
+type AddressSuggestion = {
+  label: string
+  prediction: google.maps.places.PlacePrediction
+}
+
+function AddressField({
+  value,
+  error,
+  onChange,
+  onBlur,
+  placesReady,
+}: {
+  value: string
+  error: string | null
+  onChange: (value: string) => void
+  onBlur: () => void
+  placesReady: boolean
+}) {
+  const [focused, setFocused] = useState(false)
+  const [suggestions, setSuggestions] = useState<AddressSuggestion[]>([])
+  const [activeIndex, setActiveIndex] = useState(-1)
+  const sessionTokenRef = useRef<google.maps.places.AutocompleteSessionToken | null>(null)
+  const suppressValueRef = useRef<string | null>(null)
+  const listId = 'address-suggestions'
+
+  useEffect(() => {
+    const input = value.trim()
+    if (!focused || !placesReady || input.length < 3 || !window.google?.maps?.importLibrary) {
+      return
+    }
+    if (suppressValueRef.current === value) {
+      suppressValueRef.current = null
+      return
+    }
+
+    let cancelled = false
+    const timer = window.setTimeout(async () => {
+      try {
+        const { AutocompleteSessionToken, AutocompleteSuggestion } =
+          (await google.maps.importLibrary('places')) as google.maps.PlacesLibrary
+        sessionTokenRef.current ??= new AutocompleteSessionToken()
+        const response = await AutocompleteSuggestion.fetchAutocompleteSuggestions({
+          input,
+          includedRegionCodes: ['us'],
+          sessionToken: sessionTokenRef.current,
+        })
+        if (cancelled) return
+        setSuggestions(
+          response.suggestions.flatMap((suggestion) => {
+            const prediction = suggestion.placePrediction
+            return prediction ? [{ label: prediction.text.toString(), prediction }] : []
+          }),
+        )
+        setActiveIndex(-1)
+      } catch {
+        // Manual entry remains available if Places is unavailable or misconfigured.
+        if (!cancelled) setSuggestions([])
+      }
+    }, 250)
+
+    return () => {
+      cancelled = true
+      window.clearTimeout(timer)
+    }
+  }, [focused, placesReady, value])
+
+  async function selectSuggestion(suggestion: AddressSuggestion) {
+    let address = suggestion.label
+    try {
+      const place = suggestion.prediction.toPlace()
+      await place.fetchFields({ fields: ['formattedAddress'] })
+      address = place.formattedAddress ?? address
+    } catch {
+      // The visible prediction is still a valid manual value if detail lookup fails.
+    }
+    suppressValueRef.current = address
+    onChange(address)
+    setSuggestions([])
+    setActiveIndex(-1)
+    sessionTokenRef.current = null
+  }
+
+  function handleKeyDown(event: React.KeyboardEvent<HTMLInputElement>) {
+    if (suggestions.length === 0) return
+    if (event.key === 'ArrowDown') {
+      event.preventDefault()
+      setActiveIndex((index) => (index + 1) % suggestions.length)
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault()
+      setActiveIndex((index) => (index <= 0 ? suggestions.length - 1 : index - 1))
+    } else if (event.key === 'Enter' && activeIndex >= 0) {
+      event.preventDefault()
+      void selectSuggestion(suggestions[activeIndex])
+    } else if (event.key === 'Escape') {
+      setSuggestions([])
+      setActiveIndex(-1)
+    }
+  }
+
+  return (
+    <div className="relative z-10 md:col-span-2">
+      <FloatingField
+        name="address"
+        label="Address *"
+        autoComplete="street-address"
+        value={value}
+        error={error}
+        onChange={(nextValue) => {
+          onChange(nextValue)
+          if (nextValue.trim().length < 3) {
+            setSuggestions([])
+            setActiveIndex(-1)
+          }
+        }}
+        onFocus={() => setFocused(true)}
+        onBlur={() => {
+          setFocused(false)
+          setSuggestions([])
+          setActiveIndex(-1)
+          onBlur()
+        }}
+        onKeyDown={handleKeyDown}
+        ariaControls={listId}
+        ariaExpanded={suggestions.length > 0}
+        ariaActiveDescendant={activeIndex >= 0 ? `${listId}-${activeIndex}` : undefined}
+      />
+      {suggestions.length > 0 ? (
+        <ul
+          id={listId}
+          role="listbox"
+          className="absolute top-[60px] z-20 w-full overflow-hidden rounded-[16px] border border-hairline bg-canvas shadow-lg"
+        >
+          {suggestions.map((suggestion, index) => (
+            <li
+              id={`${listId}-${index}`}
+              key={`${suggestion.label}-${index}`}
+              role="option"
+              aria-selected={index === activeIndex}
+            >
+              <button
+                type="button"
+                className={`w-full px-[12px] py-[12px] text-left text-[14px] text-ink transition-colors ${
+                  index === activeIndex ? 'bg-cream' : 'hover:bg-cream'
+                }`}
+                onMouseDown={(event) => event.preventDefault()}
+                onClick={() => void selectSuggestion(suggestion)}
+              >
+                {suggestion.label}
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+    </div>
+  )
+}
+
 export function ContactForm() {
   const [iAmA, setIAmA] = useState<string | null>(null)
   const [projectType, setProjectType] = useState<string | null>(null)
@@ -177,6 +354,7 @@ export function ContactForm() {
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
+  const [placesReady, setPlacesReady] = useState(false)
   // The success panel holds the form's rendered height so the page (and the
   // photo beside it) doesn't collapse when the form is swapped out.
   const formRef = useRef<HTMLFormElement>(null)
@@ -232,78 +410,95 @@ export function ContactForm() {
   }
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit} noValidate className="flex w-full flex-col gap-[32px]">
-      <PillGroup
-        label="I am a *"
-        options={I_AM_A_OPTIONS}
-        selected={iAmA}
-        onSelect={setIAmA}
-      />
-      <PillGroup
-        label="Project type *"
-        options={PROJECT_TYPE_OPTIONS}
-        selected={projectType}
-        onSelect={setProjectType}
-      />
+    <>
+      {process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ? (
+        <Script
+          id="google-maps-places"
+          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&libraries=places&loading=async&v=weekly`}
+          strategy="afterInteractive"
+          onReady={() => setPlacesReady(true)}
+        />
+      ) : null}
+      <form
+        ref={formRef}
+        onSubmit={handleSubmit}
+        noValidate
+        className="flex w-full flex-col gap-[32px]"
+      >
+        <PillGroup label="I am a *" options={I_AM_A_OPTIONS} selected={iAmA} onSelect={setIAmA} />
+        <PillGroup
+          label="Project type *"
+          options={PROJECT_TYPE_OPTIONS}
+          selected={projectType}
+          onSelect={setProjectType}
+        />
 
-      <div className="grid w-full grid-cols-1 gap-[24px] md:grid-cols-2">
-        {TEXT_FIELDS.map((field) => (
-          <FloatingField
-            key={field.name}
-            name={field.name}
-            label={field.label}
-            type={field.type}
-            autoComplete={field.autoComplete}
-            value={values[field.name]}
-            error={touched[field.name] ? fieldError(field.name, values[field.name]) : null}
-            onChange={(value) => setValues((prev) => ({ ...prev, [field.name]: value }))}
-            onBlur={() => setTouched((prev) => ({ ...prev, [field.name]: true }))}
+        <div className="grid w-full grid-cols-1 gap-[24px] md:grid-cols-2">
+          {TEXT_FIELDS.map((field) => (
+            <FloatingField
+              key={field.name}
+              name={field.name}
+              label={field.label}
+              type={field.type}
+              autoComplete={field.autoComplete}
+              value={values[field.name]}
+              error={touched[field.name] ? fieldError(field.name, values[field.name]) : null}
+              onChange={(value) => setValues((prev) => ({ ...prev, [field.name]: value }))}
+              onBlur={() => setTouched((prev) => ({ ...prev, [field.name]: true }))}
+            />
+          ))}
+          <AddressField
+            value={values.address}
+            error={touched.address ? fieldError('address', values.address) : null}
+            onChange={(value) => setValues((prev) => ({ ...prev, address: value }))}
+            onBlur={() => setTouched((prev) => ({ ...prev, address: true }))}
+            placesReady={placesReady}
           />
-        ))}
-        <div className="md:col-span-2">
-          <FloatingField
-            name="message"
-            label="Tell us about your project or needs *"
-            multiline
-            value={values.message}
-            error={touched.message ? fieldError('message', values.message) : null}
-            onChange={(value) => setValues((prev) => ({ ...prev, message: value }))}
-            onBlur={() => setTouched((prev) => ({ ...prev, message: true }))}
-          />
+          <div className="md:col-span-2">
+            <FloatingField
+              name="message"
+              label="Tell us about your project or needs *"
+              multiline
+              value={values.message}
+              error={touched.message ? fieldError('message', values.message) : null}
+              onChange={(value) => setValues((prev) => ({ ...prev, message: value }))}
+              onBlur={() => setTouched((prev) => ({ ...prev, message: true }))}
+            />
+          </div>
         </div>
-      </div>
 
-      {/* Honeypot: off-screen, skipped by keyboard and screen readers. */}
-      <div aria-hidden className="absolute -left-[9999px] top-auto h-px w-px overflow-hidden">
-        <label>
-          Company
-          <input
-            type="text"
-            name="company"
-            tabIndex={-1}
-            autoComplete="off"
-            value={company}
-            onChange={(event) => setCompany(event.target.value)}
-          />
-        </label>
-      </div>
+        {/* Honeypot: off-screen, skipped by keyboard and screen readers. */}
+        <div aria-hidden className="absolute -left-[9999px] top-auto h-px w-px overflow-hidden">
+          <label>
+            Company
+            <input
+              type="text"
+              name="company"
+              tabIndex={-1}
+              autoComplete="off"
+              value={company}
+              onChange={(event) => setCompany(event.target.value)}
+            />
+          </label>
+        </div>
 
-      <div className="flex w-full flex-col items-end justify-center gap-[8px]">
-        <button
-          type="submit"
-          disabled={!allValid || submitting}
-          className={`flex h-[40px] items-center justify-center rounded-[44px] border px-[24px] py-[10px] text-center text-[14px] leading-[18px] transition-all duration-300 ${
-            allValid
-              ? 'cursor-pointer border-brand-glow bg-brand text-white'
-              : 'cursor-not-allowed border-hairline text-ink opacity-50'
-          }`}
-        >
-          {submitting ? 'Sending…' : 'Submit'}
-        </button>
-        {submitError ? (
-          <p className="text-[12px] leading-[16px] text-[rgba(255,116,116,0.9)]">{submitError}</p>
-        ) : null}
-      </div>
-    </form>
+        <div className="flex w-full flex-col items-end justify-center gap-[8px]">
+          <button
+            type="submit"
+            disabled={!allValid || submitting}
+            className={`flex h-[40px] items-center justify-center rounded-[44px] border px-[24px] py-[10px] text-center text-[14px] leading-[18px] transition-all duration-300 ${
+              allValid
+                ? 'cursor-pointer border-brand-glow bg-brand text-white'
+                : 'cursor-not-allowed border-hairline text-ink opacity-50'
+            }`}
+          >
+            {submitting ? 'Sending…' : 'Submit'}
+          </button>
+          {submitError ? (
+            <p className="text-[12px] leading-[16px] text-[rgba(255,116,116,0.9)]">{submitError}</p>
+          ) : null}
+        </div>
+      </form>
+    </>
   )
 }

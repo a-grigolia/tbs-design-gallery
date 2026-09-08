@@ -10,8 +10,7 @@ export type ContactFormData = {
   lastName: string
   email: string
   phone: string
-  city: string
-  zipcode: string
+  address: string
   message: string
   /** Honeypot — hidden from humans; any value means a bot filled it. */
   company: string
@@ -21,15 +20,7 @@ export type ContactFormResult = { ok: true } | { ok: false; error: string }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-const REQUIRED_TEXT = [
-  'firstName',
-  'lastName',
-  'email',
-  'phone',
-  'city',
-  'zipcode',
-  'message',
-] as const
+const REQUIRED_TEXT = ['firstName', 'lastName', 'email', 'phone', 'address', 'message'] as const
 
 /**
  * Writes a contact-form submission through the local API (bypasses the
@@ -41,7 +32,9 @@ export async function submitContact(data: ContactFormData): Promise<ContactFormR
   if (data.company) return { ok: true }
 
   const iAmA = I_AM_A_OPTIONS.find((option) => option.value === data.iAmA)?.value
-  const projectType = PROJECT_TYPE_OPTIONS.find((option) => option.value === data.projectType)?.value
+  const projectType = PROJECT_TYPE_OPTIONS.find(
+    (option) => option.value === data.projectType,
+  )?.value
   const allTextPresent = REQUIRED_TEXT.every((field) => data[field]?.trim())
 
   if (!iAmA || !projectType || !allTextPresent) {
@@ -62,14 +55,16 @@ export async function submitContact(data: ContactFormData): Promise<ContactFormR
         lastName: data.lastName.trim(),
         email: data.email.trim(),
         phone: data.phone.trim(),
-        city: data.city.trim(),
-        zipcode: data.zipcode.trim(),
+        address: data.address.trim(),
         message: data.message.trim(),
       },
     })
   } catch (error) {
     console.error('Contact submission failed:', error)
-    return { ok: false, error: 'Something went wrong while sending your message. Please try again.' }
+    return {
+      ok: false,
+      error: 'Something went wrong while sending your message. Please try again.',
+    }
   }
 
   return { ok: true }

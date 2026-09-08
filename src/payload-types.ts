@@ -336,8 +336,7 @@ export interface ContactSubmission {
   lastName: string;
   email: string;
   phone: string;
-  city: string;
-  zipcode: string;
+  address: string;
   message: string;
   updatedAt: string;
   createdAt: string;
@@ -568,8 +567,7 @@ export interface ContactSubmissionsSelect<T extends boolean = true> {
   lastName?: T;
   email?: T;
   phone?: T;
-  city?: T;
-  zipcode?: T;
+  address?: T;
   message?: T;
   updatedAt?: T;
   createdAt?: T;

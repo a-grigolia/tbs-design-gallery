@@ -54,13 +54,11 @@ export function SectionBand({
 export function BlueprintColumn({
   children,
   sideBorders = true,
-  showMeasureMark = false,
   corner = 'cross',
   className,
 }: {
   children: React.ReactNode
   sideBorders?: boolean
-  showMeasureMark?: boolean
   corner?: 'cross' | 'tee'
   className?: string
 }) {
@@ -80,12 +78,6 @@ export function BlueprintColumn({
           <CornerCross className="-top-[6px] -left-[6.5px]" />
           <CornerCross className="-top-[6px] -right-[6.5px]" />
         </>
-      )}
-      {showMeasureMark && (
-        <div className="pointer-events-none absolute -top-[12px] left-[23.5px] h-[24px] w-[12px]" aria-hidden>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img alt="" src="/landing/measure-mark.svg" className="block size-full max-w-none dark:invert" />
-        </div>
       )}
       {children}
     </div>

@@ -107,7 +107,7 @@ export default async function CustomCabinetryPage() {
 
       {/* SectionBand's layout without its border-t: the hero band above already drew this hairline. */}
       <div className="flex w-full flex-col items-center px-4 sm:px-8 lg:px-12">
-        <BlueprintColumn corner="tee" showMeasureMark>
+        <BlueprintColumn corner="tee">
           <MeasureRule label="Product Category" />
 
           <div className="flex w-full flex-col items-center px-gutter-sm py-[24px] lg:px-gutter">

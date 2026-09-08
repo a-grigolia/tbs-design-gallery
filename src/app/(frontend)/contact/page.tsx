@@ -40,7 +40,7 @@ export default function ContactPage() {
           <TickRule label="Contact us" />
 
           <div className="flex w-full flex-col gap-[32px] px-gutter-sm py-[24px] lg:flex-row lg:gap-[48px] lg:px-gutter">
-            <div className="min-h-[280px] flex-1 overflow-hidden rounded-[24px] lg:min-h-0 lg:self-stretch">
+            <div className="hidden flex-1 overflow-hidden rounded-[24px] lg:block lg:self-stretch">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 alt="Material and finish samples arranged in the TBS Design Gallery showroom"
