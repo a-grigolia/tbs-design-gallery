@@ -38,24 +38,34 @@ export function Hero() {
 
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
     let animationFrame = 0
+    let geometry:
+      | {
+          viewportWidth: number
+          viewportHeight: number
+          targetX: number
+          targetY: number
+          targetWidth: number
+          targetHeight: number
+          targetBottom: number
+          scrollDistance: number
+          staticLayout: boolean
+        }
+      | undefined
 
     const render = () => {
       animationFrame = 0
+      if (!geometry) return
 
-      // `innerHeight` and `dvh` change as mobile browser chrome opens and
-      // closes. Measuring `svh` keeps scroll geometry stable through that UI.
-      const viewportWidth = document.documentElement.clientWidth
-      const viewportHeight = heightProbe.offsetHeight
-      const outerGutter = viewportWidth >= 1024 ? 24 : viewportWidth >= 640 ? 32 : 16
-      const innerPadding = viewportWidth >= 640 ? 24 : 16
-      const targetX = outerGutter + innerPadding + 1
-      const targetY = 60 + innerPadding + 1
-      const targetWidth = viewportWidth - targetX * 2
-      const targetHeight =
-        viewportWidth >= 1024 ? targetWidth / 2 : Math.max(480, viewportHeight * 0.68)
-      const targetBottom = targetY + targetHeight + innerPadding + 1
-      const staticLayout = reducedMotion.matches || targetBottom >= viewportHeight - 48
-      const scrollDistance = Math.max(viewportHeight - targetBottom, 1)
+      const {
+        viewportWidth,
+        viewportHeight,
+        targetX,
+        targetY,
+        targetWidth,
+        targetHeight,
+        scrollDistance,
+        staticLayout,
+      } = geometry
 
       const progress = staticLayout
         ? 1
@@ -71,11 +81,39 @@ export function Hero() {
       media.style.transform = `translate3d(${x}px, ${y}px, 0)`
       media.style.width = `${width}px`
       media.style.height = `${height}px`
-      media.style.borderRadius = `${24 * progress}px`
+      media.style.borderRadius = `${24 * easedProgress}px`
       frame.style.opacity = `${frameProgress}`
       topRule.style.opacity = `${frameProgress}`
       bottomRule.style.opacity = `${frameProgress}`
       heading.style.transform = `scale(${1 - easedProgress * 0.08})`
+    }
+
+    const measure = () => {
+      // `innerHeight` and `dvh` change as mobile browser chrome opens and
+      // closes. Measuring `svh` keeps scroll geometry stable through that UI.
+      const viewportWidth = document.documentElement.clientWidth
+      const viewportHeight = heightProbe.offsetHeight
+      const outerGutter = viewportWidth >= 1024 ? 24 : viewportWidth >= 640 ? 32 : 16
+      const innerPadding = viewportWidth >= 640 ? 24 : 16
+      const targetX = outerGutter + innerPadding + 1
+      const targetY = 60 + innerPadding + 1
+      const targetWidth = viewportWidth - targetX * 2
+      const targetHeight = viewportWidth >= 1024 ? targetWidth / 2 : 480
+      const targetBottom = targetY + targetHeight + innerPadding + 1
+      const staticLayout = reducedMotion.matches || targetBottom >= viewportHeight - 48
+      const scrollDistance = Math.max(viewportHeight - targetBottom, 1)
+
+      geometry = {
+        viewportWidth,
+        viewportHeight,
+        targetX,
+        targetY,
+        targetWidth,
+        targetHeight,
+        targetBottom,
+        scrollDistance,
+        staticLayout,
+      }
 
       frame.style.top = '60px'
       frame.style.left = `${outerGutter}px`
@@ -92,31 +130,41 @@ export function Hero() {
         viewport.style.position = ''
         viewport.style.height = `${targetBottom}px`
       }
+
+      render()
     }
 
     const requestRender = () => {
       if (!animationFrame) animationFrame = window.requestAnimationFrame(render)
     }
 
-    render()
+    const requestMeasure = () => {
+      if (animationFrame) window.cancelAnimationFrame(animationFrame)
+      animationFrame = window.requestAnimationFrame(() => {
+        animationFrame = 0
+        measure()
+      })
+    }
+
+    measure()
     window.addEventListener('scroll', requestRender, { passive: true })
-    window.addEventListener('resize', requestRender)
-    reducedMotion.addEventListener('change', requestRender)
+    window.addEventListener('resize', requestMeasure)
+    reducedMotion.addEventListener('change', requestMeasure)
 
     return () => {
       if (animationFrame) window.cancelAnimationFrame(animationFrame)
       window.removeEventListener('scroll', requestRender)
-      window.removeEventListener('resize', requestRender)
-      reducedMotion.removeEventListener('change', requestRender)
+      window.removeEventListener('resize', requestMeasure)
+      reducedMotion.removeEventListener('change', requestMeasure)
     }
   }, [])
 
   return (
     /*
      * The sticky viewport starts behind the header, then the video settles
-     * into the drafting frame from Figma 677:6932. The extra section height
-     * is the scroll runway; once it ends, the completed frame moves with the
-     * rest of the page.
+     * into the drafting frame from Figma 677:6932. The difference between
+     * the stable viewport and final frame heights becomes the scroll runway,
+     * keeping the following section attached to the frame throughout.
      */
     <section ref={sectionRef} className="relative -mt-[60px] h-svh w-full">
       <div ref={heightProbeRef} aria-hidden className="pointer-events-none absolute h-svh w-px" />
@@ -143,7 +191,7 @@ export function Hero() {
         </div>
         <div
           ref={mediaRef}
-          className="absolute top-0 left-0 z-10 h-svh w-screen overflow-hidden will-change-transform"
+          className="absolute top-0 left-0 z-10 h-svh w-screen overflow-hidden [contain:layout_paint] will-change-[transform,width,height,border-radius]"
         >
           <video
             autoPlay
