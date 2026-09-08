@@ -40,13 +40,14 @@ export function Hero() {
       const targetHeight =
         viewportWidth >= 1024 ? targetWidth / 2 : Math.max(480, viewportHeight * 0.68)
       const targetBottom = targetY + targetHeight + innerPadding + 1
+      const staticLayout = reducedMotion.matches || targetBottom >= viewportHeight - 48
+      const scrollDistance = Math.max(viewportHeight - targetBottom, 1)
 
-      const scrollDistance = Math.max(section.offsetHeight - viewportHeight, 1)
-      const rawProgress = reducedMotion.matches
+      const progress = staticLayout
         ? 1
         : Math.min(Math.max(-section.getBoundingClientRect().top / scrollDistance, 0), 1)
-      const progress = rawProgress * rawProgress * (3 - 2 * rawProgress)
       const frameProgress = Math.min(Math.max((progress - 0.42) / 0.58, 0), 1)
+      const easedProgress = progress * progress * (3 - 2 * progress)
 
       const x = targetX * progress
       const y = targetY * progress
@@ -60,7 +61,7 @@ export function Hero() {
       frame.style.opacity = `${frameProgress}`
       topRule.style.opacity = `${frameProgress}`
       bottomRule.style.opacity = `${frameProgress}`
-      heading.style.transform = `scale(${1 - progress * 0.08})`
+      heading.style.transform = `scale(${1 - easedProgress * 0.08})`
 
       frame.style.top = '60px'
       frame.style.left = `${outerGutter}px`
@@ -68,14 +69,14 @@ export function Hero() {
       frame.style.height = `${targetHeight + innerPadding * 2 + 2}px`
       bottomRule.style.top = `${targetBottom}px`
 
-      if (reducedMotion.matches) {
+      if (staticLayout) {
         section.style.height = `${targetBottom}px`
         viewport.style.position = 'relative'
         viewport.style.height = `${targetBottom}px`
       } else {
-        section.style.height = ''
+        section.style.height = `${viewportHeight}px`
         viewport.style.position = ''
-        viewport.style.height = ''
+        viewport.style.height = `${targetBottom}px`
       }
     }
 
@@ -103,8 +104,8 @@ export function Hero() {
      * is the scroll runway; once it ends, the completed frame moves with the
      * rest of the page.
      */
-    <section ref={sectionRef} className="relative -mt-[60px] h-[180dvh] w-full">
-      <div ref={viewportRef} className="sticky top-0 h-dvh w-full overflow-hidden">
+    <section ref={sectionRef} className="relative -mt-[60px] h-dvh w-full">
+      <div ref={viewportRef} className="sticky top-0 h-dvh w-full">
         <div
           ref={topRuleRef}
           aria-hidden
