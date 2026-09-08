@@ -18,10 +18,11 @@ const NAV_LINKS = [
  * frost is a sibling so it doesn't nest with the categories dropdown's own
  * backdrop-filter.
  */
-export function SiteHeader() {
+export function SiteHeader({ overlayAtTop = false }: { overlayAtTop?: boolean }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [categoriesOpen, setCategoriesOpen] = useState(false)
+  const isOverlay = overlayAtTop && !scrolled
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8)
@@ -50,9 +51,19 @@ export function SiteHeader() {
             scrolled ? 'bg-canvas/90 backdrop-blur-[40px]' : 'bg-transparent'
           }`}
         />
-        <Link href="/" aria-label="TBS Design Gallery home" className="relative block h-[37px] w-[39px] shrink-0">
+        <Link
+          href="/"
+          aria-label="TBS Design Gallery home"
+          className="relative block h-[37px] w-[39px] shrink-0"
+        >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img alt="TBS Design Gallery" src="/landing/logo-mark.svg" className="block size-full max-w-none dark:invert" />
+          <img
+            alt="TBS Design Gallery"
+            src="/landing/logo-mark.svg"
+            className={`block size-full max-w-none transition-[filter] ${
+              isOverlay ? 'invert' : 'dark:invert'
+            }`}
+          />
         </Link>
         <nav className="relative hidden items-center gap-[8px] md:flex">
           <div
@@ -68,9 +79,9 @@ export function SiteHeader() {
               type="button"
               aria-expanded={categoriesOpen}
               aria-haspopup="menu"
-              className={`flex items-center gap-[8px] rounded-[44px] px-[16px] py-[9px] font-figtree text-[14px] leading-[22px] whitespace-nowrap text-ink transition-colors hover:bg-ink/5 ${
-                categoriesOpen ? 'bg-ink/5' : ''
-              }`}
+              className={`flex items-center gap-[8px] rounded-[44px] px-[16px] py-[9px] font-figtree text-[14px] leading-[22px] whitespace-nowrap transition-colors ${
+                isOverlay ? 'text-white hover:bg-white/10' : 'text-ink hover:bg-ink/5'
+              } ${categoriesOpen ? (isOverlay ? 'bg-white/10' : 'bg-ink/5') : ''}`}
             >
               Product Categories
               <span
@@ -80,7 +91,13 @@ export function SiteHeader() {
                 aria-hidden
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img alt="" src="/landing/nav-chevron.svg" className="block h-[11px] w-[4px] max-w-none dark:invert" />
+                <img
+                  alt=""
+                  src="/landing/nav-chevron.svg"
+                  className={`block h-[11px] w-[4px] max-w-none ${
+                    isOverlay ? 'invert' : 'dark:invert'
+                  }`}
+                />
               </span>
             </button>
             {/* 1px overlap with the trigger so hover never falls in a gap */}
@@ -105,7 +122,9 @@ export function SiteHeader() {
             <Link
               key={link.href}
               href={link.href}
-              className="rounded-[44px] px-[16px] py-[9px] font-figtree text-[14px] leading-[22px] whitespace-nowrap text-ink transition-colors hover:bg-ink/5"
+              className={`rounded-[44px] px-[16px] py-[9px] font-figtree text-[14px] leading-[22px] whitespace-nowrap transition-colors ${
+                isOverlay ? 'text-white hover:bg-white/10' : 'text-ink hover:bg-ink/5'
+              }`}
             >
               {link.label}
             </Link>
@@ -117,10 +136,20 @@ export function SiteHeader() {
             aria-label={menuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((open) => !open)}
-            className="flex size-[44px] flex-col items-center justify-center gap-[5px] rounded-full transition-colors hover:bg-ink/5 md:hidden"
+            className={`flex size-[44px] flex-col items-center justify-center gap-[5px] rounded-full transition-colors md:hidden ${
+              isOverlay ? 'hover:bg-white/10' : 'hover:bg-ink/5'
+            }`}
           >
-            <span className={`h-px w-[18px] bg-ink transition-transform ${menuOpen ? 'translate-y-[3px] rotate-45' : ''}`} />
-            <span className={`h-px w-[18px] bg-ink transition-transform ${menuOpen ? '-translate-y-[2px] -rotate-45' : ''}`} />
+            <span
+              className={`h-px w-[18px] transition-[background-color,transform] ${
+                isOverlay ? 'bg-white' : 'bg-ink'
+              } ${menuOpen ? 'translate-y-[3px] rotate-45' : ''}`}
+            />
+            <span
+              className={`h-px w-[18px] transition-[background-color,transform] ${
+                isOverlay ? 'bg-white' : 'bg-ink'
+              } ${menuOpen ? '-translate-y-[2px] -rotate-45' : ''}`}
+            />
           </button>
           <Link
             href="/contact"

@@ -28,7 +28,7 @@ export default async function HomePage() {
 
   return (
     <div className="flex min-h-screen w-full flex-col items-center bg-canvas">
-      <SiteHeader />
+      <SiteHeader overlayAtTop />
       <Hero />
 
       <SectionBand>

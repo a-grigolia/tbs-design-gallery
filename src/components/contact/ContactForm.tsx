@@ -107,8 +107,10 @@ function FloatingField({
   const [focused, setFocused] = useState(false)
   const raised = focused || value !== ''
 
+  // rounded matches the wrapper so the autofill fix's opaque inset shadow
+  // (styles.css) can't square off the corners.
   const sharedInputClasses =
-    'w-full bg-transparent px-[12px] pb-[6px] pt-[20px] text-[14px] text-ink-75 outline-none'
+    'w-full rounded-[16px] bg-transparent px-[12px] pb-[6px] pt-[20px] text-[14px] text-ink-75 outline-none'
 
   return (
     <div className="relative w-full">

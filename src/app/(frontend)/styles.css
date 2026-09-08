@@ -79,3 +79,23 @@ body {
   color: var(--color-ink);
   font-family: var(--font-sans);
 }
+
+/*
+ * Chrome/Safari force a pale-blue background on autofilled inputs via UA
+ * styling that ignores background-color overrides. Painting an opaque
+ * canvas-colored inset shadow over it (and matching the text fill) keeps the
+ * contact form's transparent floating-label fields theme-correct. Kept as
+ * separate blocks: an unknown selector (`:autofill` in older engines) would
+ * invalidate a combined list.
+ */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: inset 0 0 0 1000px var(--palette-canvas);
+  -webkit-text-fill-color: var(--palette-ink-75);
+  caret-color: var(--palette-ink);
+}
+
+input:autofill {
+  box-shadow: inset 0 0 0 1000px var(--palette-canvas);
+}
