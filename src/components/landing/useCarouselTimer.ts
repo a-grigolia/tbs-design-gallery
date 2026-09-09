@@ -8,11 +8,12 @@ import { useCallback, useEffect, useRef, useState } from 'react'
  * container is in the viewport (pauses off-screen, resumes in view), and
  * manually selecting an index resets the cycle.
  */
-export function useCarouselTimer(count: number, intervalMs = 5000) {
+export function useCarouselTimer(count: number, intervalMs = 5000, paused = false) {
   const [index, setIndexState] = useState(0)
   const [progress, setProgress] = useState(0)
   const containerRef = useRef<HTMLDivElement | null>(null)
   const inViewRef = useRef(false)
+  const pausedRef = useRef(paused)
   const elapsedRef = useRef(0)
   const indexRef = useRef(0)
 
@@ -22,6 +23,10 @@ export function useCarouselTimer(count: number, intervalMs = 5000) {
     setIndexState(i)
     setProgress(0)
   }, [])
+
+  useEffect(() => {
+    pausedRef.current = paused
+  }, [paused])
 
   useEffect(() => {
     const el = containerRef.current
@@ -45,7 +50,7 @@ export function useCarouselTimer(count: number, intervalMs = 5000) {
     const tick = (now: number) => {
       const delta = now - last
       last = now
-      if (inViewRef.current) {
+      if (inViewRef.current && !pausedRef.current) {
         elapsedRef.current += delta
         if (elapsedRef.current >= intervalMs) {
           elapsedRef.current = 0

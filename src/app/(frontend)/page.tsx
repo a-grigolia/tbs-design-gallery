@@ -1,5 +1,7 @@
 import React from 'react'
 
+import type { SpecificationVendor } from '@/components/landing/SpecificationSection'
+
 import { BlueprintColumn, SectionBand, SectionRule } from '@/components/landing/Blueprint'
 import { GallerySection } from '@/components/landing/GallerySection'
 import { Hero } from '@/components/landing/Hero'
@@ -10,6 +12,7 @@ import { SiteFooter } from '@/components/landing/SiteFooter'
 import { SiteHeader } from '@/components/landing/SiteHeader'
 import { SpecificationSection } from '@/components/landing/SpecificationSection'
 import { TestimonialsSection } from '@/components/landing/TestimonialsSection'
+import { vendorHeroData } from '@/components/vendor/VendorHero'
 import { getPayload } from '@/lib/payload'
 
 export const revalidate = 300
@@ -25,6 +28,13 @@ export default async function HomePage() {
     limit: 100,
     sort: 'name',
   })
+  const specificationVendors: SpecificationVendor[] = vendors.map((vendor) => ({
+    id: vendor.id,
+    slug: vendor.slug,
+    primaryCategory: vendor.primaryCategory,
+    categories: vendor.categories,
+    ...vendorHeroData(vendor),
+  }))
 
   return (
     <div className="flex min-h-screen w-full flex-col items-center bg-canvas">
@@ -35,7 +45,7 @@ export default async function HomePage() {
         <BlueprintColumn corner="tee" className="pb-section">
           <GallerySection />
           <SectionRule number="02" />
-          <SpecificationSection />
+          <SpecificationSection vendors={specificationVendors} />
           <SectionRule number="03" />
           <InstallationSection />
         </BlueprintColumn>

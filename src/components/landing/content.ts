@@ -1,143 +1,24 @@
-/**
- * Hardcoded landing page content. Copy comes from the Figma frame and is final.
- * Images are placeholders. Brand lists for categories other than Custom
- * Cabinetry were not in the frame — swap them here when final lists exist.
- */
-
-export type ShowcaseSlide = {
-  image: string
-  caption: string
-  cta: string
-}
-
-export type Category = {
-  id: string
-  label: string
-  icon: string
-  brands: string[]
-  slides: ShowcaseSlide[]
-}
-
-export const CATEGORIES: Category[] = [
-  {
-    id: 'custom-cabinetry',
-    label: 'Custom Cabinetry',
-    icon: '/landing/icon-cabinetry.svg',
-    brands: ['Laurameroni', 'Premier', 'Crystal Cabinets'],
-    slides: [
-      {
-        image: '/landing/showcase-cabinetry.png',
-        caption: 'TBS Design Gallery & The Douglas Friedman Project',
-        cta: 'Custom Cabinetry Selection',
-      },
-      {
-        image: '/landing/install-1.png',
-        caption: 'TBS Design Gallery & The Douglas Friedman Project',
-        cta: 'Custom Cabinetry Selection',
-      },
-      {
-        image: '/landing/install-3.png',
-        caption: 'TBS Design Gallery & The Douglas Friedman Project',
-        cta: 'Custom Cabinetry Selection',
-      },
-      {
-        image: '/landing/event-1.png',
-        caption: 'TBS Design Gallery & The Douglas Friedman Project',
-        cta: 'Custom Cabinetry Selection',
-      },
-    ],
-  },
-  {
-    id: 'windows-doors',
-    label: 'Windows & Doors',
-    icon: '/landing/icon-windows.svg',
-    brands: ['Marvin', 'Renson', 'Panda'],
-    slides: [
-      {
-        image: '/landing/install-2.png',
-        caption: 'TBS Design Gallery Showroom, Santa Clara',
-        cta: 'Windows & Doors Selection',
-      },
-      {
-        image: '/landing/install-4.png',
-        caption: 'TBS Design Gallery Showroom, Santa Clara',
-        cta: 'Windows & Doors Selection',
-      },
-      {
-        image: '/landing/showcase-cabinetry.png',
-        caption: 'TBS Design Gallery Showroom, Santa Clara',
-        cta: 'Windows & Doors Selection',
-      },
-      {
-        image: '/landing/install-1.png',
-        caption: 'TBS Design Gallery Showroom, Santa Clara',
-        cta: 'Windows & Doors Selection',
-      },
-    ],
-  },
-  {
-    id: 'appliances',
-    label: 'Appliances',
-    icon: '/landing/icon-appliances.svg',
-    brands: ['Gaggenau', 'Sub-Zero', 'Wolf'],
-    slides: [
-      {
-        image: '/landing/install-3.png',
-        caption: 'TBS Design Gallery Showroom, Santa Clara',
-        cta: 'Appliances Selection',
-      },
-      {
-        image: '/landing/install-2.png',
-        caption: 'TBS Design Gallery Showroom, Santa Clara',
-        cta: 'Appliances Selection',
-      },
-      {
-        image: '/landing/event-1.png',
-        caption: 'TBS Design Gallery Showroom, Santa Clara',
-        cta: 'Appliances Selection',
-      },
-      {
-        image: '/landing/install-4.png',
-        caption: 'TBS Design Gallery Showroom, Santa Clara',
-        cta: 'Appliances Selection',
-      },
-    ],
-  },
-  {
-    id: 'outdoor-living',
-    label: 'Outdoor Living',
-    icon: '/landing/icon-outdoor.svg',
-    brands: ['Renson', 'Roll-A-Cover', 'Struxure'],
-    slides: [
-      {
-        image: '/landing/install-1.png',
-        caption: 'TBS Design Gallery Showroom, Santa Clara',
-        cta: 'Outdoor Living Selection',
-      },
-      {
-        image: '/landing/showcase-cabinetry.png',
-        caption: 'TBS Design Gallery Showroom, Santa Clara',
-        cta: 'Outdoor Living Selection',
-      },
-      {
-        image: '/landing/install-2.png',
-        caption: 'TBS Design Gallery Showroom, Santa Clara',
-        cta: 'Outdoor Living Selection',
-      },
-      {
-        image: '/landing/install-3.png',
-        caption: 'TBS Design Gallery Showroom, Santa Clara',
-        cta: 'Outdoor Living Selection',
-      },
-    ],
-  },
-]
-
 export const SHOWROOM_SLIDES: { image: string; caption: string }[] = [
-  { image: '/landing/event-1.png', caption: 'Belgian Design Panel, 2025' },
-  { image: '/landing/install-3.png', caption: 'Belgian Design Panel, 2025' },
-  { image: '/landing/showcase-cabinetry.png', caption: 'Belgian Design Panel, 2025' },
-  { image: '/landing/install-1.png', caption: 'Belgian Design Panel, 2025' },
+  {
+    image:
+      'https://nbdugymkxxwohotyzwhw.supabase.co/storage/v1/object/public/media/tbs-design-gallery-event-01.jpg',
+    caption: 'Belgian Design Panel at TBS',
+  },
+  {
+    image:
+      'https://nbdugymkxxwohotyzwhw.supabase.co/storage/v1/object/public/media/tbs-design-gallery-installation-03.jpg',
+    caption: 'Materials installation',
+  },
+  {
+    image:
+      'https://nbdugymkxxwohotyzwhw.supabase.co/storage/v1/object/public/media/tbs-design-gallery-installation-01.jpg',
+    caption: 'Office installation',
+  },
+  {
+    image:
+      'https://nbdugymkxxwohotyzwhw.supabase.co/storage/v1/object/public/media/tbs-design-gallery-event-02.jpg',
+    caption: 'TBS Design Gallery Event',
+  },
 ]
 
 /**
