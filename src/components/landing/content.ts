@@ -21,15 +21,27 @@ export const SHOWROOM_SLIDES: { image: string; caption: string }[] = [
   },
 ]
 
-/**
- * Installation accordion cards: the expanded card shows its caption pill.
- * Captions are placeholders — swap when final copy exists.
- */
-export const INSTALLATION_CARDS: { image: string; caption: string }[] = [
-  { image: '/landing/install-1.png', caption: 'Outdoor Living Build' },
-  { image: '/landing/install-2.png', caption: 'Custom Millwork Installation' },
-  { image: '/landing/install-3.png', caption: 'Window & Door Fitting' },
-  { image: '/landing/install-4.png', caption: 'Warranty & Service' },
+export const INSTALLATION_CARDS: { poster: string; video: string; label: string }[] = [
+  {
+    poster: 'https://pub-7ffc3e607c094fb5b9afa3ec6e20518f.r2.dev/installation-poster.jpg',
+    video: 'https://pub-7ffc3e607c094fb5b9afa3ec6e20518f.r2.dev/installation.mp4',
+    label: 'Installation',
+  },
+  {
+    poster: 'https://pub-7ffc3e607c094fb5b9afa3ec6e20518f.r2.dev/people-poster.jpg',
+    video: 'https://pub-7ffc3e607c094fb5b9afa3ec6e20518f.r2.dev/people.mp4',
+    label: 'People',
+  },
+  {
+    poster: 'https://pub-7ffc3e607c094fb5b9afa3ec6e20518f.r2.dev/windows-doors-install-poster.jpg',
+    video: 'https://pub-7ffc3e607c094fb5b9afa3ec6e20518f.r2.dev/windows-doors-install.mp4',
+    label: 'Windows & Doors Installation',
+  },
+  {
+    poster: 'https://pub-7ffc3e607c094fb5b9afa3ec6e20518f.r2.dev/uriel-walking-in-poster.jpg',
+    video: 'https://pub-7ffc3e607c094fb5b9afa3ec6e20518f.r2.dev/uriel-walking-in.mp4',
+    label: 'Uriel Walking In',
+  },
 ]
 
 export const PROCESS_STEPS = [

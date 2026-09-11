@@ -108,6 +108,15 @@ SectionBand > BlueprintColumn > SiteFooter
 `export const revalidate = 300` — the page is ISR with a 5-minute window, on top of the
 on-demand `revalidatePath` from the CMS hooks.
 
+### Product Specification showcase (Figma 624:5660)
+
+`SpecificationSection` receives the homepage's active+published vendors and groups them by their
+CMS `categories`; empty categories are hidden and names are alphabetical. Its five tabs use the
+Figma SVGs in `public/landing/category-*.svg`, and each slide reuses `VendorHeroCard` with the
+selected category label while linking to the vendor's canonical `vendorHref`. Rotation runs every
+5 seconds and pauses during vendor-name/hero interaction; active names stay dark while the arrow
+appears only on direct name hover.
+
 ### Header + hero (Figma 677:6932)
 
 - `SiteHeader` is a page-level sibling above `Hero` on the landing page (same standalone
@@ -239,10 +248,10 @@ in the footer, and it renders with no active state until mounted to keep SSR mar
 
 Three different mechanisms — pick the matching one:
 
-- `Carousel` (`Carousel.tsx`) — auto-advancing crossfade; used by Gallery and Specification.
+- `Carousel` (`Carousel.tsx`) — auto-advancing crossfade; used by Gallery.
 - `useCarouselTimer` — the shared rAF timer behind the above. Tracks `index` + a 0–1 `progress`,
-  pauses via `IntersectionObserver` when off-screen, resets on manual select. `InstallationSection`
-  uses it directly to drive its accordion.
+  pauses via `IntersectionObserver` when off-screen, accepts an explicit pause state, and resets on
+  manual select. `SpecificationSection` and `InstallationSection` use it directly.
 - `embla-carousel-react` — testimonials only, because it needs drag plus a custom `align` that
   pins the first card to the section gutter.
 
