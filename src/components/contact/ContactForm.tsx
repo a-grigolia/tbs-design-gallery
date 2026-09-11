@@ -5,6 +5,7 @@ import React, { useEffect, useRef, useState } from 'react'
 
 import { submitContact } from '@/app/(frontend)/contact/actions'
 import { I_AM_A_OPTIONS, PROJECT_TYPE_OPTIONS } from '@/components/contact/options'
+import { californiaAddressFromPlace, type StructuredAddress } from '@/lib/address'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -196,12 +197,14 @@ function AddressField({
   value,
   error,
   onChange,
+  onSelect,
   onBlur,
   placesReady,
 }: {
   value: string
   error: string | null
   onChange: (value: string) => void
+  onSelect: (value: StructuredAddress | null) => void
   onBlur: () => void
   placesReady: boolean
 }) {
@@ -254,16 +257,18 @@ function AddressField({
   }, [focused, placesReady, value])
 
   async function selectSuggestion(suggestion: AddressSuggestion) {
-    let address = suggestion.label
     try {
       const place = suggestion.prediction.toPlace()
-      await place.fetchFields({ fields: ['formattedAddress'] })
-      address = place.formattedAddress ?? address
+      await place.fetchFields({ fields: ['formattedAddress', 'addressComponents', 'id'] })
+      const structured = californiaAddressFromPlace(place)
+      const address = structured?.address ?? place.formattedAddress ?? suggestion.label
+
+      suppressValueRef.current = address
+      onChange(address)
+      onSelect(structured)
     } catch {
-      // The visible prediction is still a valid manual value if detail lookup fails.
+      onSelect(null)
     }
-    suppressValueRef.current = address
-    onChange(address)
     setSuggestions([])
     setActiveIndex(-1)
     sessionTokenRef.current = null
@@ -296,6 +301,7 @@ function AddressField({
         error={error}
         onChange={(nextValue) => {
           onChange(nextValue)
+          onSelect(null)
           if (nextValue.trim().length < 3) {
             setSuggestions([])
             setActiveIndex(-1)
@@ -355,6 +361,7 @@ export function ContactForm() {
   const [submitted, setSubmitted] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [placesReady, setPlacesReady] = useState(false)
+  const [structuredAddress, setStructuredAddress] = useState<StructuredAddress | null>(null)
   // The success panel holds the form's rendered height so the page (and the
   // photo beside it) doesn't collapse when the form is swapped out.
   const formRef = useRef<HTMLFormElement>(null)
@@ -363,6 +370,7 @@ export function ContactForm() {
   const allValid =
     iAmA !== null &&
     projectType !== null &&
+    structuredAddress !== null &&
     (Object.keys(EMPTY_VALUES) as TextFieldName[]).every(
       (name) => fieldError(name, values[name]) === null,
     )
@@ -376,6 +384,14 @@ export function ContactForm() {
       iAmA: iAmA ?? '',
       projectType: projectType ?? '',
       ...values,
+      ...(structuredAddress ?? {
+        address: '',
+        street: '',
+        city: '',
+        state: '',
+        zipcode: '',
+        googlePlaceId: '',
+      }),
       company,
     })
     setSubmitting(false)
@@ -449,8 +465,16 @@ export function ContactForm() {
           ))}
           <AddressField
             value={values.address}
-            error={touched.address ? fieldError('address', values.address) : null}
+            error={
+              touched.address
+                ? (fieldError('address', values.address) ??
+                  (structuredAddress
+                    ? null
+                    : 'Please select a California address from the suggestions.'))
+                : null
+            }
             onChange={(value) => setValues((prev) => ({ ...prev, address: value }))}
+            onSelect={setStructuredAddress}
             onBlur={() => setTouched((prev) => ({ ...prev, address: true }))}
             placesReady={placesReady}
           />

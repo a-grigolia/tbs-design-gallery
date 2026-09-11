@@ -337,7 +337,16 @@ export interface ContactSubmission {
   email: string;
   phone: string;
   address: string;
+  street: string;
+  city: string;
+  state: string;
+  zipcode: string;
+  googlePlaceId: string;
   message: string;
+  zohoStatus: 'pending' | 'delivered' | 'failed';
+  zohoAttempts: number;
+  zohoLastAttemptAt?: string | null;
+  zohoLastError?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -568,7 +577,16 @@ export interface ContactSubmissionsSelect<T extends boolean = true> {
   email?: T;
   phone?: T;
   address?: T;
+  street?: T;
+  city?: T;
+  state?: T;
+  zipcode?: T;
+  googlePlaceId?: T;
   message?: T;
+  zohoStatus?: T;
+  zohoAttempts?: T;
+  zohoLastAttemptAt?: T;
+  zohoLastError?: T;
   updatedAt?: T;
   createdAt?: T;
 }

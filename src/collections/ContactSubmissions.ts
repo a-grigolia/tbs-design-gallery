@@ -13,7 +13,15 @@ export const ContactSubmissions: CollectionConfig = {
   slug: 'contact-submissions',
   admin: {
     useAsTitle: 'email',
-    defaultColumns: ['firstName', 'lastName', 'email', 'iAmA', 'projectType', 'createdAt'],
+    defaultColumns: [
+      'firstName',
+      'lastName',
+      'email',
+      'iAmA',
+      'projectType',
+      'zohoStatus',
+      'createdAt',
+    ],
     description: 'Messages sent through the contact form. Read-only capture — edit nothing here.',
   },
   access: {
@@ -73,9 +81,78 @@ export const ContactSubmissions: CollectionConfig = {
       required: true,
     },
     {
+      name: 'street',
+      type: 'text',
+      required: true,
+    },
+    {
+      name: 'city',
+      type: 'text',
+      required: true,
+    },
+    {
+      name: 'state',
+      type: 'text',
+      required: true,
+    },
+    {
+      name: 'zipcode',
+      label: 'Zip code',
+      type: 'text',
+      required: true,
+    },
+    {
+      name: 'googlePlaceId',
+      label: 'Google Place ID',
+      type: 'text',
+      required: true,
+      admin: {
+        readOnly: true,
+      },
+    },
+    {
       name: 'message',
       type: 'textarea',
       required: true,
+    },
+    {
+      name: 'zohoStatus',
+      label: 'Zoho delivery',
+      type: 'select',
+      required: true,
+      defaultValue: 'pending',
+      options: [
+        { label: 'Pending', value: 'pending' },
+        { label: 'Delivered', value: 'delivered' },
+        { label: 'Failed', value: 'failed' },
+      ],
+      admin: {
+        readOnly: true,
+      },
+    },
+    {
+      name: 'zohoAttempts',
+      type: 'number',
+      required: true,
+      defaultValue: 0,
+      min: 0,
+      admin: {
+        readOnly: true,
+      },
+    },
+    {
+      name: 'zohoLastAttemptAt',
+      type: 'date',
+      admin: {
+        readOnly: true,
+      },
+    },
+    {
+      name: 'zohoLastError',
+      type: 'textarea',
+      admin: {
+        readOnly: true,
+      },
     },
   ],
 }
