@@ -1,5 +1,12 @@
 import { MigrateDownArgs, MigrateUpArgs, sql } from '@payloadcms/db-postgres'
 
+/*
+ * Older Webflow-era rows only contain "City, Zip" in address, while newer
+ * rows contain Google's full formatted address. The conditional backfill
+ * preserves the useful components from both shapes before enforcing the new
+ * required columns. Missing legacy street/place IDs stay explicit rather
+ * than inventing data.
+ */
 export async function up({ db }: MigrateUpArgs): Promise<void> {
   await db.execute(sql`
    CREATE TYPE "public"."enum_contact_submissions_zoho_status" AS ENUM('pending', 'delivered', 'failed');

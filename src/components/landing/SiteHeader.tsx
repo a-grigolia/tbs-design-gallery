@@ -25,11 +25,20 @@ export function SiteHeader({ overlayAtTop = false }: { overlayAtTop?: boolean })
   const isOverlay = overlayAtTop && !scrolled
 
   useEffect(() => {
+    if (overlayAtTop) {
+      const onHeroCompactChange = (event: Event) => {
+        setScrolled((event as CustomEvent<boolean>).detail)
+      }
+
+      window.addEventListener('landing-hero-compact-change', onHeroCompactChange)
+      return () => window.removeEventListener('landing-hero-compact-change', onHeroCompactChange)
+    }
+
     const onScroll = () => setScrolled(window.scrollY > 8)
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+  }, [overlayAtTop])
 
   return (
     <header className="pointer-events-none sticky top-0 z-50 flex h-[60px] w-full flex-col items-center px-4">

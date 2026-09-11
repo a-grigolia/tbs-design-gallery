@@ -2,6 +2,8 @@ import { NextRequest } from 'next/server'
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+// Route tests exercise authentication and batching without replaying real
+// contact submissions into Zoho.
 const mocks = vi.hoisted(() => ({
   deliver: vi.fn(),
   find: vi.fn(),

@@ -4,6 +4,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { californiaAddressFromPlace } from '@/lib/address'
 
+// Keep tests deterministic and prevent validation runs from creating real
+// Payload rows or consuming Zoho Flow tasks.
 const payloadMocks = vi.hoisted(() => ({
   findByID: vi.fn(),
   update: vi.fn(),

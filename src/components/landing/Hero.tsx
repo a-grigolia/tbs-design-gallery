@@ -38,6 +38,7 @@ export function Hero() {
 
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
     let animationFrame = 0
+    let headerCompact: boolean | undefined
     let geometry:
       | {
           viewportWidth: number
@@ -72,6 +73,15 @@ export function Hero() {
         : Math.min(Math.max(-section.getBoundingClientRect().top / scrollDistance, 0), 1)
       const frameProgress = Math.min(Math.max((progress - 0.42) / 0.58, 0), 1)
       const easedProgress = progress * progress * (3 - 2 * progress)
+      const nextHeaderCompact = staticLayout || progress > 0.12
+
+      if (nextHeaderCompact !== headerCompact) {
+        headerCompact = nextHeaderCompact
+        document.documentElement.dataset.landingHeroCompact = String(nextHeaderCompact)
+        window.dispatchEvent(
+          new CustomEvent('landing-hero-compact-change', { detail: nextHeaderCompact }),
+        )
+      }
 
       const x = targetX * progress
       const y = targetY * progress
@@ -98,9 +108,17 @@ export function Hero() {
       const targetX = outerGutter + innerPadding + 1
       const targetY = 60 + innerPadding + 1
       const targetWidth = viewportWidth - targetX * 2
-      const targetHeight = viewportWidth >= 1024 ? targetWidth / 2 : 480
+      const idealTargetHeight = viewportWidth >= 1024 ? targetWidth / 2 : 480
+      const desiredScrollDistance = Math.min(Math.max(viewportHeight * 0.22, 120), 220)
+      const smoothTargetHeight = viewportHeight - targetY - innerPadding - 1 - desiredScrollDistance
+      const maximumTargetHeight = Math.max(viewportHeight - targetY - innerPadding - 1 - 16, 1)
+      const targetHeight = Math.min(
+        idealTargetHeight,
+        Math.max(240, smoothTargetHeight),
+        maximumTargetHeight,
+      )
       const targetBottom = targetY + targetHeight + innerPadding + 1
-      const staticLayout = reducedMotion.matches || targetBottom >= viewportHeight - 48
+      const staticLayout = reducedMotion.matches
       const scrollDistance = Math.max(viewportHeight - targetBottom, 1)
 
       geometry = {
@@ -153,6 +171,7 @@ export function Hero() {
 
     return () => {
       if (animationFrame) window.cancelAnimationFrame(animationFrame)
+      delete document.documentElement.dataset.landingHeroCompact
       window.removeEventListener('scroll', requestRender)
       window.removeEventListener('resize', requestMeasure)
       reducedMotion.removeEventListener('change', requestMeasure)

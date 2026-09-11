@@ -43,9 +43,9 @@ const REQUIRED_TEXT = [
 ] as const
 
 /**
- * Writes a contact-form submission through the local API (bypasses the
- * collection's admin-only access control). The Zoho CRM push will slot in
- * here after the create, once that integration is built.
+ * Persists before contacting Zoho so a Flow outage never loses the inquiry.
+ * Delivery runs after the response; its outcome is recorded on the local row
+ * and recovered by the protected retry route.
  */
 export async function submitContact(data: ContactFormData): Promise<ContactFormResult> {
   // Bots that fill the hidden field get a silent "success" — no record, no signal.
@@ -89,6 +89,7 @@ export async function submitContact(data: ContactFormData): Promise<ContactFormR
         zohoAttempts: 0,
       },
     })
+    // The visitor can leave once the durable local copy exists.
     after(async () => {
       await deliverContactToZoho(submission.id)
     })

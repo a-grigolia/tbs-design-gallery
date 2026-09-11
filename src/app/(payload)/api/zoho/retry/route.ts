@@ -7,6 +7,8 @@ import { deliverContactToZoho } from '@/lib/zoho'
 
 const BATCH_SIZE = 25
 
+// Vercel Cron sends CRON_SECRET as a bearer token. The same protected route
+// accepts an optional submission ID for deliberate manual retries.
 function isAuthorized(request: NextRequest): boolean {
   const secret = process.env.CRON_SECRET
   return Boolean(secret && request.headers.get('authorization') === `Bearer ${secret}`)
@@ -27,6 +29,8 @@ async function retryZohoDeliveries(request: NextRequest) {
   }
 
   const payload = await getPayload()
+  // The Hobby plan runs this recovery pass daily; normal delivery still
+  // happens immediately after submission through Next's after() callback.
   const ids = parsedId
     ? [parsedId]
     : (

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 
+import Link from 'next/link'
 import React from 'react'
 
 import { ContactForm } from '@/components/contact/ContactForm'
@@ -48,7 +49,18 @@ export default function ContactPage() {
                 className="size-full rounded-[24px] object-cover"
               />
             </div>
-            <div className="w-full shrink-0 lg:w-[692px]">
+            <div className="flex w-full shrink-0 flex-col gap-[24px] lg:w-[692px]">
+              <p className="max-w-[600px] text-[14px] leading-[20px] text-ink-50">
+                We use your information to understand your project and respond to your inquiry. See
+                our{' '}
+                <Link
+                  href="/privacy-policy"
+                  className="underline underline-offset-2 transition-colors hover:text-ink"
+                >
+                  Privacy Policy
+                </Link>{' '}
+                for more information.
+              </p>
               <ContactForm />
             </div>
           </div>

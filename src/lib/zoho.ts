@@ -5,6 +5,11 @@ import { getPayload } from '@/lib/payload'
 
 const REQUEST_TIMEOUT_MS = 8_000
 
+/**
+ * This payload is deliberately independent of both Payload's field names and
+ * Zoho's generated expressions, keeping the Flow mapping stable if either
+ * side's internal representation changes.
+ */
 export type ZohoLeadPayload = {
   submissionId: number
   firstName: string
@@ -45,6 +50,11 @@ export function zohoLeadPayload(submission: ContactSubmission): ZohoLeadPayload 
   }
 }
 
+/**
+ * The local row is the source of truth. A 2xx response means Flow accepted the
+ * webhook; failures remain visible in Payload and can be retried without
+ * making the visitor resubmit the form.
+ */
 export async function deliverContactToZoho(submissionId: number): Promise<boolean> {
   const payload = await getPayload()
   const submission = await payload.findByID({
@@ -53,6 +63,7 @@ export async function deliverContactToZoho(submissionId: number): Promise<boolea
     overrideAccess: true,
   })
 
+  // Avoid replaying a delivery that Flow has already acknowledged.
   if (submission.zohoStatus === 'delivered') return true
 
   const attemptedAt = new Date().toISOString()

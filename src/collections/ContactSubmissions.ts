@@ -6,8 +6,8 @@ import { isAdmin } from '../access'
  * Contact form submissions from /contact. Rows are written exclusively by the
  * submitContact server action through the local API (which bypasses access
  * control), so every REST/GraphQL surface — including create — stays
- * admin-only and can't be used for spam. Zoho CRM sync happens (later) in the
- * same server action, not here; this collection is the local system of record.
+ * admin-only and can't be used for spam. This collection is the durable
+ * system of record; Zoho Flow delivery state lives here for audit and retry.
  */
 export const ContactSubmissions: CollectionConfig = {
   slug: 'contact-submissions',
@@ -76,6 +76,8 @@ export const ContactSubmissions: CollectionConfig = {
       required: true,
     },
     {
+      // Full and structured forms are both retained: the former is useful to
+      // humans, while Zoho's Lead fields need separate components.
       name: 'address',
       type: 'text',
       required: true,
@@ -116,6 +118,8 @@ export const ContactSubmissions: CollectionConfig = {
       required: true,
     },
     {
+      // "Delivered" means Zoho Flow acknowledged the webhook, not that this
+      // collection is mirroring Zoho CRM state.
       name: 'zohoStatus',
       label: 'Zoho delivery',
       type: 'select',

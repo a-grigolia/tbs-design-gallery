@@ -47,7 +47,7 @@ export function SiteFooter() {
       <div className="flex w-full flex-wrap items-center justify-between gap-[16px] border-t border-hairline px-gutter-sm py-[24px] lg:px-gutter">
         <div className="flex flex-wrap items-center gap-[48px] text-[14px] leading-[18px] text-ink-50">
           <p>© 2026 TBS Design Gallery</p>
-          <Link href="#" className="transition-colors hover:text-ink">
+          <Link href="/privacy-policy" className="transition-colors hover:text-ink">
             Privacy policy
           </Link>
         </div>

@@ -16,7 +16,8 @@ It is really **two projects in one repo**, and the split is deliberate:
    code, not the CMS. Navigation, footer, contact details, and all section prose are edited by
    changing `.tsx`/`.ts` files.
 2. **A deliberately small CMS.** Only **Vendors** and **Posts** (plus their **Media**) are
-   editable through Payload's admin. Nothing else is CMS-driven, on purpose.
+   editorially managed. **Contact Submissions** is an operational, automatically populated
+   collection rather than a source for marketing content.
 
 Do not "helpfully" move hardcoded marketing copy into the CMS. That's a design decision, not an
 oversight.
@@ -39,6 +40,8 @@ oversight.
 | Tests           | Vitest (integration) + Playwright (e2e)                                |                                            |
 | Package manager | pnpm                                                                   | `engines`: node `^18.20.2                  |     | >=20.9.0` |
 | Deploy          | Vercel                                                                 | `vercel.json` pins the Next preset         |
+| Address lookup  | Google Places Autocomplete Data API                                    | California addresses only                  |
+| CRM delivery    | Zoho Flow webhook → Zoho CRM Leads                                     | Upserts Leads by email in Flow             |
 
 ## Commands
 
@@ -65,20 +68,25 @@ src/
     (frontend)/             # the public marketing site
       layout.tsx            # fonts, ThemeProvider, global metadata
       page.tsx              # the landing page
+      contact/              # local-first contact form + server action
       [category]/[slug]/    # vendor detail pages, e.g. /windows-doors/oikos
       not-found.tsx         # branded 404 (canvas bg, header, link home)
       styles.css            # Tailwind entry + all design tokens
     (payload)/              # Payload admin + REST/GraphQL, mostly generated
       admin/[[...segments]]/
       api/[...slug]/ , api/graphql/ , api/graphql-playground/
+      api/zoho/retry/       # CRON_SECRET-protected failed-delivery recovery
     my-route/               # leftover template scaffolding, safe to delete
   access/index.ts           # reusable Payload access-control predicates
-  collections/              # Users, Media, Vendors, Posts
+  collections/              # Users, Media, Vendors, Posts, ContactSubmissions
+  components/contact/       # contact form and CRM-aligned option lists
   components/landing/       # every landing-page component
   components/vendor/        # vendor detail page components
   fields/slug.ts            # shared auto-slug field
   hooks/revalidate.ts       # afterChange/afterDelete ISR invalidation
   lib/payload.ts            # cached getPayload() for server components
+  lib/address.ts            # Google Place → structured California address
+  lib/zoho.ts               # server-only Flow payload + delivery state
   lib/categories.ts         # VENDOR_CATEGORIES + vendorHref/categoryLabel/isVendorCategory
   lib/seo.ts                # Webflow-inherited vendor meta title/description patterns
   migrations/               # baseline Payload migration (see gotcha #9)
@@ -169,6 +177,25 @@ Components in `src/components/vendor/` (all server components, same conventions 
 
 `vendorHref(vendor)` in `src/lib/categories.ts` builds the canonical URL — use it for every
 vendor link (the homepage `PartnersSection` already does).
+
+### Contact form — `/contact`
+
+- The form saves to `ContactSubmissions` first, then `after()` sends the durable row to Zoho Flow.
+  A Zoho outage must never make the visitor re-enter an inquiry that was already stored locally.
+- Address suggestions use `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` and the modern Places Autocomplete
+  Data API. Selection fetches `formattedAddress`, `addressComponents`, and the Google Place ID.
+  A selected California address with street/city/zip is required; editing the text clears the
+  structured selection. Do not replace this with comma-based parsing.
+- `lib/zoho.ts` sends stable semantic keys and converts internal select slugs to display labels.
+  Flow maps these to a **Create or update lead** action, which deduplicates by email. A 2xx webhook
+  response means Flow accepted delivery; it does not make Payload a mirror of later CRM state.
+- `zohoStatus`, attempts, last-attempt time, and last error make delivery auditable. The normal
+  attempt runs immediately after the response. `/api/zoho/retry` retries up to 25 pending/failed
+  rows and accepts `GET` (Vercel Cron) or `POST` (manual), both with
+  `Authorization: Bearer {CRON_SECRET}`.
+- `vercel.json` invokes recovery daily at 15:00 UTC because Vercel Hobby does not allow more
+  frequent cron schedules. The Flow webhook and cron secret are server-only; neither may use a
+  `NEXT_PUBLIC_` prefix.
 
 ### Blueprint primitives (`components/landing/Blueprint.tsx`)
 
@@ -275,6 +302,9 @@ Three different mechanisms — pick the matching one:
   photo** — they've been swapped by hand before; double-check on entry.
 - **Posts** — drafts enabled. `publishedAt` required and indexed, freeform `author` string,
   `content` + legacy `contentHtml`.
+- **ContactSubmissions** — admin-only inquiry capture and the local source of truth for CRM
+  delivery. Stores full + structured Google address data and Zoho delivery metadata. The server
+  action writes rows with Local API access override; public REST/GraphQL access remains closed.
 
 ### Access control (`src/access/index.ts`)
 
@@ -342,13 +372,11 @@ rather than copying placeholder dimensions.
    scaffolding — it asserts the page title matches `/Payload Blank Template/` and that `h1` reads
    "Welcome to your new project." The real landing page has neither. The admin e2e specs and the
    Vitest integration spec are fine. Fix or delete that spec before trusting a green run.
-3. **Some links still 404.** `/vendors`, `/blog`, and `/contact` are linked from `SiteHeader`,
-   `SiteFooter`, `Hero`, and `SpecificationSection` — including every "Request a tour" CTA — but
-   remain unbuilt. Vendor detail pages exist at `/{primaryCategory}/{slug}` (build links with
-   `vendorHref`); old `/vendors/[slug]`-style links are wrong, not just unbuilt.
+3. **`/vendors` remains unbuilt.** Vendor detail pages exist at `/{primaryCategory}/{slug}` (build
+   links with `vendorHref`); old `/vendors/[slug]`-style links are wrong, not just unbuilt.
 4. **There are two category taxonomies.** The CMS taxonomy lives in `src/lib/categories.ts`
    (`custom-cabinetry | windows-doors | outdoor-living | appliances |
-   architectural-elements-furniture`) — its values are simultaneously the Postgres enum values
+architectural-elements-furniture`) — its values are simultaneously the Postgres enum values
    and the public URL segments. The landing page's `CATEGORIES` in `content.ts` is a separate,
    unwired list. Don't assume editing one affects the other.
 5. **Vendor category `value` strings are permanent identifiers** (enum values + live URLs,
@@ -408,3 +436,9 @@ rather than copying placeholder dimensions.
     steps won't render without a layout change.
 19. **`src/app/my-route/route.ts`** is leftover template scaffolding with an unused param. Harmless,
     but it is not a real endpoint.
+20. **Contact delivery has three environment variables with different exposure rules.**
+    `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` is intentionally browser-visible and must be restricted by
+    Google HTTP referrers plus Maps JavaScript/Places APIs. `ZOHO_FLOW_WEBHOOK_URL` contains a
+    `zapikey`, and `CRON_SECRET` authorizes retries; both are server-only Vercel Secrets. Local
+    `.env` and Vercel do not sync. The contact/address migrations were applied to the current
+    Supabase database on 2026-09-11, but fresh databases still need `pnpm payload migrate`.

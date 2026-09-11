@@ -1,3 +1,8 @@
+/**
+ * Structured components are captured when the user chooses a Google result.
+ * Parsing the formatted string later is intentionally avoided because unit
+ * numbers and locality names make comma-based parsing unreliable.
+ */
 export type StructuredAddress = {
   address: string
   street: string
@@ -30,6 +35,7 @@ export function californiaAddressFromPlace(place: PlaceAddressLike): StructuredA
   const route = componentValue(components, 'route') ?? ''
   const subpremise = componentValue(components, 'subpremise')
   const city =
+    // Google uses different locality types in a few US address formats.
     componentValue(components, 'locality') ??
     componentValue(components, 'postal_town') ??
     componentValue(components, 'sublocality_level_1') ??

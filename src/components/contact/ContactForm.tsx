@@ -245,7 +245,7 @@ function AddressField({
         )
         setActiveIndex(-1)
       } catch {
-        // Manual entry remains available if Places is unavailable or misconfigured.
+        // A failed lookup must not leave stale suggestions that appear selectable.
         if (!cancelled) setSuggestions([])
       }
     }, 250)
@@ -295,7 +295,7 @@ function AddressField({
     <div className="relative z-10 md:col-span-2">
       <FloatingField
         name="address"
-        label="Address *"
+        label="Project address *"
         autoComplete="street-address"
         value={value}
         error={error}
@@ -361,6 +361,8 @@ export function ContactForm() {
   const [submitted, setSubmitted] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [placesReady, setPlacesReady] = useState(false)
+  // Editing the visible text clears this value, which prevents free-form or
+  // out-of-state addresses from bypassing the California requirement.
   const [structuredAddress, setStructuredAddress] = useState<StructuredAddress | null>(null)
   // The success panel holds the form's rendered height so the page (and the
   // photo beside it) doesn't collapse when the form is swapped out.
@@ -506,7 +508,7 @@ export function ContactForm() {
           </label>
         </div>
 
-        <div className="flex w-full flex-col items-end justify-center gap-[8px]">
+        <div className="relative flex w-full flex-col items-end justify-center">
           <button
             type="submit"
             disabled={!allValid || submitting}
@@ -519,7 +521,9 @@ export function ContactForm() {
             {submitting ? 'Sending…' : 'Submit'}
           </button>
           {submitError ? (
-            <p className="text-[12px] leading-[16px] text-[rgba(255,116,116,0.9)]">{submitError}</p>
+            <p className="absolute top-full right-0 mt-[8px] text-[12px] leading-[16px] text-[rgba(255,116,116,0.9)]">
+              {submitError}
+            </p>
           ) : null}
         </div>
       </form>
