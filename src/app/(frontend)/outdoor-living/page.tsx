@@ -89,7 +89,7 @@ export default async function OutdoorLivingPage() {
               className="absolute inset-0 size-full object-cover"
             >
               <source
-                src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/renson-showcase-hd-1.mp4`}
+                src="https://media.tbsdesigngallery.com/renson-showcase-hd-1.mp4"
                 type="video/mp4"
               />
             </video>

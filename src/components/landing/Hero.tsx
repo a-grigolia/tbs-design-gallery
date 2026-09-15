@@ -108,18 +108,20 @@ export function Hero() {
       const targetX = outerGutter + innerPadding + 1
       const targetY = 60 + innerPadding + 1
       const targetWidth = viewportWidth - targetX * 2
-      const idealTargetHeight = viewportWidth >= 1024 ? targetWidth / 2 : 480
-      const desiredScrollDistance = Math.min(Math.max(viewportHeight * 0.22, 120), 220)
-      const smoothTargetHeight = viewportHeight - targetY - innerPadding - 1 - desiredScrollDistance
-      const maximumTargetHeight = Math.max(viewportHeight - targetY - innerPadding - 1 - 16, 1)
-      const targetHeight = Math.min(
-        idealTargetHeight,
-        Math.max(240, smoothTargetHeight),
-        maximumTargetHeight,
+      const preferredTargetHeight = Math.max(targetWidth / 2, 480)
+      // Preserve the preferred composition whenever it fits. Very wide,
+      // short viewports cap the final height so fullscreen always has enough
+      // runway to animate instead of falling into the instant handoff.
+      const minimumScrollDistance = 96
+      const availableTargetHeight = Math.max(
+        viewportHeight - targetY - innerPadding - 1 - minimumScrollDistance,
+        1,
       )
+      const targetHeight = Math.min(preferredTargetHeight, availableTargetHeight)
       const targetBottom = targetY + targetHeight + innerPadding + 1
       const staticLayout = reducedMotion.matches
-      const scrollDistance = Math.max(viewportHeight - targetBottom, 1)
+      const pinnedLayout = !staticLayout && targetBottom < viewportHeight
+      const scrollDistance = pinnedLayout ? viewportHeight - targetBottom : 1
 
       geometry = {
         viewportWidth,
@@ -143,9 +145,16 @@ export function Hero() {
         section.style.height = `${targetBottom}px`
         viewport.style.position = 'relative'
         viewport.style.height = `${targetBottom}px`
-      } else {
+      } else if (pinnedLayout) {
         section.style.height = `${viewportHeight}px`
         viewport.style.position = ''
+        viewport.style.height = `${targetBottom}px`
+      } else {
+        // Extremely short landscape viewports cannot contain the completed
+        // frame and a sticky runway simultaneously. Preserve the fullscreen
+        // opening, then hand off quickly to the taller in-flow frame.
+        section.style.height = `${targetBottom}px`
+        viewport.style.position = 'relative'
         viewport.style.height = `${targetBottom}px`
       }
 
@@ -222,7 +231,7 @@ export function Hero() {
             className="absolute inset-0 size-full object-cover"
           >
             <source
-              src={`${process.env.NEXT_PUBLIC_MEDIA_URL}/renson-showcase-hd-1.mp4`}
+              src="https://media.tbsdesigngallery.com/renson-showcase-hd-1.mp4"
               type="video/mp4"
             />
           </video>

@@ -23,23 +23,23 @@ export const SHOWROOM_SLIDES: { image: string; caption: string }[] = [
 
 export const INSTALLATION_CARDS: { poster: string; video: string; label: string }[] = [
   {
-    poster: 'https://pub-7ffc3e607c094fb5b9afa3ec6e20518f.r2.dev/installation-poster.jpg',
-    video: 'https://pub-7ffc3e607c094fb5b9afa3ec6e20518f.r2.dev/installation.mp4',
+    poster: 'https://media.tbsdesigngallery.com/installation-poster.jpg',
+    video: 'https://media.tbsdesigngallery.com/installation.mp4',
     label: 'Installation',
   },
   {
-    poster: 'https://pub-7ffc3e607c094fb5b9afa3ec6e20518f.r2.dev/people-poster.jpg',
-    video: 'https://pub-7ffc3e607c094fb5b9afa3ec6e20518f.r2.dev/people.mp4',
+    poster: 'https://media.tbsdesigngallery.com/people-poster.jpg',
+    video: 'https://media.tbsdesigngallery.com/people.mp4',
     label: 'People',
   },
   {
-    poster: 'https://pub-7ffc3e607c094fb5b9afa3ec6e20518f.r2.dev/windows-doors-install-poster.jpg',
-    video: 'https://pub-7ffc3e607c094fb5b9afa3ec6e20518f.r2.dev/windows-doors-install.mp4',
+    poster: 'https://media.tbsdesigngallery.com/windows-doors-install-poster.jpg',
+    video: 'https://media.tbsdesigngallery.com/windows-doors-install.mp4',
     label: 'Windows & Doors Installation',
   },
   {
-    poster: 'https://pub-7ffc3e607c094fb5b9afa3ec6e20518f.r2.dev/uriel-walking-in-poster.jpg',
-    video: 'https://pub-7ffc3e607c094fb5b9afa3ec6e20518f.r2.dev/uriel-walking-in.mp4',
+    poster: 'https://media.tbsdesigngallery.com/uriel-walking-in-poster.jpg',
+    video: 'https://media.tbsdesigngallery.com/uriel-walking-in.mp4',
     label: 'Uriel Walking In',
   },
 ]
