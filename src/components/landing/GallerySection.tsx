@@ -37,7 +37,7 @@ export function GallerySection() {
         </p>
       </div>
 
-      <SectionRule number="01 Showroom" />
+      <SectionRule number="01 Gallery" />
 
       <div className="flex w-full flex-col gap-[48px] px-gutter-sm pt-[32px] pb-[18px] lg:flex-row lg:items-stretch lg:px-gutter">
         <div className="flex flex-1 flex-col justify-between gap-[48px] pt-[16px] lg:pb-[54px]">

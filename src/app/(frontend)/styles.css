@@ -63,7 +63,7 @@
   --spacing-section: 96px;
   --spacing-heading-gap: 64px;
   --spacing-gutter: 48px;
-  --spacing-gutter-sm: 24px;
+  --spacing-gutter-sm: 16px;
 
   /* Type from the Figma file */
   --font-display: var(--font-superior-serif), 'LT Superior Serif', serif;
