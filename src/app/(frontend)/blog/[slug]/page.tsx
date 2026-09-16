@@ -69,7 +69,7 @@ export default async function BlogPostPage({ params }: { params: Params }) {
                 <span>{TYPE_LABELS[post.type]}</span>
                 {firstCategory ? <span>{categoryLabel(firstCategory)}</span> : null}
               </div>
-              <h1 className="font-display text-[36px] leading-[46px] font-bold text-ink">
+              <h1 className="font-display text-[36px] leading-[46px] font-semibold text-ink">
                 {post.title}
               </h1>
               <p className="text-[14px] leading-[18px] text-ink-50">{post.excerpt}</p>

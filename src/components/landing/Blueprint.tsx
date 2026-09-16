@@ -89,7 +89,7 @@ export function SectionRule({ number }: { number: string }) {
   return (
     <div className="flex w-full items-center justify-center gap-[8px] p-[24px]" aria-hidden>
       <div className="flex w-[16px] items-center">
-        <div className="h-[16px] w-px shrink-0 bg-hairline" />
+        <div className="h-[12px] w-px shrink-0 bg-hairline" />
         <div className="h-px min-w-px flex-1 bg-hairline" />
       </div>
       <p className="shrink-0 text-center font-figtree text-[10px] leading-[13px] whitespace-nowrap text-ink-50">
@@ -97,7 +97,7 @@ export function SectionRule({ number }: { number: string }) {
       </p>
       <div className="flex min-w-px flex-1 items-center">
         <div className="h-px min-w-px flex-1 bg-hairline" />
-        <div className="h-[16px] w-px shrink-0 bg-hairline" />
+        <div className="h-[12px] w-px shrink-0 bg-hairline" />
       </div>
     </div>
   )
@@ -108,7 +108,7 @@ export function VerticalRule({ number }: { number: string }) {
   return (
     <div className="flex h-full min-h-[160px] w-[16px] flex-col items-center gap-[4px] self-stretch py-[12px]" aria-hidden>
       <div className="flex h-[40px] w-full flex-col items-center">
-        <div className="h-px w-[16px] shrink-0 bg-hairline" />
+        <div className="h-px w-[12px] shrink-0 bg-hairline" />
         <div className="min-h-px w-px flex-1 bg-hairline" />
       </div>
       <p className="shrink-0 text-center font-figtree text-[10px] leading-[13px] whitespace-nowrap text-ink-50">
@@ -116,7 +116,7 @@ export function VerticalRule({ number }: { number: string }) {
       </p>
       <div className="flex min-h-px w-full flex-1 flex-col items-center">
         <div className="min-h-px w-px flex-1 bg-hairline" />
-        <div className="h-px w-[16px] shrink-0 bg-hairline" />
+        <div className="h-px w-[12px] shrink-0 bg-hairline" />
       </div>
     </div>
   )
@@ -127,7 +127,7 @@ export function MeasureRule({ label = 'What we do' }: { label?: string }) {
   return (
     <div className="flex h-[144px] w-full flex-col items-center justify-center gap-[4px] py-[12px]">
       <div className="flex min-h-px flex-1 flex-col items-center" aria-hidden>
-        <div className="h-px w-[16px] shrink-0 bg-hairline" />
+        <div className="h-px w-[12px] shrink-0 bg-hairline" />
         <div className="min-h-px w-px flex-1 bg-hairline" />
       </div>
       <p className="shrink-0 text-center font-figtree text-[8px] leading-[10px] whitespace-nowrap text-ink-50">
@@ -135,7 +135,7 @@ export function MeasureRule({ label = 'What we do' }: { label?: string }) {
       </p>
       <div className="flex min-h-px flex-1 flex-col items-center" aria-hidden>
         <div className="min-h-px w-px flex-1 bg-hairline" />
-        <div className="h-px w-[16px] shrink-0 bg-hairline" />
+        <div className="h-px w-[12px] shrink-0 bg-hairline" />
       </div>
     </div>
   )

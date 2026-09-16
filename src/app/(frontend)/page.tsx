@@ -44,9 +44,9 @@ export default async function HomePage() {
       <SectionBand>
         <BlueprintColumn corner="tee" className="pb-section">
           <GallerySection />
-          <SectionRule number="02" />
+          <SectionRule number="02 Product categories" />
           <SpecificationSection vendors={specificationVendors} />
-          <SectionRule number="03" />
+          <SectionRule number="03 Services" />
           <InstallationSection />
         </BlueprintColumn>
       </SectionBand>

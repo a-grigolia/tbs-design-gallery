@@ -49,7 +49,6 @@ export const PROCESS_STEPS = [
     number: '01',
     title: 'Pre-proposal',
     body: 'We review your plans, define the initial scope, and establish a realistic project budget.',
-    image: '/landing/process-1.png',
   },
   {
     number: '02',
@@ -121,23 +120,30 @@ export const FOOTER_ADDRESS = {
   hours: 'Monday-Friday: 10am-3pm',
 }
 
-export const TESTIMONIALS = [
+/**
+ * Testimonials from the Figma frame: `lead` is the serif opening sentence,
+ * `body` the remainder of the quote (may contain blank-line paragraph breaks,
+ * rendered with `whitespace-pre-line`).
+ */
+export const TESTIMONIALS: { lead: string; body: string; author: string }[] = [
   {
-    quote:
-      '"A year ago I decided to replace all of the windows and doors in my old house as salt air had caused a lot of damage. After comparing a number of options I hired TBS Design Gallery to install Marvin fiber glass products. Removal of the old windows revealed significant amounts of dry rot. TBS\u2019s crew did an outstanding job dealing with unwelcome surprises and resolving issues. After a year in place, I am very happy that everything works perfectly - no sticky sliders, nothing out of alignment. Very pleased customer."',
-    author: 'Carey Peabody',
-    source: 'google' as const,
+    lead: '"A year ago I decided to replace all of the windows and doors in my old house as salt air had caused a lot of damage.',
+    body: 'After comparing a number of options I hired TBS Design Gallery to install Marvin fiber glass products. Removal of the old windows revealed significant amounts of dry rot. TBS\u2019s crew did an outstanding job dealing with unwelcome surprises and resolving issues. After a year in place, I am very happy that everything works perfectly - no sticky sliders, nothing out of alignment. Very pleased customer."',
+    author: 'Carey P.',
   },
   {
-    quote:
-      '"TBS has been a great support for my new house doors/windows and cabinetry work. They are always available and have many product selections. I\'d highly recommend them to anyone who is looking for a reasonably priced/good customer service combo."',
-    author: 'Efe S.',
-    source: 'yelp' as const,
+    lead: '"When we started thinking about redoing our floor in our house we went to get ideas from all over to different stores.',
+    body: 'We then walked into TBS and felt like home. Liana and Mamuka treated us like family! The staff is exceptional. If you need architects or interior designers they are on site to make your renovation easy. If you need a contractor to install, they make it convenient and have an exceptional reference!\n\nThe entire galley is furnished with the samples provided from flooring and cabinetry to countertops and windows and doors. Thank you Liana and Mamuka."',
+    author: 'Jeff C.',
   },
   {
-    quote:
-      '"TBS has been a great support for my new house doors/windows and cabinetry work. They are always available and have many product selections. I\'d highly recommend them to anyone who is looking for a reasonably priced/good customer service combo."',
+    lead: '"TBS has been a great support for my new house doors/windows and cabinetry work.',
+    body: "They are always available and have many product selections. I'd highly recommend them to anyone who is looking for a reasonably priced/good customer service combo.\"",
     author: 'Efe S.',
-    source: 'yelp' as const,
+  },
+  {
+    lead: '"We placed an order for a made-to-order item from Italy through TBS Design.',
+    body: 'Unfortunately, the item was damaged in shipping but the TBS team worked tirelessly to help us resolve the problem. They showed great commitment to customer service that is hard to come by. I would absolutely recommend them!"',
+    author: 'Ginny U.',
   },
 ]

@@ -13,7 +13,11 @@ function CellContent({ vendor }: { vendor: Vendor }) {
   }
   return (
     // eslint-disable-next-line @next/next/no-img-element
-    <img alt={vendor.name} src={logo} className="max-h-[48px] w-full object-contain" />
+    <img
+      alt={vendor.name}
+      src={logo}
+      className="max-h-[48px] w-full object-contain dark:brightness-0 dark:invert"
+    />
   )
 }
 

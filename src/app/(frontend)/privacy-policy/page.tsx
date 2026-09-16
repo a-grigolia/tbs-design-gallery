@@ -24,7 +24,7 @@ export default function PrivacyPolicyPage() {
                 <p className="font-sans text-[10px] leading-[13px] text-ink-50">
                   Effective and last updated September 11, 2026
                 </p>
-                <h1 className="font-display text-[36px] leading-[46px] font-bold text-ink">
+                <h1 className="font-display text-[36px] leading-[46px] font-semibold text-ink">
                   TBS Design Gallery Privacy Policy
                 </h1>
               </div>

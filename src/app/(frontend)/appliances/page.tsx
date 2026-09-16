@@ -85,11 +85,11 @@ export default async function AppliancesPage() {
               loop
               playsInline
               preload="none"
-              poster="/landing/hero-poster.png"
+              poster="https://media.tbsdesigngallery.com/architectural-elements-hero-poster.jpg"
               className="absolute inset-0 size-full object-cover"
             >
               <source
-                src="https://media.tbsdesigngallery.com/renson-showcase-hd-1.mp4"
+                src="https://media.tbsdesigngallery.com/architectural-elements-hero.mp4"
                 type="video/mp4"
               />
             </video>
@@ -113,7 +113,7 @@ export default async function AppliancesPage() {
 
           <div className="flex w-full flex-col items-center px-gutter-sm py-[24px] lg:px-gutter">
             <div className="flex w-full max-w-[384px] flex-col gap-[16px]">
-              <h2 className="font-display text-[36px] leading-[46px] font-bold text-ink">
+              <h2 className="font-display text-[36px] leading-[46px] font-semibold text-ink">
                 Luxury Appliances for Refined Tastes
               </h2>
               <p className="text-[14px] leading-[18px] text-ink-50">

@@ -28,7 +28,7 @@ export function GallerySection() {
       </div>
 
       <div className="flex flex-col items-center gap-[16px] px-4 pt-[48px] pb-[32px] text-center">
-        <h2 className="max-w-[384px] font-display text-[36px] leading-[46px] font-bold text-ink">
+        <h2 className="max-w-[384px] font-display text-[36px] leading-[46px] font-semibold text-ink">
           More than a showroom
         </h2>
         <p className="max-w-[384px] text-[14px] leading-[18px] text-ink-50">
@@ -37,7 +37,7 @@ export function GallerySection() {
         </p>
       </div>
 
-      <SectionRule number="01" />
+      <SectionRule number="01 Showroom" />
 
       <div className="flex w-full flex-col gap-[48px] px-gutter-sm pt-[32px] pb-[18px] lg:flex-row lg:items-stretch lg:px-gutter">
         <div className="flex flex-1 flex-col justify-between gap-[48px] pt-[16px] lg:pb-[54px]">

@@ -17,6 +17,7 @@
   --palette-ink-50: rgba(0, 0, 0, 0.5);
   --palette-ink-40: rgba(0, 0, 0, 0.4);
   --palette-ink-30: rgba(0, 0, 0, 0.3);
+  --palette-ink-20: rgba(0, 0, 0, 0.2);
   --palette-gray-body: #717171;
 }
 
@@ -30,6 +31,7 @@
   --palette-ink-50: rgba(246, 242, 239, 0.55);
   --palette-ink-40: rgba(246, 242, 239, 0.45);
   --palette-ink-30: rgba(246, 242, 239, 0.35);
+  --palette-ink-20: rgba(246, 242, 239, 0.25);
   --palette-gray-body: #a49e99;
 }
 
@@ -43,6 +45,7 @@
   --color-ink-50: var(--palette-ink-50);
   --color-ink-40: var(--palette-ink-40);
   --color-ink-30: var(--palette-ink-30);
+  --color-ink-20: var(--palette-ink-20);
   --color-gray-body: var(--palette-gray-body);
 }
 

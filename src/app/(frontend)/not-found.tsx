@@ -11,7 +11,7 @@ export default function NotFound() {
       <SectionBand className="flex-1 border-b">
         <BlueprintColumn className="min-h-[480px] flex-1 items-center justify-center gap-[24px] py-section">
           <p className="font-figtree text-[10px] leading-[13px] text-ink-50">404</p>
-          <h1 className="text-center font-display text-[36px] leading-[44px] font-bold text-ink">
+          <h1 className="text-center font-display text-[36px] leading-[44px] font-semibold text-ink">
             Page not found
           </h1>
           <p className="max-w-[444px] text-center text-[14px] leading-[18px] text-ink-50">

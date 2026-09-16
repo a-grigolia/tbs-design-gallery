@@ -112,7 +112,7 @@ export default async function CustomCabinetryPage() {
 
           <div className="flex w-full flex-col items-center px-gutter-sm py-[24px] lg:px-gutter">
             <div className="flex w-full max-w-[384px] flex-col gap-[16px]">
-              <h2 className="font-display text-[36px] leading-[46px] font-bold text-ink">
+              <h2 className="font-display text-[36px] leading-[46px] font-semibold text-ink">
                 Custom is Personal
               </h2>
               <p className="text-[14px] leading-[18px] text-ink-50">
