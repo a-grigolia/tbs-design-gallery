@@ -239,7 +239,7 @@ export function Hero() {
           <div className="absolute inset-0 flex flex-col items-center justify-center px-[16px]">
             <h1
               ref={headingRef}
-              className="flex flex-col items-center text-center font-display text-[clamp(2rem,1.25rem+2.5vw,3.25rem)] leading-none font-semibold tracking-[0.015em] text-white will-change-transform"
+              className="flex flex-col items-center text-center text-[clamp(2rem,1.25rem+2.5vw,3rem)] leading-[1.042] tracking-[0.015em] text-white will-change-transform"
             >
               <span>Custom solutions</span>
               <span>for every space</span>

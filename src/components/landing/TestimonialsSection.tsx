@@ -10,7 +10,7 @@ const [carey, jeff, efe, ginny] = TESTIMONIALS
 function Quote({ testimonial }: { testimonial: (typeof TESTIMONIALS)[number] }) {
   return (
     <div className="flex w-full flex-col gap-[16px]">
-      <p className="font-display text-[20px] leading-[26px] text-ink">{testimonial.lead}</p>
+      <p className="text-[18px] leading-[24px] text-ink">{testimonial.lead}</p>
       <p className="text-[14px] leading-[20px] whitespace-pre-line text-ink-50">
         {testimonial.body}
       </p>
@@ -33,8 +33,8 @@ export function TestimonialsSection() {
 
   return (
     <>
-      <div className="flex w-full flex-col items-start gap-[24px] px-[16px] py-[48px] sm:flex-row sm:items-end sm:justify-between sm:px-gutter-sm sm:pt-section sm:pb-heading-gap lg:px-gutter">
-        <h2 className="max-w-[391px] font-display text-[32px] leading-[38px] font-semibold text-ink sm:text-[36px] sm:leading-[44px]">
+      <div className="flex w-full flex-col items-start gap-[24px] px-[16px] pt-section-top pb-[48px] sm:flex-row sm:items-end sm:justify-between sm:px-gutter-sm sm:pb-heading-gap lg:px-gutter">
+        <h2 className="max-w-[391px] text-[28px] leading-[36px] text-ink sm:text-[36px] sm:leading-[44px]">
           What our clients are saying about us
         </h2>
         <div className="flex shrink-0 items-end gap-[16px] whitespace-nowrap">
@@ -43,39 +43,41 @@ export function TestimonialsSection() {
         </div>
       </div>
 
-      {/* Three columns (desktop): Carey | Jeff | Efe + Ginny */}
-      <div className="hidden w-full items-start pb-section lg:flex">
-        <div className="flex min-w-px flex-1 flex-col border-r border-hairline pr-[32px] pl-gutter">
+      {/* Three columns (desktop): Carey | Jeff | Efe + Ginny. Columns stretch
+          to the row height so the hairline dividers run the full section. */}
+      <div className="hidden w-full items-stretch pb-section lg:flex">
+        <div className="flex min-w-px flex-1 flex-col border-r border-hairline py-[16px] pr-[32px] pl-gutter">
           <Quote testimonial={carey} />
         </div>
-        <div className="flex min-w-px flex-1 flex-col border-r border-hairline px-[32px]">
+        <div className="flex min-w-px flex-1 flex-col border-r border-hairline px-[32px] py-[16px]">
           <Quote testimonial={jeff} />
         </div>
-        <div className="flex min-w-px flex-1 flex-col gap-[24px] pr-gutter pl-[32px]">
+        <div className="flex min-w-px flex-1 flex-col gap-[24px] py-[16px] pr-gutter pl-[32px]">
           <Quote testimonial={efe} />
           <Quote testimonial={ginny} />
         </div>
       </div>
 
       {/* Two columns (tablet): Carey + Efe | Jeff + Ginny */}
-      <div className="hidden w-full items-start pb-section sm:flex lg:hidden">
-        <div className="flex min-w-px flex-1 flex-col gap-[24px] border-r border-hairline pr-[32px] pl-gutter-sm">
+      <div className="hidden w-full items-stretch pb-section sm:flex lg:hidden">
+        <div className="flex min-w-px flex-1 flex-col gap-[24px] border-r border-hairline py-[16px] pr-[32px] pl-gutter-sm">
           <Quote testimonial={carey} />
           <Quote testimonial={efe} />
         </div>
-        <div className="flex min-w-px flex-1 flex-col gap-[24px] pr-gutter-sm pl-[32px]">
+        <div className="flex min-w-px flex-1 flex-col gap-[24px] py-[16px] pr-gutter-sm pl-[32px]">
           <Quote testimonial={jeff} />
           <Quote testimonial={ginny} />
         </div>
       </div>
 
-      {/* Carousel (mobile): swipe only, first/last clamp, middle cards center */}
-      <div className="w-full overflow-hidden pb-[64px] sm:hidden" ref={emblaRef}>
-        <div className="flex touch-pan-y items-start">
+      {/* Carousel (mobile): swipe only, first/last clamp, middle cards center.
+          Slides stretch to equal height so dividers span the tallest card. */}
+      <div className="w-full overflow-hidden pb-[72px] sm:hidden" ref={emblaRef}>
+        <div className="flex touch-pan-y items-stretch">
           {TESTIMONIALS.map((testimonial, index) => (
             <div
               key={index}
-              className="flex shrink-0 flex-col border-r border-hairline px-[16px]"
+              className="flex shrink-0 flex-col border-r border-hairline px-[16px] py-[8px] last:border-r-0"
             >
               <div className="w-[320px]">
                 <Quote testimonial={testimonial} />

@@ -1,94 +1,133 @@
 'use client'
 
-import type { VendorHeroData } from '@/components/vendor/VendorHero'
 import type { VendorCategory } from '@/lib/categories'
 
 import Link from 'next/link'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 
-import { VendorHeroCard } from '@/components/vendor/VendorHero'
-import { vendorHref, VENDOR_CATEGORIES } from '@/lib/categories'
+import { VENDOR_CATEGORIES } from '@/lib/categories'
 import { CarouselDots } from './Carousel'
 import { useCarouselTimer } from './useCarouselTimer'
 
-export type SpecificationVendor = VendorHeroData & {
+export type SpecificationVendor = {
   id: number
-  slug: string
-  primaryCategory: VendorCategory
+  name: string
   categories: VendorCategory[]
 }
 
-const CATEGORY_ICONS: Record<VendorCategory, string> = {
-  'custom-cabinetry': '/landing/category-cabinetry.svg',
-  'windows-doors': '/landing/category-windows.svg',
-  appliances: '/landing/category-appliances.svg',
-  'outdoor-living': '/landing/category-outdoor.svg',
-  'architectural-elements-furniture': '/landing/category-outdoor.svg',
+const CATEGORY_IMAGES: Record<VendorCategory, string | null> = {
+  // TODO: Add the Custom Cabinetry Supabase image URL.
+  'custom-cabinetry': null,
+  // TODO: Add the Windows & Doors Supabase image URL.
+  'windows-doors': null,
+  // TODO: Add the Outdoor Living Supabase image URL.
+  'outdoor-living': null,
+  // TODO: Add the Appliances Supabase image URL.
+  appliances: null,
+  // TODO: Add the Architectural Elements & Furniture Supabase image URL.
+  'architectural-elements-furniture': null,
 }
 
-function BrandList({
-  vendors,
-  activeIndex,
-  onPreview,
-  onPausedChange,
-}: {
-  vendors: SpecificationVendor[]
-  activeIndex: number
-  onPreview: (index: number) => void
-  onPausedChange: (paused: boolean) => void
-}) {
-  const [hoveredId, setHoveredId] = useState<number | null>(null)
-  const split = Math.ceil(vendors.length / 2)
-  const columns = vendors.length > 4 ? [vendors.slice(0, split), vendors.slice(split)] : [vendors]
+export function SpecificationSection({ vendors }: { vendors: SpecificationVendor[] }) {
+  const categories = useMemo(
+    () =>
+      VENDOR_CATEGORIES.map((category) => ({
+        ...category,
+        vendors: vendors
+          .filter((vendor) => vendor.categories.includes(category.value))
+          .sort((a, b) => a.name.localeCompare(b.name)),
+      })).filter((category) => category.vendors.length > 0),
+    [vendors],
+  )
+  const [interactionPaused, setInteractionPaused] = useState(false)
+  const [manuallyPaused, setManuallyPaused] = useState(false)
+  const [reducedMotion, setReducedMotion] = useState(false)
+  const [hoveredCategory, setHoveredCategory] = useState<VendorCategory | null>(null)
+  const lastPointerType = useRef<string | null>(null)
+  const paused = interactionPaused || manuallyPaused || reducedMotion
+  const { index, setIndex, progress, containerRef } = useCarouselTimer(
+    categories.length,
+    5000,
+    paused,
+  )
+  const active = categories[index] ?? categories[0]
+
+  useEffect(() => {
+    const query = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const updatePreference = () => setReducedMotion(query.matches)
+    updatePreference()
+    query.addEventListener('change', updatePreference)
+    return () => query.removeEventListener('change', updatePreference)
+  }, [])
+
+  if (!active) return null
 
   return (
     <div
-      className={`grid w-full gap-x-[24px] lg:w-[360px] ${
-        columns.length > 1 ? 'lg:grid-cols-2' : 'lg:grid-cols-1'
-      }`}
-      onMouseLeave={() => {
-        setHoveredId(null)
-        onPausedChange(false)
-      }}
-      onFocus={() => onPausedChange(true)}
-      onBlur={(event) => {
+      ref={containerRef}
+      className="flex w-full flex-col"
+      onMouseEnter={() => setInteractionPaused(true)}
+      onMouseLeave={() => setInteractionPaused(false)}
+      onFocusCapture={() => setInteractionPaused(true)}
+      onBlurCapture={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
-          onPausedChange(false)
+          setInteractionPaused(false)
         }
       }}
     >
-      {columns.map((column, columnIndex) => (
-        <div
-          key={column[0]?.id ?? columnIndex}
-          className="flex flex-col items-start justify-center lg:items-end"
-        >
-          {column.map((vendor) => {
-            const index = vendors.findIndex(({ id }) => id === vendor.id)
-            const isActive = index === activeIndex
-            const isHovered = vendor.id === hoveredId
+      <div className="flex w-full flex-col gap-[48px] px-[16px] pt-[24px] pb-[48px] lg:flex-row lg:items-start lg:justify-between lg:gap-0 lg:px-[48px] lg:py-[48px]">
+        <div className="flex flex-col gap-[8px] lg:w-[305px]">
+          <h2 className="text-[20px] leading-[26px] text-ink">Products</h2>
+          <p className="text-[14px] leading-normal text-ink-50">
+            Explore curated American and European windows, doors, cabinetry, appliances, and outdoor
+            living and architectural solutions, selected and specified for your project.
+          </p>
+        </div>
+
+        <div className="flex max-w-full flex-col items-start justify-center lg:items-end">
+          {categories.map((category, categoryIndex) => {
+            const isActive = categoryIndex === index
+            const isHovered = category.value === hoveredCategory
 
             return (
               <Link
-                key={vendor.id}
-                href={vendorHref(vendor)}
+                key={category.value}
+                href={`/${category.value}`}
+                aria-current={isActive ? 'true' : undefined}
                 onMouseEnter={() => {
-                  setHoveredId(vendor.id)
-                  onPausedChange(true)
-                  onPreview(index)
+                  setHoveredCategory(category.value)
+                  setIndex(categoryIndex)
                 }}
-                onFocus={() => onPreview(index)}
-                className="relative flex items-center justify-end focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+                onMouseLeave={() => setHoveredCategory(null)}
+                onFocus={() => setIndex(categoryIndex)}
+                onKeyDown={() => {
+                  lastPointerType.current = null
+                }}
+                onPointerDown={(event) => {
+                  lastPointerType.current = event.pointerType
+                }}
+                onClick={(event) => {
+                  const isTouchInput =
+                    event.detail > 0 &&
+                    (lastPointerType.current === 'touch' || lastPointerType.current === 'pen')
+                  lastPointerType.current = null
+                  if (!isTouchInput) return
+                  event.preventDefault()
+                  setIndex(categoryIndex)
+                }}
+                className={`relative flex max-w-full items-center justify-start text-left text-[18px] leading-[24px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink lg:justify-end lg:text-right ${
+                  isActive ? 'text-ink' : 'text-ink-40 hover:text-ink'
+                }`}
               >
-                {/* The arrow appears on direct hover without following the timed active state. */}
                 <span
-                  className={`text-[20px] leading-[26px] text-right whitespace-nowrap transition-[translate,color] duration-250 ease-out ${
-                    isActive ? 'font-medium text-ink' : 'text-ink-40'
-                  } ${isHovered ? 'pr-[26px] lg:-translate-x-[26px] lg:pr-0' : ''}`}
+                  className={`min-w-0 transition-[translate,color] duration-250 ease-out lg:whitespace-nowrap ${
+                    isHovered ? 'lg:-translate-x-[26px]' : ''
+                  }`}
                 >
-                  {vendor.name}
+                  {category.label}
                 </span>
                 <span
-                  className={`absolute right-0 h-[10px] w-[14px] transition-opacity duration-250 ${
+                  className={`absolute right-0 hidden h-[10px] w-[14px] transition-opacity duration-250 lg:block ${
                     isHovered ? 'opacity-100' : 'opacity-0'
                   }`}
                   aria-hidden
@@ -104,127 +143,106 @@ function BrandList({
             )
           })}
         </div>
-      ))}
-    </div>
-  )
-}
+      </div>
 
-export function SpecificationSection({ vendors }: { vendors: SpecificationVendor[] }) {
-  const categories = useMemo(
-    () =>
-      VENDOR_CATEGORIES.map((category) => ({
-        ...category,
-        vendors: vendors
-          .filter((vendor) => vendor.categories.includes(category.value))
-          .sort((a, b) => a.name.localeCompare(b.name)),
-      })).filter((category) => category.vendors.length > 0),
-    [vendors],
-  )
-  const [activeId, setActiveId] = useState<VendorCategory | null>(categories[0]?.value ?? null)
-  const [paused, setPaused] = useState(false)
-  const active = categories.find((category) => category.value === activeId) ?? categories[0]
-  const { index, setIndex, progress, containerRef } = useCarouselTimer(
-    active?.vendors.length ?? 0,
-    5000,
-    paused,
-  )
+      <div className="flex w-full flex-col items-center justify-center gap-[24px] px-[12px] lg:px-[24px]">
+        <div className="relative h-[clamp(384px,80vw,480px)] w-full overflow-hidden rounded-[24px] lg:h-[600px]">
+          {categories.map((category, categoryIndex) => {
+            const image = CATEGORY_IMAGES[category.value]
+            const isActive = categoryIndex === index
+            const brandCount = category.vendors.length
 
-  if (!active) return null
-
-  return (
-    <div className="flex w-full flex-col px-gutter-sm lg:px-gutter">
-      <div className="max-w-full self-center overflow-x-auto p-px">
-        <div className="flex h-[40px] w-max items-center justify-center gap-[8px] rounded-[44px] border border-hairline">
-          {categories.map((category) => {
-            const isActive = category.value === active.value
             return (
-              <button
+              <div
                 key={category.value}
-                type="button"
-                onClick={() => {
-                  setIndex(0)
-                  setPaused(false)
-                  setActiveId(category.value)
-                }}
-                aria-pressed={isActive}
-                className="group relative flex h-[40px] shrink-0 items-center justify-center gap-[10px] px-[24px]"
+                className={`absolute inset-0 transition-opacity duration-700 motion-reduce:transition-none ${
+                  isActive ? 'opacity-100' : 'pointer-events-none opacity-0'
+                }`}
+                aria-hidden={!isActive}
               >
-                {/* The inset layer changes state without moving the tab's footprint. */}
-                <span
+                {image ? (
+                  <>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={image}
+                      alt={`${category.label} products`}
+                      className="absolute inset-0 size-full object-cover"
+                    />
+                  </>
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center bg-cream px-[24px] text-center">
+                    <p className="font-display text-[clamp(28px,4vw,48px)] leading-[1.05] text-ink-30">
+                      {category.label}
+                    </p>
+                  </div>
+                )}
+                <div
+                  className="absolute inset-0 bg-[linear-gradient(0deg,rgba(0,0,0,0.6)_0%,rgba(102,102,102,0)_46.154%),linear-gradient(90deg,rgba(0,0,0,0.2)_0%,rgba(0,0,0,0.2)_100%)]"
                   aria-hidden
-                  className={`absolute rounded-[44px] border transition-[inset,background-color,border-color] duration-200 ease-out ${
-                    isActive
-                      ? '-inset-x-px inset-y-0 border-hairline bg-cream'
-                      : 'inset-[3px] border-transparent group-hover:border-ink/[0.03] group-hover:bg-ink/[0.03]'
-                  }`}
                 />
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  alt=""
-                  src={CATEGORY_ICONS[category.value]}
-                  className="relative h-[16px] w-auto shrink-0 dark:invert"
-                />
-                <span className="relative text-[14px] leading-[18px] whitespace-nowrap text-ink">
-                  {category.label}
-                </span>
-              </button>
+                <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-[16px] p-[16px] lg:gap-[20px] lg:p-[32px]">
+                  <div className="flex min-w-0 flex-col items-start gap-[4px] text-white lg:gap-[8px]">
+                    <div className="flex flex-col items-start">
+                      <p className="text-[10px] leading-[13px] tracking-[0.1px] text-white/80">
+                        {brandCount} {brandCount === 1 ? 'brand' : 'brands'}
+                      </p>
+                      <h3 className="text-[20px] leading-[26px] tracking-[0.2px] text-white lg:text-[24px] lg:leading-[32px] lg:tracking-[0.24px]">
+                        {category.label}
+                      </h3>
+                    </div>
+                    <p className="text-[12px] leading-[16px] tracking-[0.12px] text-white/80 lg:text-[14px] lg:leading-[14px] lg:tracking-[0.14px]">
+                      {category.vendors.map((vendor) => vendor.name).join(', ')}
+                    </p>
+                  </div>
+                  <Link
+                    href={`/${category.value}`}
+                    aria-label={`Explore ${category.label}`}
+                    className="flex h-[40px] w-[40px] shrink-0 items-center justify-center rounded-[44px] border border-black/30 bg-white text-[14px] leading-[18px] text-black focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white lg:w-auto lg:gap-[8px] lg:px-[16px]"
+                  >
+                    <span className="hidden lg:inline">Explore</span>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img alt="" src="/landing/arrows-updown.svg" className="h-[6px] w-[8.4px]" />
+                  </Link>
+                </div>
+              </div>
             )
           })}
         </div>
-      </div>
-
-      <div className="flex w-full flex-col gap-[32px] py-[48px] lg:flex-row lg:items-center lg:justify-between lg:gap-0">
-        <div className="flex flex-col gap-[8px] lg:w-[305px]">
-          <p className="text-[16px] leading-normal text-ink">Product Specification</p>
-          <p className="text-[14px] leading-normal text-ink-50">
-            Explore curated American and European windows, doors, cabinetry, appliances, and outdoor
-            living and architectural solutions, selected and specified for your project.
-          </p>
-        </div>
-        <BrandList
-          vendors={active.vendors}
-          activeIndex={index}
-          onPreview={setIndex}
-          onPausedChange={setPaused}
-        />
-      </div>
-
-      <div
-        ref={containerRef}
-        className="flex w-full flex-col items-center justify-center gap-[24px]"
-      >
-        <div className="relative w-full">
-          {active.vendors.map((vendor, vendorIndex) => (
-            <div
-              key={vendor.id}
-              className={`transition-opacity duration-700 ${
-                vendorIndex === index
-                  ? 'relative opacity-100'
-                  : 'pointer-events-none absolute inset-0 opacity-0'
-              }`}
-              aria-hidden={vendorIndex !== index}
+        {categories.length > 1 && (
+          <div className="flex items-center justify-center gap-[8px]">
+            <CarouselDots
+              count={categories.length}
+              active={index}
+              progress={progress}
+              onSelect={setIndex}
+            />
+            <button
+              type="button"
+              disabled={reducedMotion}
+              aria-pressed={manuallyPaused || reducedMotion}
+              aria-label={
+                reducedMotion
+                  ? 'Automatic category cycling disabled by reduced motion preference'
+                  : manuallyPaused
+                    ? 'Play category carousel'
+                    : 'Pause category carousel'
+              }
+              onClick={() => setManuallyPaused((current) => !current)}
+              className="flex size-[24px] items-center justify-center rounded-full text-ink-50 transition-colors hover:bg-ink/5 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink disabled:cursor-not-allowed disabled:opacity-40"
             >
-              <Link
-                href={vendorHref(vendor)}
-                aria-label={`View ${vendor.name}`}
-                onMouseEnter={() => setPaused(true)}
-                onMouseLeave={() => setPaused(false)}
-                onFocus={() => setPaused(true)}
-                onBlur={() => setPaused(false)}
-                className="block rounded-[24px] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
-              >
-                <VendorHeroCard vendor={vendor} category={active.label} headingLevel="h3" />
-              </Link>
-            </div>
-          ))}
-        </div>
-        {active.vendors.length > 1 && (
-          <CarouselDots
-            count={active.vendors.length}
-            active={index}
-            progress={progress}
-            onSelect={setIndex}
-          />
+              {manuallyPaused || reducedMotion ? (
+                <span
+                  aria-hidden
+                  className="ml-[1px] size-0 border-y-[4px] border-l-[6px] border-y-transparent border-l-current"
+                />
+              ) : (
+                <span aria-hidden className="flex gap-[2px]">
+                  <span className="h-[8px] w-[2px] rounded-full bg-current" />
+                  <span className="h-[8px] w-[2px] rounded-full bg-current" />
+                </span>
+              )}
+            </button>
+          </div>
         )}
       </div>
     </div>

@@ -14,9 +14,9 @@ function logoUrl(logo: Vendor['logo']): string | null {
 export function PartnersSection({ vendors }: { vendors: Vendor[] }) {
   return (
     <>
-      <div className="flex w-full flex-col items-start gap-[32px] px-gutter-sm pt-section pb-heading-gap lg:px-gutter">
+      <div className="flex w-full flex-col items-start gap-[32px] px-gutter-sm pt-section-top pb-heading-gap lg:px-gutter">
         <div className="flex flex-col gap-[16px]">
-          <h2 className="max-w-[384px] font-display text-[36px] leading-[44px] font-semibold text-ink">
+          <h2 className="max-w-[384px] text-[28px] leading-[36px] text-ink sm:text-[36px] sm:leading-[44px]">
             Exceptional products, trusted partners
           </h2>
           <p className="max-w-[400px] text-[14px] leading-[18px] text-ink-50">

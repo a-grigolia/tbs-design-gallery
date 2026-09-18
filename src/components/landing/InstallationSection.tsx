@@ -96,19 +96,17 @@ export function InstallationSection() {
   }
 
   return (
-    <div className="flex w-full flex-col gap-[4px] px-gutter-sm lg:px-gutter">
-      <div className="flex w-full flex-col gap-[32px] py-[32px] lg:flex-row lg:items-center lg:justify-between lg:gap-0 lg:py-0">
-        <div className="flex flex-col gap-[8px] lg:w-[330px] lg:py-[48px]">
-          <p className="text-[16px] leading-normal text-ink">
-            Product Design, Installation &amp; Maintenance
-          </p>
+    <div className="flex w-full flex-col">
+      <div className="flex w-full flex-col gap-[48px] px-[16px] pt-[24px] pb-[48px] lg:flex-row lg:items-start lg:justify-between lg:gap-0 lg:px-[48px] lg:py-[48px]">
+        <div className="flex flex-col gap-[8px] lg:w-[330px]">
+          <h2 className="text-[20px] leading-[26px] text-ink">Services</h2>
           <p className="text-[14px] leading-[20px] text-ink-50">
             From technical product design and documentation through installation, warranty, and
             ongoing service, our team manages the details and stands behind the result.
           </p>
         </div>
-        <div className="flex flex-col justify-center lg:w-[305px] lg:items-end lg:py-[48px]">
-          <div className="text-[20px] leading-normal text-ink lg:text-right">
+        <div className="flex flex-col justify-center lg:w-[305px] lg:items-end">
+          <div className="text-[18px] leading-[24px] text-ink lg:text-right">
             {SERVICES.map((service) => (
               <p key={service}>{service}</p>
             ))}
@@ -116,17 +114,20 @@ export function InstallationSection() {
         </div>
       </div>
 
-      <div ref={containerRef} className="flex w-full flex-col items-center gap-[24px] pb-[24px]">
-        <div className="flex h-[520px] w-full flex-col gap-[8px] lg:h-[600px] lg:flex-row lg:items-stretch">
+      <div
+        ref={containerRef}
+        className="flex w-full flex-col items-center gap-[24px] px-[12px] lg:px-[24px]"
+      >
+        <div className="flex w-full flex-col gap-[8px] lg:h-[600px] lg:flex-row lg:items-stretch">
           {INSTALLATION_CARDS.map((card, i) => {
             const isOpen = i === index
             return (
               <div
                 key={card.video}
-                className={`relative flex min-h-0 min-w-0 overflow-hidden rounded-[24px] transition-[flex,width] duration-700 ease-in-out ${
+                className={`relative flex min-h-0 min-w-0 overflow-hidden transition-[height,flex,width,border-radius] duration-700 ease-in-out ${
                   isOpen
-                    ? 'flex-[5.6_1_0%] lg:flex-[1_1_0%]'
-                    : 'flex-[1_1_0%] lg:w-[72px] lg:flex-none'
+                    ? 'h-[384px] rounded-[24px] lg:h-full lg:flex-[1_1_0%]'
+                    : 'h-[40px] rounded-[20px] lg:h-full lg:w-[72px] lg:flex-none lg:rounded-[24px]'
                 }`}
               >
                 {isOpen ? (

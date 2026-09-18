@@ -55,21 +55,27 @@
   --color-brand-glow: rgba(255, 151, 153, 0.7);
 
   /*
-   * Spacing rhythm from the Figma frame: sections open with pt-section and
-   * close with pb-section, headings sit heading-gap above their content, and
-   * content is inset by gutter (desktop) / gutter-sm (mobile) inside the
+   * Spacing rhythm from the Figma frame: sections open with pt-section-top
+   * and close with pb-section, headings sit heading-gap above their content,
+   * and content is inset by gutter (desktop) / gutter-sm (mobile) inside the
    * 1200px column.
    */
   --spacing-section: 96px;
+  --spacing-section-top: 120px;
   --spacing-heading-gap: 64px;
   --spacing-gutter: 48px;
   --spacing-gutter-sm: 16px;
 
-  /* Type from the Figma file */
-  --font-display: var(--font-superior-serif), 'LT Superior Serif', serif;
+  /*
+   * The site is all-Geist (Superior Serif, Figtree, and Hanken Grotesk were
+   * dropped). The display/figtree/hanken tokens survive as aliases so the
+   * font-display/font-figtree/font-hanken utilities across vendor, blog, and
+   * contact pages keep resolving without a sweep.
+   */
+  --font-display: var(--font-geist), 'Geist', sans-serif;
   --font-sans: var(--font-geist), 'Geist', sans-serif;
-  --font-figtree: var(--font-figtree-var), 'Figtree', sans-serif;
-  --font-hanken: var(--font-hanken-var), 'Hanken Grotesk', sans-serif;
+  --font-figtree: var(--font-geist), 'Geist', sans-serif;
+  --font-hanken: var(--font-geist), 'Geist', sans-serif;
 }
 
 html {

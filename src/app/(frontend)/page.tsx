@@ -42,7 +42,8 @@ export default async function HomePage() {
       <Hero />
 
       <SectionBand>
-        <BlueprintColumn corner="tee" className="pb-section">
+        {/* 72px bottom per the Services Figma (990:1090), not the usual pb-section. */}
+        <BlueprintColumn corner="tee" className="pb-[72px]">
           <GallerySection />
           <SectionRule number="02 Products" />
           <SpecificationSection vendors={specificationVendors} />
