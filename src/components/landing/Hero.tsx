@@ -103,8 +103,8 @@ export function Hero() {
       // closes. Measuring `svh` keeps scroll geometry stable through that UI.
       const viewportWidth = document.documentElement.clientWidth
       const viewportHeight = heightProbe.offsetHeight
-      const outerGutter = viewportWidth >= 1024 ? 24 : viewportWidth >= 640 ? 32 : 16
-      const innerPadding = viewportWidth >= 640 ? 24 : 16
+      const outerGutter = viewportWidth >= 1024 ? 24 : viewportWidth >= 640 ? 32 : 8
+      const innerPadding = viewportWidth >= 640 ? 24 : 12
       const targetX = outerGutter + innerPadding + 1
       const targetY = 60 + innerPadding + 1
       const targetWidth = viewportWidth - targetX * 2
@@ -239,7 +239,7 @@ export function Hero() {
           <div className="absolute inset-0 flex flex-col items-center justify-center px-[16px]">
             <h1
               ref={headingRef}
-              className="flex flex-col items-center text-center text-[clamp(2rem,1.25rem+2.5vw,3rem)] leading-[1.042] tracking-[0.015em] text-white will-change-transform"
+              className="type-hero-heading flex flex-col items-center text-center text-white will-change-transform"
             >
               <span>Custom solutions</span>
               <span>for every space</span>

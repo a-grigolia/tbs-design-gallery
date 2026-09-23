@@ -175,6 +175,20 @@ Components in `src/components/vendor/` (all server components, same conventions 
   the URL category; the current vendor's cell is `bg-cream`, `aria-current`, and unlinked.
 - `media.ts` — `asMedia()` / `mediaUrl(value, size)` helpers for narrowing `number | Media`.
 
+### Category pages — `/{category}` (Figma 677:6066)
+
+The five static routes (`windows-doors/page.tsx` etc.) only hold metadata, copy, and hero video
+URLs; layout and data live in `components/vendor/CategoryPage.tsx`.
+
+- The hero is a static copy of the homepage hero's _settled_ frame (no scroll animation): same
+ gutters, 2:1 / 480px minimum, capped to fit the viewport — computed in CSS with `cqw`.
+- The gallery is built from the CMS by `buildCategoryTiles` (`categoryTiles.ts`): each vendor's
+ `heroImage` (so hero images now feed category galleries too), topped up from vendor `gallery`
+ images to 6 photos when a category has fewer than 6 vendors. Extras split evenly; remainders
+ and shortfalls go alphabetically; output interleaves vendors. 6+ vendors → one hero each.
+- Tiles carry a `caption` (`LightboxGallery`): image opens the lightbox, the vendor name links to
+ `vendorHref` with the hover arrow. The name link is a sibling of the zoom button, never a child.
+
 `vendorHref(vendor)` in `src/lib/categories.ts` builds the canonical URL — use it for every
 vendor link (the homepage `PartnersSection` already does).
 

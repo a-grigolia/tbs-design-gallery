@@ -43,7 +43,7 @@ export function VendorAbout({ vendor }: { vendor: Vendor }) {
         {hasLeft && (
           <div className="flex flex-col gap-[8px] lg:w-1/2">
             {vendor.heading && (
-              <p className="text-[16px] leading-normal text-ink">{vendor.heading}</p>
+              <p className="text-[20px] leading-[26px] text-ink">{vendor.heading}</p>
             )}
             {vendor.content && (
               <div className="flex flex-col gap-[8px] text-[14px] leading-normal text-ink-50">
@@ -55,7 +55,7 @@ export function VendorAbout({ vendor }: { vendor: Vendor }) {
         {specLines.length > 0 && (
           <div className="flex flex-col lg:items-end lg:text-right">
             {specLines.map((line) => (
-              <p key={line} className="text-[20px] leading-[26px] text-ink">
+              <p key={line} className="text-[18px] leading-[24px] text-ink">
                 {line}
               </p>
             ))}

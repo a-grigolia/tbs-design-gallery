@@ -15,7 +15,7 @@ export function JournalFeatured({ post }: { post: Post }) {
   return (
     <div className="flex w-full flex-col gap-[32px] px-gutter-sm pt-[32px] pb-[48px] lg:flex-row lg:items-center lg:gap-[48px] lg:px-[24px]">
       {coverSrc ? (
-        <Link href={href} className="block w-full shrink-0 lg:w-[693px]">
+        <Link href={href} className="block w-full lg:min-w-0 lg:max-w-[693px] lg:flex-1">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             alt={coverAlt}
@@ -31,7 +31,7 @@ export function JournalFeatured({ post }: { post: Post }) {
             <time dateTime={post.publishedAt}>{publishedMonthYear(post.publishedAt)}</time>
             <span>{TYPE_LABELS[post.type]}</span>
           </div>
-          <h2 className="font-display text-[24px] leading-[31px] font-semibold text-ink">
+          <h2 className="text-[20px] leading-[26px] text-ink">
             <Link href={href}>{post.title}</Link>
           </h2>
           <p className="text-[14px] leading-[18px] text-ink-50">{post.excerpt}</p>

@@ -108,9 +108,10 @@ export function VendorHeroCard({
   )
 }
 
+
 export function VendorHero({ vendor }: { vendor: Vendor }) {
   return (
-    <div className="w-full p-gutter-sm">
+    <div className="w-full p-[12px] lg:p-[24px]">
       <VendorHeroCard
         vendor={vendorHeroData(vendor)}
         category={categoryLabel(vendor.primaryCategory)}

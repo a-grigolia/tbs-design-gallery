@@ -16,11 +16,12 @@ export function PartnersSection({ vendors }: { vendors: Vendor[] }) {
     <>
       <div className="flex w-full flex-col items-start gap-[32px] px-gutter-sm pt-section-top pb-heading-gap lg:px-gutter">
         <div className="flex flex-col gap-[16px]">
-          <h2 className="max-w-[384px] text-[28px] leading-[36px] text-ink sm:text-[36px] sm:leading-[44px]">
+          <h2 className="type-section-heading max-w-[384px] text-ink">
             Exceptional products, trusted partners
           </h2>
           <p className="max-w-[400px] text-[14px] leading-[18px] text-ink-50">
-          We're proud to represent and offer the highest quality products in the industry from well-known manufacturers across the United States and worldwide.
+            We&apos;re proud to represent and offer the highest quality products in the industry
+            from well-known manufacturers across the United States and worldwide.
           </p>
         </div>
         <Link

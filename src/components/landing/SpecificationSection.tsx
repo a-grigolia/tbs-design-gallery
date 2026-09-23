@@ -17,15 +17,15 @@ export type SpecificationVendor = {
 
 const CATEGORY_IMAGES: Record<VendorCategory, string | null> = {
   // TODO: Add the Custom Cabinetry Supabase image URL.
-  'custom-cabinetry': null,
+  'custom-cabinetry': 'https://nbdugymkxxwohotyzwhw.supabase.co/storage/v1/object/public/media/premier-AD_352.BDR_433.jpg',
   // TODO: Add the Windows & Doors Supabase image URL.
-  'windows-doors': null,
+  'windows-doors': 'https://nbdugymkxxwohotyzwhw.supabase.co/storage/v1/object/public/media/reynaers-hillside-1920x1163.webp',
   // TODO: Add the Outdoor Living Supabase image URL.
-  'outdoor-living': null,
+  'outdoor-living': 'https://nbdugymkxxwohotyzwhw.supabase.co/storage/v1/object/public/media/Ubmrosa-5-1920x1200.webpnull',
   // TODO: Add the Appliances Supabase image URL.
-  appliances: null,
+  'appliances': 'https://nbdugymkxxwohotyzwhw.supabase.co/storage/v1/object/public/media/la-cornue-chateau-supreme-01-1920x1280.webp',
   // TODO: Add the Architectural Elements & Furniture Supabase image URL.
-  'architectural-elements-furniture': null,
+  'architectural-elements-furniture': 'https://nbdugymkxxwohotyzwhw.supabase.co/storage/v1/object/public/media/laurameroni-architecture-catalogue-hd-images-088-1920x1358.webp',
 }
 
 export function SpecificationSection({ vendors }: { vendors: SpecificationVendor[] }) {

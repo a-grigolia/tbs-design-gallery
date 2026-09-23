@@ -93,8 +93,8 @@ export function Carousel({
 /**
  * Auto-advancing horizontal card carousel (the mobile counterpart of the
  * crossfade Carousel): fixed-size slides scroll sideways, every card snaps to
- * the leading 12px gutter except the last, which clamps so no empty space
- * shows. The shared timer advances it and pauses during drag; deactivates at
+ * the leading 12px gutter except the last, which clamps to a matching 12px
+ * trailing gutter. The shared timer advances it and pauses during drag; deactivates at
  * `lg` where sections switch to their desktop layouts.
  */
 export function CardCarousel({
@@ -155,9 +155,11 @@ export function CardCarousel({
       className={`flex w-full flex-col items-center gap-[24px] ${className ?? ''}`}
     >
       <div className="w-full overflow-hidden" ref={emblaRef}>
-        <div className="-ml-[12px] flex touch-pan-y items-start pr-[12px]">
+        {/* Embla measures slide boxes, not track padding, so the trailing
+            12px gutter lives on the last slide for trimSnaps to respect. */}
+        <div className="flex touch-pan-y items-start">
           {slides.map((slide, i) => (
-            <div key={i} className="min-w-0 shrink-0 pl-[12px]">
+            <div key={i} className="min-w-0 shrink-0 pl-[12px] last:pr-[12px]">
               {slide}
             </div>
           ))}

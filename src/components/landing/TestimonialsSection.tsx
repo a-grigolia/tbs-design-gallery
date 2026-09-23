@@ -34,7 +34,7 @@ export function TestimonialsSection() {
   return (
     <>
       <div className="flex w-full flex-col items-start gap-[24px] px-[16px] pt-section-top pb-[48px] sm:flex-row sm:items-end sm:justify-between sm:px-gutter-sm sm:pb-heading-gap lg:px-gutter">
-        <h2 className="max-w-[391px] text-[28px] leading-[36px] text-ink sm:text-[36px] sm:leading-[44px]">
+        <h2 className="type-section-heading max-w-[391px] text-ink">
           What our clients are saying about us
         </h2>
         <div className="flex shrink-0 items-end gap-[16px] whitespace-nowrap">

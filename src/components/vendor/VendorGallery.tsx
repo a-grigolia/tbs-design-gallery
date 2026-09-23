@@ -2,39 +2,51 @@ import React from 'react'
 
 import type { Media, Vendor } from '@/payload-types'
 
+import { LightboxGallery, type GalleryImage } from './LightboxGallery'
 import { asMedia, mediaUrl } from './media'
 
 /**
  * Greedy masonry: each image goes to whichever column is currently shorter
  * (by cumulative aspect ratio), so mixed portrait/landscape shots offset
  * Pinterest-style while admin ordering still reads roughly top-to-bottom.
+ * With `groupOf`, an image skips a column that already ends in its own group
+ * (when the other doesn't), so the same vendor never stacks vertically.
  */
-function splitColumns(images: Media[]): [Media[], Media[]] {
-  const columns: [Media[], Media[]] = [[], []]
+export function splitColumns<T extends { width?: number | null; height?: number | null }>(
+  images: T[],
+  groupOf?: (image: T) => string,
+): [T[], T[]] {
+  const columns: [T[], T[]] = [[], []]
   const heights = [0, 0]
+  const endsWith = (column: T[], group: string) =>
+    column.length > 0 && groupOf?.(column[column.length - 1]) === group
   for (const image of images) {
     const ratio = image.width && image.height ? image.height / image.width : 1
-    const target = heights[0] <= heights[1] ? 0 : 1
+    let target = heights[0] <= heights[1] ? 0 : 1
+    const group = groupOf?.(image)
+    if (
+      group !== undefined &&
+      endsWith(columns[target], group) &&
+      !endsWith(columns[1 - target], group)
+    ) {
+      target = 1 - target
+    }
     columns[target].push(image)
     heights[target] += ratio
   }
   return columns
 }
 
-function GalleryImage({ image }: { image: Media }) {
-  const url = mediaUrl(image, 'card')
-  if (!url) return null
-  return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      alt={image.alt}
-      src={url}
-      width={image.width ?? undefined}
-      height={image.height ?? undefined}
-      loading="lazy"
-      className="h-auto w-full rounded-[16px] object-cover"
-    />
-  )
+export function toGalleryImage(image: Media): GalleryImage | null {
+  const src = mediaUrl(image, 'card')
+  if (!src) return null
+  return {
+    src,
+    full: mediaUrl(image, 'hero') ?? undefined,
+    alt: image.alt,
+    width: image.width ?? undefined,
+    height: image.height ?? undefined,
+  }
 }
 
 export function VendorGallery({ vendor }: { vendor: Vendor }) {
@@ -50,20 +62,14 @@ export function VendorGallery({ vendor }: { vendor: Vendor }) {
   return (
     <>
       {hasGallery && (
-        <div className="flex w-full flex-col gap-[8px] px-gutter-sm md:flex-row md:items-start">
-          <div className="flex min-w-px flex-1 flex-col gap-[8px]">
-            {left.map((image) => (
-              <GalleryImage key={image.id} image={image} />
-            ))}
-          </div>
-          {right.length > 0 && (
-            <div className="flex min-w-px flex-1 flex-col gap-[8px]">
-              {right.map((image) => (
-                <GalleryImage key={image.id} image={image} />
-              ))}
-            </div>
-          )}
-        </div>
+        <LightboxGallery
+          className="px-[12px] lg:px-[24px]"
+          columns={[left, right]
+            .map((column) =>
+              column.map(toGalleryImage).filter((image): image is GalleryImage => image !== null),
+            )
+            .filter((column) => column.length > 0)}
+        />
       )}
       {vendor.externalUrl && (
         <div className="flex flex-col items-center py-[48px]">

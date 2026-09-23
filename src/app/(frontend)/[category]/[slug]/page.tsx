@@ -99,7 +99,7 @@ export default async function VendorPage({ params }: { params: Params }) {
       <SiteHeader />
 
       <SectionBand>
-        <BlueprintColumn>
+        <BlueprintColumn corner="tee">
           <VendorHero vendor={vendor} />
           <TickRule label={`About ${vendor.name}`} />
           <VendorAbout vendor={vendor} />

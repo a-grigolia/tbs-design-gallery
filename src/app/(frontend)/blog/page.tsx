@@ -47,9 +47,7 @@ export default async function BlogIndexPage() {
         <BlueprintColumn corner="tee">
           <div className="flex w-full items-center px-gutter-sm pt-[96px] pb-[24px] lg:px-gutter">
             <div className="flex w-full max-w-[384px] flex-col gap-[16px]">
-              <h1 className="font-display text-[36px] leading-[46px] font-semibold text-ink">
-                TBS Journal
-              </h1>
+              <h1 className="type-section-heading text-ink">TBS Journal</h1>
               <p className="text-[14px] leading-[18px] text-ink-50">{DESCRIPTION}</p>
             </div>
           </div>

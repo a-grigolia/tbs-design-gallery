@@ -89,6 +89,30 @@ body {
   font-family: var(--font-sans);
 }
 
+/* Shared fluid hero scale from the homepage video heading. */
+.type-hero-heading {
+  font-family: var(--font-sans);
+  font-size: clamp(2rem, 1.25rem + 2.5vw, 3rem);
+  font-weight: 400;
+  letter-spacing: 0.015em;
+  line-height: 1.042;
+}
+
+/* Shared section-heading scale, anchored to the homepage reviews heading. */
+.type-section-heading {
+  font-family: var(--font-sans);
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 36px;
+}
+
+@media (min-width: 640px) {
+  .type-section-heading {
+    font-size: 36px;
+    line-height: 44px;
+  }
+}
+
 /*
  * Chrome/Safari force a pale-blue background on autofilled inputs via UA
  * styling that ignores background-color overrides. Painting an opaque

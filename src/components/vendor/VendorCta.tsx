@@ -18,9 +18,7 @@ export function VendorCta({ category }: { category: VendorCategory }) {
   return (
     <div className="flex w-full flex-col items-start gap-[32px] px-gutter-sm pt-section pb-[24px] lg:px-gutter">
       <div className="flex flex-col gap-[16px]">
-        <h2 className="max-w-[444px] font-display text-[36px] leading-[44px] font-bold text-ink">
-          {CTA_HEADINGS[category]}  
-        </h2>
+        <h2 className="type-section-heading max-w-[444px] text-ink">{CTA_HEADINGS[category]}</h2>
         <p className="max-w-[624px] text-[14px] leading-[18px] text-ink-50">
           If you&apos;re a homeowner working on your dream project or a trade professional looking
           for top quality products, we&apos;re here to help you every step of the way.

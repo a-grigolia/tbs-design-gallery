@@ -33,9 +33,7 @@ export function ProcessSection() {
   return (
     <>
       <div className="flex w-full flex-col items-start gap-[16px] px-gutter-sm pt-section-top pb-heading-gap text-ink lg:px-gutter">
-        <h2 className="max-w-[384px] text-[28px] leading-[36px] sm:text-[36px] sm:leading-[44px]">
-          How we work
-        </h2>
+        <h2 className="type-section-heading max-w-[384px]">How we work</h2>
         <p className="max-w-[360px] text-[14px] leading-[18px] text-ink-50">
           A clear, collaborative process designed to keep every decision, detail, and stage of your
           project moving forward.
