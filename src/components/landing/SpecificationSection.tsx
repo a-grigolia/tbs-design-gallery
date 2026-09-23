@@ -21,7 +21,7 @@ const CATEGORY_IMAGES: Record<VendorCategory, string | null> = {
   // TODO: Add the Windows & Doors Supabase image URL.
   'windows-doors': 'https://nbdugymkxxwohotyzwhw.supabase.co/storage/v1/object/public/media/reynaers-hillside-1920x1163.webp',
   // TODO: Add the Outdoor Living Supabase image URL.
-  'outdoor-living': 'https://nbdugymkxxwohotyzwhw.supabase.co/storage/v1/object/public/media/Ubmrosa-5-1920x1200.webpnull',
+  'outdoor-living': 'https://nbdugymkxxwohotyzwhw.supabase.co/storage/v1/object/public/media/Ubmrosa-5-1920x1200.webp',
   // TODO: Add the Appliances Supabase image URL.
   'appliances': 'https://nbdugymkxxwohotyzwhw.supabase.co/storage/v1/object/public/media/la-cornue-chateau-supreme-01-1920x1280.webp',
   // TODO: Add the Architectural Elements & Furniture Supabase image URL.
