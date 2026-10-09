@@ -21,15 +21,15 @@ export default function AppliancesPage() {
       category="appliances"
       title="Appliances"
       video={{
-        src: 'https://media.tbsdesigngallery.com/architectural-elements-hero.mp4',
-        poster: 'https://media.tbsdesigngallery.com/architectural-elements-hero-poster.jpg',
+        src: 'https://media.tbsdesigngallery.com/appliances-hero.mp4',
+        poster: 'https://media.tbsdesigngallery.com/appliances-hero-poster.jpg',
       }}
       heading="Luxury Appliances for Refined Tastes"
       body={
         <>
           TBS Design Gallery represents only a select few product lines when it comes to home
           appliances. So far, only two names have earned our absolute loyalty and admiration: La
-          Cornue and Miele.
+          Cornue and Josper.
         </>
       }
       gridLabel="All appliances"

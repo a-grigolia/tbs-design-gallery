@@ -29,7 +29,7 @@ export default function ArchitecturalElementsFurniturePage() {
         <>
           Discover the perfect blend of expert craftsmanship and innovative design with TBS Design
           Gallery&rsquo;s exclusive collection of architectural elements and furniture. As a proud
-          partner of Italian luxury brand Laura Meroni, we offer a hand-picked selection of
+          partner of Italian luxury brand Laurameroni, we offer a hand-picked selection of
           custom-made pieces that exceed the highest standards of quality and style. Each piece is
           meticulously crafted to elevate your space. With our collection, you can effortlessly add
           sophistication to your home or create a statement piece that will impress for years to
