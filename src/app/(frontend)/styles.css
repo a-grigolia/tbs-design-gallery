@@ -146,3 +146,12 @@ input:-webkit-autofill:focus {
 input:autofill {
   box-shadow: inset 0 0 0 1000px var(--palette-canvas);
 }
+
+/*
+ * next-themes sets `color-scheme: dark` on <html>; when an iframe's scheme
+ * differs from its document's, the browser paints an opaque white backdrop
+ * behind it, framing Calendly's dark-mode card in white. Calendly's page is light.
+ */
+.calendly-popup iframe {
+  color-scheme: light;
+}

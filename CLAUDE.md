@@ -79,7 +79,7 @@ src/
     my-route/               # leftover template scaffolding, safe to delete
   access/index.ts           # reusable Payload access-control predicates
   collections/              # Users, Media, Vendors, Posts, ContactSubmissions
-  components/contact/       # contact form and CRM-aligned option lists
+  components/contact/       # contact form, CRM-aligned option lists, Calendly popup CTA
   components/landing/       # every landing-page component
   components/vendor/        # vendor detail page components
   fields/slug.ts            # shared auto-slug field
@@ -89,6 +89,7 @@ src/
   lib/zoho.ts               # server-only Flow payload + delivery state
   lib/categories.ts         # VENDOR_CATEGORIES + vendorHref/categoryLabel/isVendorCategory
   lib/seo.ts                # Webflow-inherited vendor meta title/description patterns
+  lib/tracking.ts           # GTM/Meta/Klaviyo IDs, live-domain gate, conversion events
   migrations/               # baseline Payload migration (see gotcha #9)
   payload.config.ts
   payload-types.ts          # GENERATED — never hand-edit
@@ -229,6 +230,47 @@ vendor link (the homepage `PartnersSection` already does).
   frequent cron schedules. The Flow webhook and cron secret are server-only; neither may use a
   `NEXT_PUBLIC_` prefix.
 
+### Tour booking — `/book`
+
+Booking happens in **Calendly's popup**, not an inline embed (the inline iframe was too narrow for
+Calendly's two-pane layout and turned the long intake form into a page-length scroll).
+`/book` is a short landing page (visit details + "Pick a time") kept for its Webflow URL and
+title/description — don't rename them.
+
+- Every tour CTA (header, `/contact`, `PartnersSection`, `/book`) is `RequestTourLink`
+  (`components/contact/`): a real `<Link href="/book">` whose plain click opens the popup instead.
+  Modified clicks, crawlers, and no-JS still reach `/book`; if Calendly's script fails to load
+  it navigates to the Calendly page itself.
+- `widget.js` + `widget.css` load lazily on first hover/focus/click, once per session. The same
+  load installs Esc-to-close (Calendly has none) and the `calendly.event_scheduled` listener
+  that fires `trackTourBooked()`.
+- The event URL (`CALENDLY_URL`, currently `calendly.com/tbsgallery/45min`) lives in that file.
+  `book/page.tsx` repeats duration/address/hours/phone in site type — keep them in sync with
+  the Calendly event.
+- `background_color`/`text_color` mirror the canvas/ink palette per `resolvedTheme` at click
+  time. Calendly only honours colour params on paid plans. `styles.css` forces
+  `color-scheme: light` on the popup iframe, else dark mode paints a white backdrop around it.
+
+### Tracking — GTM, Meta Pixel, Klaviyo
+
+Ported from Webflow's site-wide custom code. `components/Tracking.tsx` (rendered in the frontend
+root layout, so the Payload admin is never tracked) loads GTM `GTM-NR7TD5Q` and Meta Pixel
+`344524082707566` after hydration and `klaviyo.js` (`X6j4PF`, drives the popup) when idle. The
+`facebook-domain-verification` tag is static `metadata.other` in `layout.tsx`.
+
+- **Scripts only load on `tbsdesigngallery.com` / `www.`** — the Webflow site shares these
+  accounts until launch, so localhost and Vercel URLs stay silent. `?tracking=on` turns them on
+  for that browser (persisted in localStorage), `?tracking=off` clears it. The gate runs
+  client-side because ISR pages can't know the host; that's also why there's no `<noscript>`
+  Pixel fallback.
+- Next navigations don't reload the Pixel snippet, so `Tracking` sends `PageView` on each
+  `pathname` change. GA4 relies on Enhanced Measurement's history-change page views, set in GA4.
+- Conversions (`trackContactLead` / `trackTourBooked`): Meta `Lead` + dataLayer `generate_lead`
+  on a successful contact submission (skipped for honeypot hits), Meta `Schedule` + dataLayer
+  `tour_booked` on Calendly's `calendly.event_scheduled`. GTM needs Custom Event triggers to
+  forward the dataLayer events.
+- If GTM's container also fires the Meta Pixel, PageViews double-count — keep it in one place.
+
 ### Blueprint primitives (`components/landing/Blueprint.tsx`)
 
 The design has a drafting/blueprint motif. These are **intentional visual elements, not debug
@@ -292,7 +334,8 @@ in the footer, and it renders with no active state until mounted to keep SSR mar
 
 - **Server components by default.** `'use client'` only where there's state or an effect:
   `SiteHeader`, `CategoryMegaMenu`, `MobileNavSheet`, `SpecificationSection`,
-  `InstallationSection`, `TestimonialsSection`, `ThemeSwitcher`, `Carousel`, `useCarouselTimer`.
+  `InstallationSection`, `TestimonialsSection`, `ThemeSwitcher`, `Carousel`, `useCarouselTimer`,
+  `RequestTourLink`, `Tracking`.
 - **Plain `<img>`, not `next/image`**, with an `{/* eslint-disable-next-line
 @next/next/no-img-element */}` above each one. This is the established pattern across every
   landing component — follow it rather than converting to `next/image`.

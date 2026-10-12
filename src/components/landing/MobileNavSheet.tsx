@@ -187,11 +187,17 @@ export function MobileNavSheet({
   }, [])
 
   return (
+    /*
+     * overflow-clip, not -hidden: showModal() focuses the close button while
+     * the sheet is still translated off-screen, and an overflow:hidden box is
+     * still programmatically scrollable — the dialog would scroll to reveal
+     * it, then snap back as the sheet slides in.
+     */
     <dialog
       ref={dialogRef}
       id={id}
       aria-label="Site menu"
-      className="fixed inset-0 m-0 h-dvh max-h-none w-full max-w-none overflow-hidden border-0 bg-transparent p-0 backdrop:bg-transparent"
+      className="fixed inset-0 m-0 h-dvh max-h-none w-full max-w-none overflow-clip border-0 bg-transparent p-0 backdrop:bg-transparent"
     >
       <div
         ref={backdropRef}

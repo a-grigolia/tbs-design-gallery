@@ -4,6 +4,7 @@ import Link from 'next/link'
 import React from 'react'
 
 import { ContactForm } from '@/components/contact/ContactForm'
+import { RequestTourLink } from '@/components/contact/RequestTourLink'
 import { BlueprintColumn, SectionBand } from '@/components/landing/Blueprint'
 import { SiteFooter } from '@/components/landing/SiteFooter'
 import { SiteHeader } from '@/components/landing/SiteHeader'
@@ -91,13 +92,9 @@ export default function ContactPage() {
                 In order to guarantee a unique experience for your visit, we operate on an
                 appointment-only basis.
               </p>
-              {/* TODO: point at the Calendly tour page once it exists. */}
-              <a
-                href="#"
-                className="flex h-[40px] w-fit items-center justify-center rounded-[44px] border border-brand-glow bg-brand px-[24px] py-[10px] font-figtree text-[14px] leading-[24px] text-white"
-              >
+              <RequestTourLink className="flex h-[40px] w-fit items-center justify-center rounded-[44px] border border-brand-glow bg-brand px-[24px] py-[10px] font-figtree text-[14px] leading-[24px] text-white transition-opacity hover:opacity-90">
                 Request a Tour
-              </a>
+              </RequestTourLink>
             </div>
             <div className="h-[280px] w-full overflow-hidden rounded-[24px] lg:h-[440px] lg:min-w-px lg:flex-1">
               {/* eslint-disable-next-line @next/next/no-img-element */}

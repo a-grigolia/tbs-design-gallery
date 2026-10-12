@@ -3,6 +3,7 @@ import React from 'react'
 
 import type { Media, Vendor } from '@/payload-types'
 
+import { RequestTourLink } from '@/components/contact/RequestTourLink'
 import { vendorHref } from '@/lib/categories'
 
 function logoUrl(logo: Vendor['logo']): string | null {
@@ -24,12 +25,9 @@ export function PartnersSection({ vendors }: { vendors: Vendor[] }) {
             from well-known manufacturers across the United States and worldwide.
           </p>
         </div>
-        <Link
-          href="/contact"
-          className="flex items-center justify-center rounded-[44px] border border-brand-glow bg-brand px-[24px] py-[10px] font-figtree text-[14px] leading-[24px] font-medium whitespace-nowrap text-white transition-opacity hover:opacity-90"
-        >
+        <RequestTourLink className="flex items-center justify-center rounded-[44px] border border-brand-glow bg-brand px-[24px] py-[10px] font-figtree text-[14px] leading-[24px] font-medium whitespace-nowrap text-white transition-opacity hover:opacity-90">
           Request a tour of our showroom
-        </Link>
+        </RequestTourLink>
       </div>
       {vendors.length > 0 && (
         <div className="@container w-full">

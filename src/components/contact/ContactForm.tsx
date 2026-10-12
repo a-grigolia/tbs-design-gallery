@@ -6,6 +6,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { submitContact } from '@/app/(frontend)/contact/actions'
 import { I_AM_A_OPTIONS, PROJECT_TYPE_OPTIONS } from '@/components/contact/options'
 import { californiaAddressFromPlace, type StructuredAddress } from '@/lib/address'
+import { trackContactLead } from '@/lib/tracking'
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -398,6 +399,8 @@ export function ContactForm() {
     })
     setSubmitting(false)
     if (result.ok) {
+      // The server fakes success for honeypot hits; those aren't leads.
+      if (!company) trackContactLead()
       setFormHeight(formRef.current?.offsetHeight ?? null)
       setSubmitted(true)
     } else {

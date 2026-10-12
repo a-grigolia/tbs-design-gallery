@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import React, { useEffect, useRef, useState } from 'react'
 
+import { RequestTourLink } from '@/components/contact/RequestTourLink'
 import { CategoryMegaMenu } from '@/components/landing/CategoryMegaMenu'
 import { MobileNavSheet } from '@/components/landing/MobileNavSheet'
 
@@ -199,12 +200,9 @@ export function SiteHeader({ overlayAtTop = false }: { overlayAtTop?: boolean })
           ))}
         </nav>
         <div className="col-start-3 flex items-center gap-[12px] justify-self-end">
-          <Link
-            href="/contact"
-            className="flex h-[36px] items-center justify-center rounded-[44px] border border-brand-glow bg-brand px-[16px] font-figtree text-[14px] leading-[24px] whitespace-nowrap text-white transition-opacity hover:opacity-90 md:h-[40px]"
-          >
+          <RequestTourLink className="flex h-[36px] items-center justify-center rounded-[44px] border border-brand-glow bg-brand px-[16px] font-figtree text-[14px] leading-[24px] whitespace-nowrap text-white transition-opacity hover:opacity-90 md:h-[40px]">
             Request a Tour
-          </Link>
+          </RequestTourLink>
           <button
             ref={menuButtonRef}
             type="button"
