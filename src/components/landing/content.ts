@@ -1,3 +1,5 @@
+import type { VendorCategory } from '@/lib/categories'
+
 export const SHOWROOM_SLIDES: { image: string; caption: string }[] = [
   {
     image:
@@ -147,3 +149,16 @@ export const TESTIMONIALS: { lead: string; body: string; author: string }[] = [
     author: 'Ginny U.',
   },
 ]
+
+/**
+ * Photos for the nav's category mega menu and mobile sheet. Paste public
+ * Supabase Media URLs (…/storage/v1/object/public/media/{file}); an empty
+ * string renders a neutral placeholder tile.
+ */
+export const NAV_CATEGORY_IMAGES: Record<VendorCategory, string> = {
+  'custom-cabinetry': 'https://nbdugymkxxwohotyzwhw.supabase.co/storage/v1/object/public/media/premier-AD_352.BDR_433-800x600.webp',
+  'windows-doors': 'https://nbdugymkxxwohotyzwhw.supabase.co/storage/v1/object/public/media/oikos-Immagine-pagina-pubblicitaria-800x889.webp',
+  'outdoor-living': 'https://nbdugymkxxwohotyzwhw.supabase.co/storage/v1/object/public/media/royal-botania-organix-lounge-02-800x470.webp',
+  appliances: 'https://nbdugymkxxwohotyzwhw.supabase.co/storage/v1/object/public/media/la-cornue-chateau-supreme-green-800x626.webp',
+  'architectural-elements-furniture': 'https://nbdugymkxxwohotyzwhw.supabase.co/storage/v1/object/public/media/laurameroni-architecture-catalogue-hd-images-088-1920x1358.webp',
+}

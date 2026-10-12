@@ -125,17 +125,35 @@ selected category label while linking to the vendor's canonical `vendorHref`. Ro
 5 seconds and pauses during vendor-name/hero interaction; active names stay dark while the arrow
 appears only on direct name hover.
 
-### Header + hero (Figma 677:6932)
+### Header + hero (Figma 1052:412 desktop nav, 1061:1438 mobile nav, 677:6932 hero)
 
 - `SiteHeader` is a page-level sibling above `Hero` on the landing page (same standalone
   `sticky` header as vendor pages and the 404). It is **not** inside the hero column.
-- The hero column has 16px / 24px padding on all sides; side hairlines and joinery tees start
-  at the top of that column (below the nav), not the page top.
-- The bar has two states that CSS-transition: at rest 1216px / `32,8,8,8` padding / transparent;
-  scrolled (>8px) 1184px / `32,6,6,6`, dropped 8px, hairline border, frosted.
-- **The bar's frost lives on an absolutely-positioned sibling layer, not the bar itself.** A
-  `backdrop-filter` on the bar would become the categories dropdown's backdrop root and kill the
-  dropdown's own blur. Don't move the blur back onto the wrapper.
+- **Header height is `--header-height` in `styles.css`** (49px, 56px from `md`). `Hero`'s
+  `measure()` reads it and the category heroes `calc()` with it — change it there, never
+  hardcode a header height. The hero frame's top hairline and `CategoryPage`'s band (`-mt-px`)
+  sit on the header's last pixel row so they coincide with the bar's border instead of doubling.
+- The bar is full-width. The content row (max 1216px, Figma's `32,8,8,8` inset done as
+  symmetric `p-[8px]` + a 24px logo margin so the links' grid column centres on the full frame)
+  never moves. At rest it's transparent (white text over the homepage hero via `overlayAtTop`);
+  scrolled (>8px, or the hero's compact event) **or with the mega menu open** it crossfades in
+  a frosted full-bleed layer with a bottom hairline.
+- **The frost lives on an absolutely-positioned sibling layer whose `opacity` animates**, not on
+  the row and not as an animated blur radius (janks on phones, and a `backdrop-filter` ancestor
+  would become the mega menu's backdrop root).
+- `CategoryMegaMenu` (Figma 1054:631) — five cards in `VENDOR_CATEGORIES` order, `top-[50px]`
+  (overlaps the bar 6px per Figma). Opens on mouse hover (100ms/150ms intent delays), click
+  (pins it open until outside click/Esc), or keyboard. The panel fades/drops in, then cards
+  stagger in via inline `transitionDelay`; closing drops the stagger. Card hover: image zoom
+  plus the arrow gliding into a circle — two Figma SVGs crossfading while sliding 4.17px.
+- `MobileNavSheet` (Figma 1061:1554, below `md`) — a modal `<dialog>` (top layer above the
+  header, built-in focus containment). It stays open through the slide-down, so close is driven
+  by `open` → timeout → `dialog.close()`. Esc's `cancel` is intercepted to animate; Chrome may
+  force-close on repeated Esc, which the `close` listener handles. Swipe-to-dismiss uses
+  non-passive **touch** events (pointer streams get cancelled once the browser pans). Locks
+  `<html>` overflow while open.
+- Category photos for both come from `NAV_CATEGORY_IMAGES` in `content.ts` — hand-pasted public
+  Supabase Media URLs; an empty string renders a neutral placeholder tile.
 - The hero heading uses fluid type — `text-[clamp(2rem,1.25rem+2.5vw,3.25rem)]` (32→52px), no
   breakpoint jumps. The media box is **2:1** on `lg` (`lg:aspect-[2/1]`), `min-h-[480px]` below.
 - The hero video streams from public R2 via `NEXT_PUBLIC_MEDIA_URL`
@@ -231,10 +249,11 @@ Note the inconsistency: `SectionRule number="01"` is rendered _inside_ `GalleryS
 Two places, and you usually need to check both:
 
 - **`components/landing/content.ts`** — the list-shaped content: `CATEGORIES`, `SHOWROOM_SLIDES`,
-  `INSTALLATION_CARDS`, `PROCESS_STEPS`, `TESTIMONIALS`, `FOOTER_COLUMNS`, `FOOTER_ADDRESS`.
+  `INSTALLATION_CARDS`, `PROCESS_STEPS`, `TESTIMONIALS`, `FOOTER_COLUMNS`, `FOOTER_ADDRESS`,
+  `NAV_CATEGORY_IMAGES`.
 - **Inline in each section's JSX** — headings, body paragraphs, eyebrow labels, CTA text, and the
   short service lists (`SHOWROOM_SERVICES` in `GallerySection`, `SERVICES` in
-  `InstallationSection`, `NAV_LINKS` in `SiteHeader`).
+  `InstallationSection`, `NAV_LINKS` in `SiteHeader`, `SHEET_LINKS` in `MobileNavSheet`).
 
 Page `<title>`/description live in `(frontend)/layout.tsx`.
 
@@ -272,8 +291,8 @@ in the footer, and it renders with no active state until mounted to keep SSR mar
 ### Component conventions
 
 - **Server components by default.** `'use client'` only where there's state or an effect:
-  `SiteHeader`, `SpecificationSection`, `InstallationSection`, `TestimonialsSection`,
-  `ThemeSwitcher`, `Carousel`, `useCarouselTimer`.
+  `SiteHeader`, `CategoryMegaMenu`, `MobileNavSheet`, `SpecificationSection`,
+  `InstallationSection`, `TestimonialsSection`, `ThemeSwitcher`, `Carousel`, `useCarouselTimer`.
 - **Plain `<img>`, not `next/image`**, with an `{/* eslint-disable-next-line
 @next/next/no-img-element */}` above each one. This is the established pattern across every
   landing component — follow it rather than converting to `next/image`.

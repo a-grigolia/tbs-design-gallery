@@ -78,6 +78,20 @@
   --font-hanken: var(--font-geist), 'Geist', sans-serif;
 }
 
+/*
+ * Sticky header height from Figma (1061:1438 mobile, 1052:412 desktop). Hero's
+ * scroll geometry and the category heroes read this, so change it here only.
+ */
+:root {
+  --header-height: 49px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --header-height: 56px;
+  }
+}
+
 html {
   -webkit-font-smoothing: antialiased;
   scroll-behavior: smooth;

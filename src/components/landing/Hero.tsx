@@ -103,10 +103,16 @@ export function Hero() {
       // closes. Measuring `svh` keeps scroll geometry stable through that UI.
       const viewportWidth = document.documentElement.clientWidth
       const viewportHeight = heightProbe.offsetHeight
+      // The frame's top hairline sits on the header's bottom border (its last
+      // pixel row) rather than doubling it underneath.
+      const frameTop =
+        (parseFloat(
+          getComputedStyle(document.documentElement).getPropertyValue('--header-height'),
+        ) || 56) - 1
       const outerGutter = viewportWidth >= 1024 ? 24 : viewportWidth >= 640 ? 32 : 8
       const innerPadding = viewportWidth >= 640 ? 24 : 12
       const targetX = outerGutter + innerPadding + 1
-      const targetY = 60 + innerPadding + 1
+      const targetY = frameTop + innerPadding + 1
       const targetWidth = viewportWidth - targetX * 2
       const preferredTargetHeight = Math.max(targetWidth / 2, 480)
       // Preserve the preferred composition whenever it fits. Very wide,
@@ -135,7 +141,8 @@ export function Hero() {
         staticLayout,
       }
 
-      frame.style.top = '60px'
+      frame.style.top = `${frameTop}px`
+      topRule.style.top = `${frameTop}px`
       frame.style.left = `${outerGutter}px`
       frame.style.width = `${viewportWidth - outerGutter * 2}px`
       frame.style.height = `${targetHeight + innerPadding * 2 + 2}px`
@@ -194,13 +201,13 @@ export function Hero() {
      * the stable viewport and final frame heights becomes the scroll runway,
      * keeping the following section attached to the frame throughout.
      */
-    <section ref={sectionRef} className="relative -mt-[60px] h-svh w-full">
+    <section ref={sectionRef} className="relative -mt-[var(--header-height)] h-svh w-full">
       <div ref={heightProbeRef} aria-hidden className="pointer-events-none absolute h-svh w-px" />
       <div ref={viewportRef} className="sticky top-0 h-svh w-full">
         <div
           ref={topRuleRef}
           aria-hidden
-          className="pointer-events-none absolute top-[60px] right-0 left-0 border-t border-hairline opacity-0"
+          className="pointer-events-none absolute top-[calc(var(--header-height)-1px)] right-0 left-0 border-t border-hairline opacity-0"
         />
         <div
           ref={bottomRuleRef}

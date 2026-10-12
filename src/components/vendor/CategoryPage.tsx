@@ -61,17 +61,18 @@ export async function CategoryPage({
        * Static stand-in for the homepage hero's settled frame: the same
        * gutters (8/32/24) and inner padding (12/24), and the same media
        * height rule as Hero's measure() — 2:1, at least 480px, but capped so
-       * the frame plus a 96px runway fits under the 60px header. 50cqw is
-       * half the frame's content width, i.e. half the media width.
+       * the frame plus a 96px runway fits under the header. 50cqw is half the
+       * frame's content width, i.e. half the media width. -mt-px lays the top
+       * hairline over the scrolled header's bottom border instead of doubling it.
        * border-b closes the band — the intro section has no hairline of its own.
        */}
-      <section className="w-full border-t border-b border-hairline px-2 sm:px-8 lg:px-6">
+      <section className="-mt-px w-full border-t border-b border-hairline px-2 sm:px-8 lg:px-6">
         <div className="@container relative w-full border-r border-l border-hairline p-[12px] sm:p-[24px]">
           <JoineryTee className="-top-[1px] -left-[6.5px] rotate-180" />
           <JoineryTee className="-top-[1px] -right-[6.5px] rotate-180" />
           <JoineryTee className="-bottom-[1px] -left-[6.5px]" />
           <JoineryTee className="-bottom-[1px] -right-[6.5px]" />
-          <div className="relative h-[min(max(50cqw,480px),calc(100svh_-_182px))] w-full overflow-hidden rounded-[24px] sm:h-[min(max(50cqw,480px),calc(100svh_-_206px))]">
+          <div className="relative h-[min(max(50cqw,480px),calc(100svh_-_var(--header-height)_-_122px))] w-full overflow-hidden rounded-[24px] sm:h-[min(max(50cqw,480px),calc(100svh_-_var(--header-height)_-_146px))]">
             <video
               autoPlay
               muted
