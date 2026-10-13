@@ -39,12 +39,16 @@ export function SpecificationSection({ vendors }: { vendors: SpecificationVendor
       })).filter((category) => category.vendors.length > 0),
     [vendors],
   )
-  const [interactionPaused, setInteractionPaused] = useState(false)
-  const [manuallyPaused, setManuallyPaused] = useState(false)
+  const [hoverPaused, setHoverPaused] = useState(false)
+  const [focusPaused, setFocusPaused] = useState(false)
   const [reducedMotion, setReducedMotion] = useState(false)
   const [hoveredCategory, setHoveredCategory] = useState<VendorCategory | null>(null)
   const lastPointerType = useRef<string | null>(null)
-  const paused = interactionPaused || manuallyPaused || reducedMotion
+  const paused = hoverPaused || focusPaused || reducedMotion
+  const pauseOnHover = {
+    onMouseEnter: () => setHoverPaused(true),
+    onMouseLeave: () => setHoverPaused(false),
+  }
   const { index, setIndex, progress, containerRef } = useCarouselTimer(
     categories.length,
     5000,
@@ -66,12 +70,10 @@ export function SpecificationSection({ vendors }: { vendors: SpecificationVendor
     <div
       ref={containerRef}
       className="flex w-full flex-col"
-      onMouseEnter={() => setInteractionPaused(true)}
-      onMouseLeave={() => setInteractionPaused(false)}
-      onFocusCapture={() => setInteractionPaused(true)}
+      onFocusCapture={() => setFocusPaused(true)}
       onBlurCapture={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
-          setInteractionPaused(false)
+          setFocusPaused(false)
         }
       }}
     >
@@ -84,7 +86,10 @@ export function SpecificationSection({ vendors }: { vendors: SpecificationVendor
           </p>
         </div>
 
-        <div className="flex max-w-full flex-col items-start justify-center lg:items-end">
+        <div
+          className="flex max-w-full flex-col items-start justify-center lg:items-end"
+          {...pauseOnHover}
+        >
           {categories.map((category, categoryIndex) => {
             const isActive = categoryIndex === index
             const isHovered = category.value === hoveredCategory
@@ -150,7 +155,6 @@ export function SpecificationSection({ vendors }: { vendors: SpecificationVendor
           {categories.map((category, categoryIndex) => {
             const image = CATEGORY_IMAGES[category.value]
             const isActive = categoryIndex === index
-            const brandCount = category.vendors.length
 
             return (
               <div
@@ -180,16 +184,14 @@ export function SpecificationSection({ vendors }: { vendors: SpecificationVendor
                   className="absolute inset-0 bg-[linear-gradient(0deg,rgba(0,0,0,0.6)_0%,rgba(102,102,102,0)_46.154%),linear-gradient(90deg,rgba(0,0,0,0.2)_0%,rgba(0,0,0,0.2)_100%)]"
                   aria-hidden
                 />
-                <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-[16px] p-[16px] lg:gap-[20px] lg:p-[32px]">
+                <div
+                  className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-[16px] p-[16px] lg:gap-[20px] lg:p-[32px]"
+                  {...pauseOnHover}
+                >
                   <div className="flex min-w-0 flex-col items-start gap-[4px] text-white lg:gap-[8px]">
-                    <div className="flex flex-col items-start">
-                      <p className="text-[10px] leading-[13px] tracking-[0.1px] text-white/80">
-                        {brandCount} {brandCount === 1 ? 'brand' : 'brands'}
-                      </p>
-                      <h3 className="text-[20px] leading-[26px] tracking-[0.2px] text-white lg:text-[24px] lg:leading-[32px] lg:tracking-[0.24px]">
-                        {category.label}
-                      </h3>
-                    </div>
+                    <h3 className="text-[20px] leading-[26px] tracking-[0.2px] text-white lg:text-[24px] lg:leading-[32px] lg:tracking-[0.24px]">
+                      {category.label}
+                    </h3>
                     <p className="text-[12px] leading-[16px] tracking-[0.12px] text-white/80 lg:text-[14px] lg:leading-[14px] lg:tracking-[0.14px]">
                       {category.vendors.map((vendor) => vendor.name).join(', ')}
                     </p>
@@ -209,40 +211,12 @@ export function SpecificationSection({ vendors }: { vendors: SpecificationVendor
           })}
         </div>
         {categories.length > 1 && (
-          <div className="flex items-center justify-center gap-[8px]">
-            <CarouselDots
-              count={categories.length}
-              active={index}
-              progress={progress}
-              onSelect={setIndex}
-            />
-            <button
-              type="button"
-              disabled={reducedMotion}
-              aria-pressed={manuallyPaused || reducedMotion}
-              aria-label={
-                reducedMotion
-                  ? 'Automatic category cycling disabled by reduced motion preference'
-                  : manuallyPaused
-                    ? 'Play category carousel'
-                    : 'Pause category carousel'
-              }
-              onClick={() => setManuallyPaused((current) => !current)}
-              className="flex size-[24px] items-center justify-center rounded-full text-ink-50 transition-colors hover:bg-ink/5 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              {manuallyPaused || reducedMotion ? (
-                <span
-                  aria-hidden
-                  className="ml-[1px] size-0 border-y-[4px] border-l-[6px] border-y-transparent border-l-current"
-                />
-              ) : (
-                <span aria-hidden className="flex gap-[2px]">
-                  <span className="h-[8px] w-[2px] rounded-full bg-current" />
-                  <span className="h-[8px] w-[2px] rounded-full bg-current" />
-                </span>
-              )}
-            </button>
-          </div>
+          <CarouselDots
+            count={categories.length}
+            active={index}
+            progress={progress}
+            onSelect={setIndex}
+          />
         )}
       </div>
     </div>

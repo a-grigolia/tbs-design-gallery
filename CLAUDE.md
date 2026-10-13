@@ -123,7 +123,8 @@ on-demand `revalidatePath` from the CMS hooks.
 CMS `categories`; empty categories are hidden and names are alphabetical. Its five tabs use the
 Figma SVGs in `public/landing/category-*.svg`, and each slide reuses `VendorHeroCard` with the
 selected category label while linking to the vendor's canonical `vendorHref`. Rotation runs every
-5 seconds and pauses during vendor-name/hero interaction; active names stay dark while the arrow
+5 seconds and pauses while the category list or the card's caption bar is hovered, or anything in
+the section has keyboard focus (there is no pause button); active names stay dark while the arrow
 appears only on direct name hover.
 
 ### Header + hero (Figma 1052:412 desktop nav, 1061:1438 mobile nav, 677:6932 hero)
@@ -189,7 +190,7 @@ Components in `src/components/vendor/` (all server components, same conventions 
 - `VendorGallery` — greedy two-column masonry balanced by cumulative aspect ratio (uses each
   Media's stored `width`/`height`); single column below `md`. "Visit {name}" pill under it from
   `externalUrl`. Every section hides itself when its field is empty.
-- `VendorCta` — per-category Source Serif heading (map lives in the component) + "Contact us".
+- `VendorCta` — per-category `font-display` heading (map lives in the component) + "Contact us".
 - `CategoryVendorGrid` — logo grid of all `active`+published vendors whose `categories` contains
   the URL category; the current vendor's cell is `bg-cream`, `aria-current`, and unlinked.
 - `media.ts` — `asMedia()` / `mediaUrl(value, size)` helpers for narrowing `number | Media`.
@@ -268,8 +269,25 @@ root layout, so the Payload admin is never tracked) loads GTM `GTM-NR7TD5Q` and 
 - Conversions (`trackContactLead` / `trackTourBooked`): Meta `Lead` + dataLayer `generate_lead`
   on a successful contact submission (skipped for honeypot hits), Meta `Schedule` + dataLayer
   `tour_booked` on Calendly's `calendly.event_scheduled`. GTM needs Custom Event triggers to
-  forward the dataLayer events.
+  forward the dataLayer events. Both helpers no-op when the gate is closed. Explicit events are
+  used because GTM's built-in form-submit trigger doesn't see this React form's submissions.
 - If GTM's container also fires the Meta Pixel, PageViews double-count — keep it in one place.
+  **Unverified:** nobody has audited GTM-NR7TD5Q's tags yet; check in Tag Assistant Preview.
+- Klaviyo loads **once, site-wide**. Webflow also loaded it a second time on the homepage only;
+  that duplicate was dropped on purpose. Which pages show the popup is Klaviyo form targeting
+  (dashboard), not script placement.
+- `facebook-domain-verification` renders on every host, ungated — it's inert markup and Meta's
+  crawler needs it in the static HTML.
+- **No consent handling, deliberately** (decided 2026-10-12): matches Webflow's behaviour. Under
+  CCPA/CPRA the Meta Pixel counts as "sharing", so a "Do Not Sell or Share" opt-out and/or
+  honouring Global Privacy Control is the likely follow-up — gate it in `isTrackingEnabled()`.
+- **Testing before launch**: visit any local/Vercel URL with `?tracking=on`, then GTM Tag
+  Assistant Preview (+ GA4 DebugView), the Meta Pixel Helper extension / Events Manager Test
+  Events, and `window.klaviyo` + a private window for the popup. Test traffic hits the real
+  accounts — keep it brief and delete test leads/bookings.
+- **Launch needs no code change** — tracking switches on once the domain points at Vercel.
+  Outstanding non-code setup: GA4 Enhanced Measurement "page changes based on browser history
+  events" on, and GTM Custom Event triggers for `generate_lead` / `tour_booked`.
 
 ### Blueprint primitives (`components/landing/Blueprint.tsx`)
 
@@ -318,12 +336,14 @@ branch on theme:
 | `pb-heading-gap`                   | 64px heading-to-content gap              |
 | `px-gutter` / `px-gutter-sm`       | 48px desktop / 24px mobile inset         |
 
-Fonts are four Google families loaded in `layout.tsx` and exposed as tokens:
+The site is **single-family: only Geist** is loaded in `layout.tsx`. The four font tokens still
+exist (and are used throughout the JSX) but all resolve to Geist in `styles.css`, so they now
+mark roles rather than typefaces:
 
-- `font-sans` → **Geist** — the body default, set on `body`.
-- `font-display` → **Source Serif 4** — every `h1`/`h2`.
-- `font-figtree` → **Figtree** — nav links, buttons, small caption/label text.
-- `font-hanken` → **Hanken Grotesk** — the showroom services list only.
+- `font-sans` — the body default, set on `body`.
+- `font-display` — every `h1`/`h2` (formerly Source Serif 4).
+- `font-figtree` — nav links, buttons, small caption/label text (formerly Figtree).
+- `font-hanken` — the showroom services list (formerly Hanken Grotesk).
 
 Dark mode: `next-themes` with `attribute="class"`, plus
 `@custom-variant dark (&:where(.dark, .dark *))` so `dark:` utilities work off the class.
