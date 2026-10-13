@@ -15,7 +15,7 @@ import { VendorGallery } from '@/components/vendor/VendorGallery'
 import { VendorHero } from '@/components/vendor/VendorHero'
 import { categoryLabel, isVendorCategory } from '@/lib/categories'
 import { getPayload } from '@/lib/payload'
-import { vendorMetaDescription, vendorMetaTitle } from '@/lib/seo'
+import { DEFAULT_SHARE_IMAGE, vendorMetaDescription, vendorMetaTitle } from '@/lib/seo'
 
 export const revalidate = 300
 
@@ -63,7 +63,13 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
     openGraph: {
       title,
       description,
-      ...(ogImage ? { images: [{ url: ogImage }] } : {}),
+      images: [ogImage ? { url: ogImage } : DEFAULT_SHARE_IMAGE],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: [ogImage ? { url: ogImage } : DEFAULT_SHARE_IMAGE],
     },
   }
 }

@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import React from 'react'
 
 import type { SpecificationVendor } from '@/components/landing/SpecificationSection'
@@ -16,6 +17,18 @@ import { vendorHeroData } from '@/components/vendor/VendorHero'
 import { getPayload } from '@/lib/payload'
 
 export const revalidate = 300
+
+const TITLE = 'Bay Area Home Design Studio | TBS Design Gallery'
+const DESCRIPTION =
+  'Bay area home design firm, TBS Design Gallery is a multi-line showroom in Santa Clara featuring kitchen cabinetry, windows, doors, luxury appliances, and outdoor structures.'
+
+// The share image comes from opengraph-image.jpg / twitter-image.jpg in this folder.
+export const metadata: Metadata = {
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: { title: TITLE, description: DESCRIPTION, type: 'website' },
+  twitter: { card: 'summary_large_image', title: TITLE, description: DESCRIPTION },
+}
 
 export default async function HomePage() {
   const payload = await getPayload()

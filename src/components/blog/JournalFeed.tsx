@@ -21,6 +21,9 @@ const FILTERS = [
   { id: 'news', label: 'News' },
 ] as const
 
+// Parked on purpose, not dead code — see "Journal" in CLAUDE.md.
+const SHOW_FILTERS = false
+
 type FilterId = (typeof FILTERS)[number]['id']
 
 function TagWithArrow({ tag }: { tag: string }) {
@@ -44,46 +47,47 @@ function TagWithArrow({ tag }: { tag: string }) {
 
 export function JournalFeed({ posts }: { posts: JournalListItem[] }) {
   const [filter, setFilter] = useState<FilterId>('everything')
-  const visible =
-    filter === 'everything' ? posts : posts.filter((post) => post.type === filter)
+  const visible = filter === 'everything' ? posts : posts.filter((post) => post.type === filter)
 
   return (
     <div className="flex w-full flex-col pb-[96px]">
-      <div className="flex p-[24px]">
-        <div className="max-w-full overflow-x-auto p-px">
-          <div
-            role="tablist"
-            aria-label="Filter journal entries"
-            className="flex h-[40px] items-center justify-center gap-[8px] rounded-[44px] border border-hairline"
-          >
-            {FILTERS.map((option) => {
-              const isActive = option.id === filter
-              return (
-                <button
-                  key={option.id}
-                  type="button"
-                  role="tab"
-                  aria-selected={isActive}
-                  onClick={() => setFilter(option.id)}
-                  className="group relative flex h-[40px] shrink-0 items-center justify-center px-[24px] py-[10px]"
-                >
-                  <span
-                    aria-hidden
-                    className={`absolute rounded-[44px] border transition-[inset,background-color,border-color] duration-200 ease-out ${
-                      isActive
-                        ? '-inset-x-px inset-y-0 border-hairline bg-cream'
-                        : 'inset-[3px] border-transparent group-hover:border-ink/[0.03] group-hover:bg-ink/[0.03]'
-                    }`}
-                  />
-                  <span className="relative text-[14px] leading-[18px] whitespace-nowrap text-ink">
-                    {option.label}
-                  </span>
-                </button>
-              )
-            })}
+      {SHOW_FILTERS && (
+        <div className="flex p-[24px]">
+          <div className="max-w-full overflow-x-auto p-px">
+            <div
+              role="tablist"
+              aria-label="Filter journal entries"
+              className="flex h-[40px] items-center justify-center gap-[8px] rounded-[44px] border border-hairline"
+            >
+              {FILTERS.map((option) => {
+                const isActive = option.id === filter
+                return (
+                  <button
+                    key={option.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={isActive}
+                    onClick={() => setFilter(option.id)}
+                    className="group relative flex h-[40px] shrink-0 items-center justify-center px-[24px] py-[10px]"
+                  >
+                    <span
+                      aria-hidden
+                      className={`absolute rounded-[44px] border transition-[inset,background-color,border-color] duration-200 ease-out ${
+                        isActive
+                          ? '-inset-x-px inset-y-0 border-hairline bg-cream'
+                          : 'inset-[3px] border-transparent group-hover:border-ink/[0.03] group-hover:bg-ink/[0.03]'
+                      }`}
+                    />
+                    <span className="relative text-[14px] leading-[18px] whitespace-nowrap text-ink">
+                      {option.label}
+                    </span>
+                  </button>
+                )
+              })}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       <div className="group/feed flex w-full flex-col">
         {visible.map((post) => (

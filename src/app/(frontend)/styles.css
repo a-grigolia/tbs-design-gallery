@@ -9,7 +9,7 @@
  */
 :root {
   --palette-canvas: #f6f2ef;
-  --palette-hairline: #d5d5d5;
+  --palette-hairline: #EAE6E2;
   --palette-cream: #fffcf9;
   --palette-ink: #000000;
   --palette-ink-75: rgba(0, 0, 0, 0.75);
@@ -22,8 +22,8 @@
 }
 
 .dark {
-  --palette-canvas: #0B0908;
-  --palette-hairline: rgba(255, 255, 255, 0.16);
+  --palette-canvas: #110E0D;
+  --palette-hairline: #211D1B;
   --palette-cream: #211d1a;
   --palette-ink: #f6f2ef;
   --palette-ink-75: rgba(246, 242, 239, 0.75);
@@ -79,17 +79,12 @@
 }
 
 /*
- * Sticky header height from Figma (1061:1438 mobile, 1052:412 desktop). Hero's
- * scroll geometry and the category heroes read this, so change it here only.
+ * Sticky header height from Figma (1061:1221 mobile, 1052:412 desktop), the
+ * same at every size. Hero's scroll geometry and the category heroes read
+ * this, so change it here only.
  */
 :root {
-  --header-height: 49px;
-}
-
-@media (min-width: 768px) {
-  :root {
-    --header-height: 56px;
-  }
+  --header-height: 56px;
 }
 
 html {

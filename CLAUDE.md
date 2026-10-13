@@ -127,11 +127,11 @@ selected category label while linking to the vendor's canonical `vendorHref`. Ro
 the section has keyboard focus (there is no pause button); active names stay dark while the arrow
 appears only on direct name hover.
 
-### Header + hero (Figma 1052:412 desktop nav, 1061:1438 mobile nav, 677:6932 hero)
+### Header + hero (Figma 1052:412 desktop nav, 1061:1221 mobile nav, 677:6932 hero)
 
 - `SiteHeader` is a page-level sibling above `Hero` on the landing page (same standalone
   `sticky` header as vendor pages and the 404). It is **not** inside the hero column.
-- **Header height is `--header-height` in `styles.css`** (49px, 56px from `md`). `Hero`'s
+- **Header height is `--header-height` in `styles.css`** (56px at every size). `Hero`'s
   `measure()` reads it and the category heroes `calc()` with it — change it there, never
   hardcode a header height. The hero frame's top hairline and `CategoryPage`'s band (`-mt-px`)
   sit on the header's last pixel row so they coincide with the bar's border instead of doubling.
@@ -231,6 +231,18 @@ vendor link (the homepage `PartnersSection` already does).
   frequent cron schedules. The Flow webhook and cron secret are server-only; neither may use a
   `NEXT_PUBLIC_` prefix.
 
+### Journal (blog) — `/blog`
+
+`blog/page.tsx` fetches published Posts newest-first; the newest becomes `JournalFeatured`, and all
+of them (featured included) are listed by `JournalFeed`. Components live in `components/blog/`;
+`labels.ts` holds the type labels (`project | guide | news`) and date formatters.
+
+- **Filter pills are hidden, not removed** (decided 2026-10-13). `JournalFeed` has a pill tablist —
+  Everything / Guides / Projects / News — that filters the list client-side by `post.type`. It's
+  switched off with `const SHOW_FILTERS = false` at the top of `JournalFeed.tsx`; the markup,
+  `FILTERS`, and filter state are all still there. To bring it back, flip the flag to `true`.
+  While hidden, the filter stays on `everything`, so every post is listed.
+
 ### Tour booking — `/book`
 
 Booking happens in **Calendly's popup**, not an inline embed (the inline iframe was too narrow for
@@ -315,7 +327,12 @@ Two places, and you usually need to check both:
   short service lists (`SHOWROOM_SERVICES` in `GallerySection`, `SERVICES` in
   `InstallationSection`, `NAV_LINKS` in `SiteHeader`, `SHEET_LINKS` in `MobileNavSheet`).
 
-Page `<title>`/description live in `(frontend)/layout.tsx`.
+The homepage `<title>`/description are `metadata` in `(frontend)/page.tsx` (SEO-supplied copy —
+don't reword); `(frontend)/layout.tsx` only holds the fallback for pages that set none. The share
+image is `(frontend)/opengraph-image.jpg` + `twitter-image.jpg`, inherited by every page that
+doesn't define its own `openGraph`. A page-level `openGraph` object drops that inheritance
+entirely, so vendor and post metadata fall back to `DEFAULT_SHARE_IMAGE` (`src/lib/seo.ts`,
+served from `public/og-image.jpg`) when they have no photo of their own.
 
 ### Design tokens — Tailwind v4, no config file
 
@@ -334,7 +351,7 @@ branch on theme:
 | `bg-brand`, `border-brand-glow`    | brand red — **identical in both themes** |
 | `pt-section` / `pb-section`        | 96px section rhythm                      |
 | `pb-heading-gap`                   | 64px heading-to-content gap              |
-| `px-gutter` / `px-gutter-sm`       | 48px desktop / 24px mobile inset         |
+| `px-gutter` / `px-gutter-sm`       | 48px desktop / 16px mobile inset         |
 
 The site is **single-family: only Geist** is loaded in `layout.tsx`. The four font tokens still
 exist (and are used throughout the JSX) but all resolve to Geist in `styles.css`, so they now

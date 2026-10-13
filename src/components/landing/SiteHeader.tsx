@@ -130,7 +130,7 @@ export function SiteHeader({ overlayAtTop = false }: { overlayAtTop?: boolean })
        * 32/8 inset while keeping the grid's middle column (the links) centred
        * on the full 1216px frame, as in Figma, rather than on the content box.
        */}
-      <div className="relative mx-auto grid h-full w-full max-w-[1216px] grid-cols-[1fr_auto_1fr] items-center px-[12px] py-[6px] md:p-[8px]">
+      <div className="relative mx-auto grid h-full w-full max-w-[1216px] grid-cols-[1fr_auto_1fr] items-center px-[12px] py-[8px] md:px-[8px]">
         <Link
           href="/"
           aria-label="TBS Design Gallery home"
@@ -200,7 +200,7 @@ export function SiteHeader({ overlayAtTop = false }: { overlayAtTop?: boolean })
           ))}
         </nav>
         <div className="col-start-3 flex items-center gap-[12px] justify-self-end">
-          <RequestTourLink className="flex h-[36px] items-center justify-center rounded-[44px] border border-brand-glow bg-brand px-[16px] font-figtree text-[14px] leading-[24px] whitespace-nowrap text-white transition-opacity hover:opacity-90 md:h-[40px]">
+          <RequestTourLink className="flex h-[40px] items-center justify-center rounded-[44px] border border-brand-glow bg-brand px-[16px] font-figtree text-[14px] leading-[24px] whitespace-nowrap text-white transition-opacity hover:opacity-90">
             Request a Tour
           </RequestTourLink>
           <button

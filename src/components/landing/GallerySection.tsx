@@ -17,7 +17,7 @@ function showroomCard(slide: (typeof SHOWROOM_SLIDES)[number], sizeClasses: stri
   return (
     <div
       key={slide.image + slide.caption}
-      className={`relative flex flex-col items-start overflow-hidden rounded-[24px] p-[16px] drop-shadow-[0px_1px_1px_rgba(0,0,0,0.3),0px_2px_3px_rgba(0,0,0,0.15)] ${sizeClasses}`}
+      className={`relative flex flex-col items-start overflow-hidden rounded-[24px] p-[16px] ${sizeClasses}`}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
@@ -62,8 +62,8 @@ export function GallerySection() {
           shrinks with the page. Text keeps the 48px gutter while the media
           side sits at 24px — image gutters are tighter than text site-wide.
           Below lg the row stacks and the crossfade becomes a card carousel. */}
-      <div className="flex w-full flex-col gap-[48px] py-[24px] lg:flex-row lg:items-center lg:gap-[48px] lg:pl-gutter lg:pr-[24px]">
-        <div className="flex flex-col gap-[48px] px-gutter-sm pt-[16px] lg:w-[305px] lg:shrink-0 lg:justify-between lg:gap-0 lg:self-stretch lg:px-0 lg:pb-[54px]">
+      <div className="flex w-full flex-col gap-[48px] lg:flex-row lg:items-center lg:gap-[48px] lg:py-[24px] lg:pl-gutter lg:pr-[24px]">
+        <div className="flex flex-col gap-[48px] px-gutter-sm pt-[24px] lg:w-[305px] lg:pt-[16px] lg:shrink-0 lg:justify-between lg:gap-0 lg:self-stretch lg:px-0 lg:pb-[54px]">
           <div className="flex flex-col gap-[8px]">
             <h2 className="text-[20px] leading-[26px] text-ink">Showroom</h2>
             <p className="max-w-[300px] text-[14px] leading-[18px] text-ink-50">
@@ -79,7 +79,9 @@ export function GallerySection() {
         </div>
 
         <div className="hidden min-w-px flex-1 lg:block">
-          <Carousel slides={SHOWROOM_SLIDES.map((slide) => showroomCard(slide, 'h-[440px] w-full'))} />
+          <Carousel
+            slides={SHOWROOM_SLIDES.map((slide) => showroomCard(slide, 'h-[440px] w-full'))}
+          />
         </div>
         <CardCarousel
           className="lg:hidden"

@@ -74,12 +74,9 @@ export const PROCESS_STEPS = [
   },
 ]
 
-export type FooterLink = { label: string; href: string }
+export type FooterLink = { label: string; href: string; external?: boolean }
 
-/**
- * Footer columns from the Figma frame. Social hrefs are placeholders — swap
- * them for the real profile URLs when available.
- */
+/** Footer columns from the Figma frame. Social profiles open in a new tab. */
 export const FOOTER_COLUMNS: { number: string; label: string; links: FooterLink[] }[] = [
   {
     number: '01',
@@ -97,7 +94,6 @@ export const FOOTER_COLUMNS: { number: string; label: string; links: FooterLink[
     label: 'About us',
     links: [
       { label: 'Blog', href: '/blog' },
-      { label: 'Team', href: '/contact' },
       { label: 'Contact', href: '/contact' },
     ],
   },
@@ -105,13 +101,25 @@ export const FOOTER_COLUMNS: { number: string; label: string; links: FooterLink[
     number: '03',
     label: 'Socials',
     links: [
-      { label: 'Instagram', href: '#' },
-      { label: 'LinkedIn', href: '#' },
-      { label: 'Facebook', href: '#' },
-      { label: 'Yelp', href: '#' },
-      { label: 'Houzz', href: '#' },
-      { label: 'Vimeo', href: '#' },
-      { label: 'Youtube', href: '#' },
+      {
+        label: 'Houzz',
+        href: 'https://www.houzz.com/professionals/kitchen-and-bath-designers/tbs-design-gallery-pfvwus-pf~1201827736',
+        external: true,
+      },
+      { label: 'Instagram', href: 'https://www.instagram.com/tbsdesigngallery', external: true },
+      { label: 'Facebook', href: 'https://www.facebook.com/tbsdesigngallery/', external: true },
+      {
+        label: 'Yelp',
+        href: 'https://www.yelp.com/biz/tbs-design-gallery-santa-clara-4',
+        external: true,
+      },
+      {
+        label: 'LinkedIn',
+        href: 'https://www.linkedin.com/company/tbsdesigngallery/posts/?feedView=all',
+        external: true,
+      },
+      { label: 'Vimeo', href: 'https://vimeo.com/user100065953', external: true },
+      { label: 'YouTube', href: 'https://www.youtube.com/@tbsdesigngallery', external: true },
     ],
   },
 ]
@@ -140,7 +148,7 @@ export const TESTIMONIALS: { lead: string; body: string; author: string }[] = [
   },
   {
     lead: '"TBS has been a great support for my new house doors/windows and cabinetry work.',
-    body: "They are always available and have many product selections. I'd highly recommend them to anyone who is looking for a reasonably priced/good customer service combo.\"",
+    body: 'They are always available and have many product selections. I\'d highly recommend them to anyone who is looking for a reasonably priced/good customer service combo."',
     author: 'Efe S.',
   },
   {
@@ -156,9 +164,14 @@ export const TESTIMONIALS: { lead: string; body: string; author: string }[] = [
  * string renders a neutral placeholder tile.
  */
 export const NAV_CATEGORY_IMAGES: Record<VendorCategory, string> = {
-  'custom-cabinetry': 'https://nbdugymkxxwohotyzwhw.supabase.co/storage/v1/object/public/media/premier-AD_352.BDR_433-800x600.webp',
-  'windows-doors': 'https://nbdugymkxxwohotyzwhw.supabase.co/storage/v1/object/public/media/oikos-Immagine-pagina-pubblicitaria-800x889.webp',
-  'outdoor-living': 'https://nbdugymkxxwohotyzwhw.supabase.co/storage/v1/object/public/media/royal-botania-organix-lounge-02-800x470.webp',
-  appliances: 'https://nbdugymkxxwohotyzwhw.supabase.co/storage/v1/object/public/media/la-cornue-chateau-supreme-green-800x626.webp',
-  'architectural-elements-furniture': 'https://nbdugymkxxwohotyzwhw.supabase.co/storage/v1/object/public/media/laurameroni-architecture-catalogue-hd-images-088-1920x1358.webp',
+  'custom-cabinetry':
+    'https://nbdugymkxxwohotyzwhw.supabase.co/storage/v1/object/public/media/premier-AD_352.BDR_433-800x600.webp',
+  'windows-doors':
+    'https://nbdugymkxxwohotyzwhw.supabase.co/storage/v1/object/public/media/oikos-Immagine-pagina-pubblicitaria-800x889.webp',
+  'outdoor-living':
+    'https://nbdugymkxxwohotyzwhw.supabase.co/storage/v1/object/public/media/royal-botania-organix-lounge-02-800x470.webp',
+  appliances:
+    'https://nbdugymkxxwohotyzwhw.supabase.co/storage/v1/object/public/media/la-cornue-chateau-supreme-green-800x626.webp',
+  'architectural-elements-furniture':
+    'https://nbdugymkxxwohotyzwhw.supabase.co/storage/v1/object/public/media/laurameroni-architecture-catalogue-hd-images-088-1920x1358.webp',
 }

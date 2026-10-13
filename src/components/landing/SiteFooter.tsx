@@ -5,6 +5,9 @@ import { SectionRule, VerticalRule } from './Blueprint'
 import { ThemeSwitcher } from './ThemeSwitcher'
 import { FOOTER_ADDRESS, FOOTER_COLUMNS } from './content'
 
+const linkClass =
+  'text-ink-50 transition-colors hover:text-ink lg:group-has-[a:hover]/links:text-ink-30 lg:hover:text-ink!'
+
 export function SiteFooter() {
   return (
     <footer className="flex w-full flex-col">
@@ -39,15 +42,23 @@ export function SiteFooter() {
                   {column.label}
                 </p>
                 <div className="flex flex-col items-start text-[14px] leading-[22px]">
-                  {column.links.map((link) => (
-                    <Link
-                      key={link.label}
-                      href={link.href}
-                      className="text-ink-50 transition-colors hover:text-ink lg:group-has-[a:hover]/links:text-ink-30 lg:hover:text-ink!"
-                    >
-                      {link.label}
-                    </Link>
-                  ))}
+                  {column.links.map((link) =>
+                    link.external ? (
+                      <a
+                        key={link.label}
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={linkClass}
+                      >
+                        {link.label}
+                      </a>
+                    ) : (
+                      <Link key={link.label} href={link.href} className={linkClass}>
+                        {link.label}
+                      </Link>
+                    ),
+                  )}
                 </div>
               </div>
             </div>

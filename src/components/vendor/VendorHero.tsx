@@ -76,26 +76,25 @@ export function VendorHeroCard({
         </div>
       )}
 
-      <div className="relative flex items-start gap-[16px] px-[24px] pt-[48px] pb-[24px] lg:px-[32px] lg:pb-[32px]">
+      <div className="relative flex flex-col items-start gap-[16px] p-[16px] lg:flex-row lg:items-stretch lg:p-[32px]">
         {vendor.logoUrl && (
-          // Light-mode canvas: vendor logos sit on this fill in both themes.
-          <div className="flex h-[96px] w-[120px] shrink-0 items-center justify-center rounded-[12px] border border-hairline bg-[#f6f2ef] p-[16px]">
+          // Light-mode canvas: vendor logos sit on this fill in both themes. On lg the box takes
+          // the text column's height, so the logo is absolutely placed to stay out of sizing.
+          <div className="relative h-[48px] w-[72px] shrink-0 rounded-[8px] border border-hairline bg-[#f6f2ef] lg:h-auto lg:w-[104px] lg:rounded-[12px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               alt={`${vendor.name} logo`}
               src={vendor.logoUrl}
-              className="size-full object-contain"
+              className="absolute inset-[4px] size-[calc(100%-8px)] max-w-none object-contain lg:inset-[12px] lg:size-[calc(100%-24px)]"
             />
           </div>
         )}
         <div
-          className={`flex flex-col justify-between gap-[12px] self-stretch py-[8px] ${
-            hasMedia ? 'text-white' : 'text-ink'
-          }`}
+          className={`flex flex-col justify-end gap-[8px] ${hasMedia ? 'text-white' : 'text-ink'}`}
         >
           <div className="flex flex-col">
             <p className="text-[10px] leading-[13px] tracking-[0.1px]">{category}</p>
-            <Heading className="text-[32px] leading-[32px] font-medium tracking-[0.32px]">
+            <Heading className="text-[28px] leading-[36px] tracking-[0.28px] lg:text-[32px] lg:leading-[42px] lg:tracking-[0.32px]">
               {vendor.name}
             </Heading>
           </div>
@@ -107,7 +106,6 @@ export function VendorHeroCard({
     </div>
   )
 }
-
 
 export function VendorHero({ vendor }: { vendor: Vendor }) {
   return (

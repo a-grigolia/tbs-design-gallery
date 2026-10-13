@@ -11,6 +11,19 @@ import type { VendorCategory } from './categories'
 // history — don't reword them casually. Per-vendor seoTitle/seoDescription
 // fields in Payload override these patterns when set.
 
+/**
+ * Site-wide share image. Pages without their own `openGraph` inherit it from
+ * `(frontend)/opengraph-image.jpg`, but a page-level `openGraph` object
+ * replaces that inheritance wholesale, so pages that set one must fall back
+ * to this explicitly.
+ */
+export const DEFAULT_SHARE_IMAGE = {
+  url: '/og-image.jpg',
+  width: 1024,
+  height: 537,
+  alt: 'TBS Design Gallery showroom in Santa Clara',
+}
+
 export const vendorMetaTitle = (name: string): string => `${name} at TBS Design Gallery`
 
 // The trailing phrase varies per Webflow collection. The
@@ -46,13 +59,13 @@ export const postMetadata = (post: Post): Metadata => {
     openGraph: {
       title: ogTitle,
       description: ogDescription,
-      ...(ogImage ? { images: [{ url: ogImage }] } : {}),
+      images: [ogImage ? { url: ogImage } : DEFAULT_SHARE_IMAGE],
     },
     twitter: {
       card: 'summary_large_image',
       title: ogTitle,
       description: ogDescription,
-      ...(ogImage ? { images: [ogImage] } : {}),
+      images: [ogImage ? { url: ogImage } : DEFAULT_SHARE_IMAGE],
     },
   }
 }
