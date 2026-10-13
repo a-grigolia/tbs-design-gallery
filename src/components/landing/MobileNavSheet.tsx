@@ -277,8 +277,16 @@ export function MobileNavSheet({
                         index === 0 ? 'col-span-2' : ''
                       }`}
                     >
-                      <NavCategoryPhoto category={category.value} />
-                      <span className="relative text-[14px] leading-[18px] text-white">
+                      {/*
+                       * Full-tile scrim per Figma 1061:1561 — these tiles are too
+                       * short for the cards' half-height fade to reach the label.
+                       * The soft shadow keeps it legible over near-white patches.
+                       */}
+                      <NavCategoryPhoto
+                        category={category.value}
+                        scrimClassName="bg-[linear-gradient(to_bottom,rgba(0,0,0,0.23),rgba(0,0,0,0.75))]"
+                      />
+                      <span className="relative text-[14px] leading-[18px] text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.35)]">
                         {category.label}
                       </span>
                     </Link>

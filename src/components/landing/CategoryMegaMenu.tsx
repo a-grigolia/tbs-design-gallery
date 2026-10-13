@@ -8,13 +8,17 @@ import React from 'react'
 import { NAV_CATEGORY_IMAGES } from '@/components/landing/content'
 import { VENDOR_CATEGORIES } from '@/lib/categories'
 
-/** Category photo + bottom scrim shared by the mega menu cards and mobile sheet tiles. */
+const CARD_SCRIM = 'bg-[linear-gradient(to_bottom,rgba(0,0,0,0)_50%,rgba(0,0,0,0.8))]'
+
+/** Category photo + scrim shared by the mega menu cards and mobile sheet tiles. */
 export function NavCategoryPhoto({
   category,
   className,
+  scrimClassName = CARD_SCRIM,
 }: {
   category: VendorCategory
   className?: string
+  scrimClassName?: string
 }) {
   const src = NAV_CATEGORY_IMAGES[category]
 
@@ -24,7 +28,7 @@ export function NavCategoryPhoto({
         /* eslint-disable-next-line @next/next/no-img-element */
         <img alt="" src={src} className={`absolute inset-0 size-full object-cover ${className ?? ''}`} />
       )}
-      <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(0,0,0,0)_50%,rgba(0,0,0,0.8))]" />
+      <div className={`absolute inset-0 ${scrimClassName}`} />
     </div>
   )
 }
