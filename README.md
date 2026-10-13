@@ -82,4 +82,4 @@ Publishing, unpublishing, or deleting a Vendor or Post revalidates the relevant 
 
 ## Redirects
 
-`src/redirects.ts` exports the redirect map consumed by `next.config.ts`. It is currently empty, reserved for the Webflow URL migration map.
+`src/redirects.ts` exports the permanent Webflow → Next redirect map consumed by `next.config.ts`. Restart the dev server after editing it, and run `pnpm test:e2e tests/e2e/redirects.e2e.spec.ts` to check every redirect lands on a live page. If an old blog post is migrated into Payload, delete its redirect row, or it will hide the new page.

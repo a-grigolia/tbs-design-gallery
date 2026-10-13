@@ -93,7 +93,7 @@ src/
   migrations/               # baseline Payload migration (see gotcha #9)
   payload.config.ts
   payload-types.ts          # GENERATED — never hand-edit
-  redirects.ts              # empty; reserved for the Webflow URL map
+  redirects.ts              # Webflow → Next URL map (see gotcha #16)
 ```
 
 Path aliases: `@/*` → `./src/*`, and `@payload-config` → `./src/payload.config.ts`.
@@ -539,8 +539,14 @@ architectural-elements-furniture`) — its values are simultaneously the Postgre
 14. **Next dev refuses a second server** for the same project directory and reports the running
     port. Check for an existing dev server before starting one.
 15. **`pnpm build` needs the raised heap** (`--max-old-space-size=8000`) already set in the script.
-16. **`src/redirects.ts` is intentionally empty** — reserved for the Webflow URL migration map,
-    consumed by `next.config.ts`.
+16. **`src/redirects.ts` is the Webflow URL migration map** (~90 permanent rows, built from the
+    Webflow sitemap of 2026-10-13), consumed by `next.config.ts`. Next runs redirects **before**
+    routes, so a row shadows any real page at that path: when an old blog post is migrated into
+    Payload, delete its `/blog/...` row or the new page is unreachable. Wildcards (`:slug`) are
+    only for retired prefixes — never wildcard an active category. Destinations must be final
+    pages, never another source. Redirects are read at server startup, so restart `pnpm dev`
+    after editing. `pnpm test:e2e tests/e2e/redirects.e2e.spec.ts` checks all of the above plus
+    a live 308 → 200 for every row (`REDIRECT_BASE_URL=https://…` to run it against a deploy).
 17. **`contentHtml` only exists on Posts now** (raw imported Webflow HTML; nothing renders it).
     It was removed from Vendors — vendor content is authored in the Lexical `content` /
     `productSpecifications` fields.
