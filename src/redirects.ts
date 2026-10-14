@@ -78,7 +78,6 @@ const map: [source: string, destination: string][] = [
   ['/blog/join-us-at-pcbc-san-francisco-in-june', '/blog'],
   ['/blog/kitchen-dining-room-inspiration', '/custom-cabinetry'],
   ['/blog/la-cornue-premier-kitchen-cabinetry', '/appliances/la-cornue'],
-  ['/blog/la-cornue-ranges', '/appliances/la-cornue'],
   ['/blog/lacantina-doors-that-open-spaces', '/windows-doors/lacantina-doors'],
   [
     '/blog/laurameroni-design-collection-hand-crafted-italian-luxury',
