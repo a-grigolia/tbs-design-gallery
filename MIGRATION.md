@@ -17,8 +17,9 @@ Vendor URLs stay **exactly where Webflow has them**. They are not moving to `/ve
 /blog/renson-outdoor-structures     post detail             unchanged
 ```
 
-Every category page, every vendor page, and every blog post keeps its current URL. That collapses
-the redirect map to four rows. The safest redirect is the one you never write.
+Every category page, every vendor page, and every migrated blog post keeps its current URL, so
+redirects are only needed for content that was dropped (see "Redirects"). The safest redirect is
+the one you never write.
 
 `/vendors` does not exist. Navigation becomes a dropdown listing the five categories.
 
@@ -166,21 +167,20 @@ loading.
 
 ## Redirects
 
-`src/redirects.ts`, consumed by `next.config.ts` (gotcha #13). All `permanent: true` — 301, never
-302.
+`src/redirects.ts`, consumed by `next.config.ts` (`CLAUDE.md` gotcha #16). All `permanent: true`
+(Next answers 308, which Google treats as a 301).
 
-```
-/homeowners                     → /
-/trade-professionals            → /
-/{loser}/renson                 → /{winner}/renson
-/{loser}/laura-meroni           → /{winner}/laura-meroni
-```
+The four-row plan didn't survive contact with the live sitemap. Diffing it (2026-10-13) against
+the new site produced ~90 rows: retired pages (`/homeowners` and `/trade-professionals` → `/contact`),
+the old lead-gen pages, the dropped categories and vendor sub-collections (wildcarded), moved or
+dropped vendors, and every blog post that isn't being migrated. Neither Renson nor Laura Meroni
+needed a loser redirect — Webflow only ever served one URL for each.
 
-That's the whole map. Everything else keeps its URL.
+Webflow's own 301 list (old Squarespace-era URLs like `/blog/2020/3/31/...`) was reviewed and
+deliberately **not** carried over, except `/architectural-elements-furniture/laura-meroni`.
 
-**On the two dropped pages:** Google largely treats redirect-to-homepage as a soft 404 and passes
-little equity. `/trade-professionals` is the architect and GC channel — the highest-intent traffic on
-the old site. `/contact` is a topically relevant destination for the same effort if you reconsider.
+**Migrating a post later:** delete its `/blog/...` row first, or the redirect hides the new page
+(done for `la-cornue` and `la-cornue-ranges`, 2026-10-14).
 
 ## Routing
 
@@ -221,10 +221,11 @@ Required before launch:
 - [ ] `generateMetadata` on every route: title, description, canonical, OG.
 - [ ] Carry over Webflow titles and meta descriptions on pages that rank. `/windows-doors` currently
       reads "Santa Clara Windows and Doors | Luxury Brands" — local keyword targeting, don't lose it.
-- [ ] `sitemap.ts` and `robots.ts`, reading from Payload so new content self-registers.
+- [x] `sitemap.ts` and `robots.ts`, reading from Payload so new content self-registers.
 - [ ] **Noindex or redirect `tbs-design-gallery.vercel.app`.** Production deployments on `.vercel.app`
-      do *not* get the automatic noindex that previews do. It's crawlable today and will become a
-      duplicate of the real site.
+      do *not* get the automatic noindex that previews do. `robots.ts` now returns `Disallow: /` on
+      every non-live host; still to do after cutover: redirect the alias to `www` in Vercel's
+      domain settings.
 - [ ] Resend SPF/DKIM records added before the DNS cutover.
 - [ ] Custom `not-found.tsx`.
 - [ ] GA4 carry-over.
