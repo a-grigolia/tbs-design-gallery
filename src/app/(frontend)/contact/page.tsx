@@ -32,16 +32,14 @@ export default function ContactPage() {
         <BlueprintColumn corner="tee">
           <div className="flex w-full items-center px-gutter-sm pt-[96px] pb-[24px] lg:px-gutter">
             <div className="flex w-full max-w-[384px] flex-col gap-[16px]">
-              <h1 className="font-display text-[36px] leading-[46px] font-semibold text-ink">
-                Get in touch
-              </h1>
+              <h1 className="type-section-heading text-ink">Get in touch</h1>
               <p className="text-[14px] leading-[18px] text-ink-50">{DESCRIPTION}</p>
             </div>
           </div>
 
           <TickRule label="Contact us" />
 
-          <div className="flex w-full flex-col gap-[32px] px-gutter-sm py-[24px] lg:flex-row lg:gap-[48px] lg:px-gutter">
+          <div className="flex w-full flex-col gap-[32px] px-gutter-sm py-[24px] lg:flex-row lg:gap-[48px] lg:px-[24px]">
             <div className="hidden flex-1 overflow-hidden rounded-[24px] lg:block lg:self-stretch">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -68,7 +66,7 @@ export default function ContactPage() {
 
           <TickRule label="Gallery" />
 
-          <div className="flex w-full flex-col gap-[32px] px-gutter-sm pt-[32px] pb-[48px] lg:flex-row lg:items-center lg:gap-[48px] lg:px-gutter">
+          <div className="flex w-full flex-col gap-[32px] px-gutter-sm pt-[32px] pb-[48px] lg:flex-row lg:items-center lg:gap-[48px] lg:px-[24px]">
             <div className="flex w-full flex-col justify-center gap-[48px] lg:w-[400px] lg:shrink-0 lg:self-stretch">
               <div className="flex flex-col gap-[24px]">
                 <div className="flex max-w-[305px] flex-col gap-[8px]">

@@ -95,7 +95,7 @@ export async function CategoryPage({
       {/* SectionBand's layout without its border-t: the hero band above already drew this hairline. */}
       <div className="flex w-full flex-col items-center px-2 sm:px-8 lg:px-12">
         <BlueprintColumn corner="tee">
-          <div className="flex w-full flex-col items-center px-gutter-sm py-[120px] lg:px-gutter">
+          <div className="flex w-full flex-col items-center px-gutter-sm py-[96px] lg:px-gutter lg:py-[120px]">
             <div className="flex w-full max-w-[384px] flex-col gap-[16px]">
               <h2 className="type-section-heading text-ink">{heading}</h2>
               <p className="text-[14px] leading-[18px] text-ink-50">{body}</p>
