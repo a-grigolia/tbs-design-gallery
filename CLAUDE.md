@@ -77,6 +77,8 @@ src/
       api/[...slug]/ , api/graphql/ , api/graphql-playground/
       api/zoho/retry/       # CRON_SECRET-protected failed-delivery recovery
     my-route/               # leftover template scaffolding, safe to delete
+    robots.ts               # host-gated robots.txt (see "Crawling")
+    sitemap.ts              # sitemap.xml from Payload, canonical www URLs
   access/index.ts           # reusable Payload access-control predicates
   collections/              # Users, Media, Vendors, Posts, ContactSubmissions
   components/contact/       # contact form, CRM-aligned option lists, Calendly popup CTA
@@ -89,6 +91,7 @@ src/
   lib/zoho.ts               # server-only Flow payload + delivery state
   lib/categories.ts         # VENDOR_CATEGORIES + vendorHref/categoryLabel/isVendorCategory
   lib/seo.ts                # Webflow-inherited vendor meta title/description patterns
+  lib/site.ts               # SITE_URL (canonical www origin) + isLiveHost()
   lib/tracking.ts           # GTM/Meta/Klaviyo IDs, live-domain gate, conversion events
   migrations/               # baseline Payload migration (see gotcha #9)
   payload.config.ts
@@ -300,6 +303,22 @@ root layout, so the Payload admin is never tracked) loads GTM `GTM-NR7TD5Q` and 
 - **Launch needs no code change** — tracking switches on once the domain points at Vercel.
   Outstanding non-code setup: GA4 Enhanced Measurement "page changes based on browser history
   events" on, and GTM Custom Event triggers for `generate_lead` / `tour_booked`.
+
+### Crawling — robots.txt and sitemap.xml
+
+- `app/robots.ts` reads the request's Host header. On `tbsdesigngallery.com` / `www.` it allows
+  everything except `/admin` and `/api` and names the sitemap; on **every other host** it returns
+  `Disallow: /`. Host, not `VERCEL_ENV`, because the `tbs-design-gallery.vercel.app` alias serves
+  the production deployment with `VERCEL_ENV=production`. Same `isLiveHost()` as tracking, so
+  both flip on at cutover with no code change.
+- `Disallow` stops crawling but doesn't deindex. After cutover, redirect the `.vercel.app` alias
+  to `www` in Vercel's domain settings so anything already indexed there consolidates.
+- `app/sitemap.ts` lists the static pages, published **active** vendors (same set as the
+  listings), and published posts — always as `SITE_URL` (`https://www.tbsdesigngallery.com`)
+  URLs, whatever host serves it. New static routes must be added to `STATIC_PATHS` by hand.
+- `pnpm test:e2e tests/e2e/seo.e2e.spec.ts` checks both robots branches (via a Host header
+  override) and that every sitemap URL is canonical, not a redirect source, and answers 200.
+  Run it and the redirect spec one at a time — in parallel they crawl the dev server too slowly.
 
 ### Blueprint primitives (`components/landing/Blueprint.tsx`)
 

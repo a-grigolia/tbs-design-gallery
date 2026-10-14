@@ -1,10 +1,8 @@
+import { isLiveHost } from '@/lib/site'
+
 export const GTM_ID = 'GTM-NR7TD5Q'
 export const META_PIXEL_ID = '344524082707566'
 export const KLAVIYO_COMPANY_ID = 'X6j4PF'
-
-// The Webflow site shares these accounts until launch, so anything else
-// (localhost, Vercel URLs) stays silent unless the test switch is on.
-const LIVE_HOSTS = ['tbsdesigngallery.com', 'www.tbsdesigngallery.com']
 
 const SWITCH_PARAM = 'tracking'
 const SWITCH_KEY = 'tbsTracking'
@@ -27,9 +25,11 @@ export function applyTrackingSwitch() {
   }
 }
 
+// The Webflow site shares these accounts until launch, so anything else
+// (localhost, Vercel URLs) stays silent unless the test switch is on.
 export function isTrackingEnabled() {
   if (typeof window === 'undefined') return false
-  if (LIVE_HOSTS.includes(window.location.hostname)) return true
+  if (isLiveHost(window.location.hostname)) return true
   try {
     return localStorage.getItem(SWITCH_KEY) === 'on'
   } catch {
