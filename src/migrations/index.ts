@@ -3,6 +3,7 @@ import * as migration_20260903_230007_posts_journal_schema from './20260903_2300
 import * as migration_20260907_230811_contact_submissions from './20260907_230811_contact_submissions'
 import * as migration_20260907_232000_contact_address from './20260907_232000_contact_address'
 import * as migration_20260911_051539_zoho_contact_delivery from './20260911_051539_zoho_contact_delivery'
+import * as migration_20261013_235000_enable_rls from './20261013_235000_enable_rls'
 
 export const migrations = [
   {
@@ -29,5 +30,10 @@ export const migrations = [
     up: migration_20260911_051539_zoho_contact_delivery.up,
     down: migration_20260911_051539_zoho_contact_delivery.down,
     name: '20260911_051539_zoho_contact_delivery',
+  },
+  {
+    up: migration_20261013_235000_enable_rls.up,
+    down: migration_20261013_235000_enable_rls.down,
+    name: '20261013_235000_enable_rls',
   },
 ]

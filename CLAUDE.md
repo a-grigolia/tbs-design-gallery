@@ -561,3 +561,16 @@ architectural-elements-furniture`) — its values are simultaneously the Postgre
     `zapikey`, and `CRON_SECRET` authorizes retries; both are server-only Vercel Secrets. Local
     `.env` and Vercel do not sync. The contact/address migrations were applied to the current
     Supabase database on 2026-09-11, but fresh databases still need `pnpm payload migrate`.
+21. **Every `public` table has RLS enabled with no policies** (`20261013_235000_enable_rls`,
+    applied 2026-10-13). Supabase grants its Data API roles (`anon`/`authenticated`) full access
+    to `public` by default, and `users` holds password hashes; no policies means deny-all for
+    them. Payload is unaffected because it connects as `postgres`, which owns the tables and has
+    `BYPASSRLS`. **Never use `force row level security`**: it applies RLS to the owner too and
+    locks Payload out. The `ensure_rls` event trigger enables RLS on any new `public` table, so
+    new collections need nothing extra; verify with
+    `select relname from pg_class where relnamespace = 'public'::regnamespace and relkind = 'r' and not relrowsecurity`.
+    Nothing in the app uses the Data API (no `supabase-js`, no anon key), so it should stay
+    disabled in the Supabase dashboard. Ignore the Advisor's "Unused Index" warnings; Payload
+    relies on those indexes. `payload_migrations` still has a stale `dev` row (batch -1) from the
+    old push mode, so `payload migrate` asks a "data loss will occur" question. Answering yes is
+    safe: it only skips that row and runs pending migrations.

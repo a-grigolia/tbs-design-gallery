@@ -50,7 +50,13 @@ export function MobileNavSheet({
     if (!dialog) return
 
     if (open) {
-      if (!dialog.open) dialog.showModal()
+      if (!dialog.open) {
+        dialog.showModal()
+        // showModal() focuses the close button, and Chrome rings it even after
+        // a tap. Focusing the dialog itself avoids that and announces its label;
+        // Tab still reaches the button first.
+        dialog.focus({ preventScroll: true })
+      }
       document.documentElement.style.overflow = 'hidden'
       // Two frames so the closed transform is committed before the open one,
       // otherwise the first open would jump straight to the end state.
@@ -197,7 +203,8 @@ export function MobileNavSheet({
       ref={dialogRef}
       id={id}
       aria-label="Site menu"
-      className="fixed inset-0 m-0 h-dvh max-h-none w-full max-w-none overflow-clip border-0 bg-transparent p-0 backdrop:bg-transparent"
+      tabIndex={-1}
+      className="fixed inset-0 m-0 h-dvh max-h-none w-full max-w-none overflow-clip border-0 bg-transparent p-0 outline-none backdrop:bg-transparent"
     >
       <div
         ref={backdropRef}
